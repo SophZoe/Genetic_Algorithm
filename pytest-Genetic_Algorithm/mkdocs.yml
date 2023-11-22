@@ -1,0 +1,10 @@
+site_name: pytest-Genetic_Algorithm
+site_description: This is our semesterter project!
+site_author: Sophie Paul
+
+theme: readthedocs
+
+repo_url: https://github.com/SophZoe/pytest-Genetic_Algorithm
+
+pages:
+- Home: index.md
