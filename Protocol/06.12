@@ -1,0 +1,52 @@
+- Recherche zur implementierung von **Lebewesen**
+    - mögliche Ernährungstypen
+        - Carnivore
+            - Frisst nur Fleisch.
+        - Herbivore
+            - Frisst nur Pflanzen.
+        - Omnivore
+            - Frisst sowohl Pflanzen als auch Fleisch. Omnivore erhalten 
+weniger Energie durch Lebensmittel
+        - Cannibal
+            - Frisst andere Lebewesen. 
+            - Falls zu stark mögliche Einschränkung: Kann Lebewesen nur 
+fressen, wenn x% mehr Energie.
+    - Sonstige Rahmen für die Lebewesen
+        - Lebewesen bekommt eine eigene Klasse
+        - Ernährungstyp wird als Gen zugewiesen
+            - Die unterschiedlichen Ernährungstypen beziehen die 
+Ausprägung ihrer Gene aus einer bestimmten range des Genpools, sodass 
+manche Lebewesen immer aus einem stärkeren bereich erben. 
+        - Tradeoffs bei den Genen: starke Ausprägung bei Geschwindigkeit 
+hat zb schwache Ausprägung bei Energieeffizienz zur Folge
+        - Farben für Ernährungstypen
+- **Visualisierung**
+    - 2d Grid 
+- **Spielewelt**
+    - Unterschiedliche Energiekosten
+    - Unterschiedliche Spawnraten für essen
+- **Genome**
+    - Energieverbrauch
+    - Abtastrange um Essen zu erkennen
+    - Aggressivität
+    - 
+- ^^**Reihenfolge**^^
+    - Simulation + Visualisierung (2 Ebenen)
+        - Erstmal im 2d numpy grid arbeiten, visualisierung als letzten 
+Schritt hinzufügen **gui unabhängig**
+    - Am Anfang wenig Gene und kleinere Genome
+    - **Bis zum 13.12**: Klassen überlegen (Dummy Code) mit Methoden usw
+        - Lebewesen
+            - Genome
+            - Bewegung
+            - Vererbung
+            - Zustände (schlafend/essend)
+            - Aggressivitätslevel
+        - Spielfeld
+            - Nahrung
+            - Abbildung wo wer was ist
+        - Spielklasse (hier wird das Spiel aufgerufen)
+            - Parameter der Simulation können hier bestimmt werden:
+                - Spielfeldgröße
+                - Art des Spielfeld
+    
