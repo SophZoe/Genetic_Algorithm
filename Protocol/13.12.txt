@@ -1,0 +1,11 @@
+
+Besprechung
+
+- Besprechung der einzelnen Arbeitsziele von letzter Woche (erstellen der Klassen und Methode als Dummycode)
+- 
+
+
+
+Zielsetzung fürs nächste mal:
+
+- Return Werte festlegen
