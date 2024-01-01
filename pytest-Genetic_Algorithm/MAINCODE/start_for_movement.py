@@ -2,12 +2,17 @@ import numpy as np
 #from GenDispense_v01.py import Lebewesen 
 
 class search_for_food():
+    range = Lebewesen.wahrnehmungsreichweite
+    position = Lebewesen.position
+    
     def visible_area(range , position):     #(range = Lebewesen.wahrnehmungsreichweite, position = Lebewesen.position )
-        def array_to_tuples(arr):
+        # construncting an array of the size of the agents visible area, with tuples as koordinates
+        def viewfield(arr):
             tuples_array = [(val1, val2) for val1 in arr for val2 in arr]
             return tuples_array
         
-        def add_tuples(arr, position):
+        # fitting the visible area´s coordinates to the position of the agent
+        def fit_to_position(arr, position):
             return [(x + position[0], y + position[1]) for x, y in arr]
         
         
@@ -18,8 +23,8 @@ class search_for_food():
         
         #print(rad)
         
-        field_to_search = array_to_tuples(rad)
-        field_to_search = add_tuples(field_to_search, position)
+        field_to_search = viewfield(rad)
+        field_to_search = fit_to_positions(field_to_search, position)
         
         return field_to_search
         
