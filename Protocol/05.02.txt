@@ -1,0 +1,20 @@
+Erstes Treffen nach den ersten beiden Prüfungen.
+Wir bringen uns jeweils auf den neusten Recherchestand und besprechen, wie wir weiter vorgehen, um den Hauptteil des Projekts langsam fertigzustellen.
+
+ToDos:
+- Genauswahl verbessern, damit möglichst viel Informationen aus den Durchläufen gewonnen werden kann
+- Code ausreichend auskommentieren
+- kleinere Bearbeitungen im bestehenden Code
+- Visualisierung des Boards
+- Laufzeitoptimierung (erste Auseinandersetzung)
+- Auseinandersetzung mit sinnvoller Continuous Integration und ggf. erste Implementierung/Versuche
+
+--> siehe Issues!
+
+
+weitere Überlegungen:
+- separate CSV-Dateien abspeichern für jeden Durchlauf; unabhängig davon, ob es nur ein Funktionstest ist oder der "main"-Durchlauf.
+Damit sollen auch aus der Spielentwicklung Informationen hervorgehen, die Aufschluss über die Effekte unserer Code-Veränderungen geben könnten.
+Evtl. soll das dann auch in der Visualisation/Präsentation aufgegriffen werden.
+
+nächses Treffen in 5 Tagen (Samstag, 10.02.) vorgesehen, um unser Vorankommen vorzustellen und weiteres Vorgehen zu klären.
