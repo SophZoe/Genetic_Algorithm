@@ -25,7 +25,7 @@ Ziele / ToDos
 * Visualisierung des Spielbretts
 
 
-* Laufzeitoptimierung ( Florian sagt: in lib "Number" reinschauen für den loop ) 
+* Laufzeitoptimierung ( Florian sagt: in lib "Numba" reinschauen für den loop ) 
 -> Aktuell: Doppelter for-loop über alle Lebewesen
 -> Position von allen zusammen zentral speichern, allerdings nur die ID. HashMap/ Dict 
 
