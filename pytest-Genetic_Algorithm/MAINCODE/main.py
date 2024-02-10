@@ -3,14 +3,15 @@ import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import time
+from matplotlib.pyplot import imshow
 # Konstanten
 ENERGIEKOSTEN_BEWEGUNG = 1
 ENERGIEKOSTEN_FORTPFLANZUNG = 5
 START_ENERGIE = 10
-BREITE = 1000
-HÖHE = 1000
-ANZAHL_LEBEWESEN = 50
-RUNDEN = 1000
+BREITE = 10
+HÖHE = 10
+ANZAHL_LEBEWESEN = 10
+RUNDEN = 21
 ENERGIE_NAHRUNG = 5
 NAHRUNG_ANFANGS_PROZENT = 0.5
 NAHRUNG_ZUSATZ_PROZENT = 0.05
@@ -39,6 +40,7 @@ class Lebewesen:
         self.fortpflanzungs_counter = 0
 
     def genverteilung(self):
+        #simulieren des Genverteilung aus dem festgelegten Dictionarie 'GENPOOL'
             for gen, bereich in GENPOOL["Gene"].items():
                 # Ganzzahliger Wert für jedes Gen innerhalb der definierten Grenzen
                 self.genetik[gen] = random.randint(*bereich)
@@ -100,6 +102,7 @@ class Board:
         self.höhe = höhe
         self.lebewesen = []
         self.nahrung = np.zeros((breite, höhe))
+        self.world = np.zeros((breite, höhe))
 
     def add_lebewesen(self, lebewesen):
         self.lebewesen.append(lebewesen)
@@ -107,10 +110,16 @@ class Board:
     def platziere_nahrung(self, prozent):
         anzahl_felder = int(self.breite * self.höhe * prozent)
         for _ in range(anzahl_felder):
+            
+            #random Koordinaten an dem die Nahrung pltziert werden soll
             x, y = random.randint(0, self.breite - 1), random.randint(0, self.höhe - 1)
+            
+            #platzieren der Nahrung
             self.nahrung[x][y] = ENERGIE_NAHRUNG
-
+    
+        
     def entferne_lebewesen(self, lebewesen):
+        #removing the agents in the list 'lebewesen'
         self.lebewesen.remove(lebewesen)
 
 class Game:
@@ -119,12 +128,22 @@ class Game:
         for i in range(1, ANZAHL_LEBEWESEN + 1):
             self.board.add_lebewesen(Lebewesen(i))
         self.board.platziere_nahrung(NAHRUNG_ANFANGS_PROZENT)
-
+        
+        """def place_agents(self):
+        for agents in self.board.lebewesen:
+            
+            #counting the number of agents in one field
+            self.board.world(agents) = 1"""
+            
     def run(self):
+        print(type(self.board))
         for runde in range(RUNDEN):
             if runde % 10 == 0:
                 self.board.platziere_nahrung(NAHRUNG_ZUSATZ_PROZENT)
-
+                
+                #visualisieren des boardes
+                self.visualize_board()
+                
             for lebewesen in self.board.lebewesen[:]:
                 ergebnis = lebewesen.bewegen(self.board)
                 if ergebnis == "gestorben":
@@ -133,15 +152,22 @@ class Game:
                     for anderer in self.board.lebewesen:
                         if lebewesen != anderer:
                             lebewesen.fortpflanzen(anderer, self.board)
+            
+            
             ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
         self.speichere_daten()
 
     def speichere_daten(self):
         with open('lebewesen_daten.csv', 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Nummer', 'Stamm', 'Kondition', 'Sichtweite', 'Fortpflanzungs-Counter'])
+            writer.writerow(['Nummer', 'Stamm', 'Kondition', 'Sichtweite', 'Fortpflanzungs-Counter', 'Position'])
             for lebewesen in self.board.lebewesen:
-                writer.writerow([lebewesen.nummer, lebewesen.genetik['Stamm'], lebewesen.genetik['Kondition'], lebewesen.genetik['Sichtweite'], lebewesen.fortpflanzungs_counter])
+                writer.writerow([lebewesen.nummer, lebewesen.genetik['Stamm'], lebewesen.genetik['Kondition'], lebewesen.genetik['Sichtweite'], lebewesen.fortpflanzungs_counter, lebewesen.position])
+                
+    def visualize_board(self):
+        for runde  in range(RUNDEN):
+            
+            imshow(self.board.nahrung, cmap='gray')
 # Counter einfügen wie oft sich ein Lebewesen fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
 
