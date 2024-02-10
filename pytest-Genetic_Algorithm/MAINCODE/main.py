@@ -29,7 +29,7 @@ GENPOOL = {
 }
 
 class Lebewesen:
-    def __init__(self, nummer):
+    def __init__(self, nummer, geburt):
         global lebewesen_counter
         self.nummer = nummer
         self.energie = START_ENERGIE
@@ -37,6 +37,8 @@ class Lebewesen:
         self.genverteilung()
         self.position = (random.randint(0, BREITE-1), random.randint(0, HÖHE-1))
         self.fortpflanzungs_counter = 0
+        self.geburt = geburt
+        self.lebensspanne = 0
 
     def genverteilung(self):
             for gen, bereich in GENPOOL["Gene"].items():
@@ -125,6 +127,10 @@ class Game:
             if runde % 10 == 0:
                 self.board.platziere_nahrung(NAHRUNG_ZUSATZ_PROZENT)
 
+            for lebewesen in self.board.lebewesen:
+                lebewesen.lebensspanne += 1
+                #Updated Lebensspanne über jede laufende Runde
+
             for lebewesen in self.board.lebewesen[:]:
                 ergebnis = lebewesen.bewegen(self.board)
                 if ergebnis == "gestorben":
@@ -139,9 +145,9 @@ class Game:
     def speichere_daten(self):
         with open('lebewesen_daten.csv', 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Nummer', 'Stamm', 'Kondition', 'Sichtweite', 'Fortpflanzungs-Counter'])
+            writer.writerow(['Nummer', 'Stamm', 'Kondition', 'Sichtweite', 'Fortpflanzungs-Counter', 'Lebensspanne'])
             for lebewesen in self.board.lebewesen:
-                writer.writerow([lebewesen.nummer, lebewesen.genetik['Stamm'], lebewesen.genetik['Kondition'], lebewesen.genetik['Sichtweite'], lebewesen.fortpflanzungs_counter])
+                writer.writerow([lebewesen.nummer, lebewesen.genetik['Stamm'], lebewesen.genetik['Kondition'], lebewesen.genetik['Sichtweite'], lebewesen.fortpflanzungs_counter, lebewesen.lebensspanne])
 # Counter einfügen wie oft sich ein Lebewesen fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
 
