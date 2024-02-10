@@ -76,6 +76,8 @@ class Lebewesen:
         global lebewesen_counter
         if self.energie > ENERGIEKOSTEN_FORTPFLANZUNG and self.position == partner.position:
             erfolgsrate = 1 if self.genetik["Stamm"] == partner.genetik["Stamm"] else 0.3
+#wenn wir weitere Welten (Parameter) einfügen, wäre es besser die Erfograte geringer zu setzen, damit das genetische Vielfalt, 
+#Populationsdynamik, Umweltfaktoren, usw. berücksichtigt werden. 
             if random.random() < erfolgsrate:
                 lebewesen_counter += 1
                 kind = Lebewesen(lebewesen_counter)
@@ -92,6 +94,7 @@ class Lebewesen:
             else:
                 gewicht = random.uniform(0, 1)
                 gen_wert = (gewicht * elternteil1.genetik[gen] + (1 - gewicht) * elternteil2.genetik[gen]) / 2
+    # Hier /2 zu teilen ist echt unnötig, denn gewicht + (1-gewicht) == 1, ist also schon ein gewichteter Durchschnitt.
                 self.genetik[gen] = int(round(gen_wert, 3))
 
 class Board:
@@ -103,15 +106,19 @@ class Board:
 
     def add_lebewesen(self, lebewesen):
         self.lebewesen.append(lebewesen)
+    #   self.lebewesen_counter += 1
 
     def platziere_nahrung(self, prozent):
         anzahl_felder = int(self.breite * self.höhe * prozent)
         for _ in range(anzahl_felder):
             x, y = random.randint(0, self.breite - 1), random.randint(0, self.höhe - 1)
-            self.nahrung[x][y] = ENERGIE_NAHRUNG
+            self.nahrung[x][y] = ENERGIE_NAHRUNG #vllt. lieber += falls das gleiche Feld mehrmals drankommt kann sich drauf mehr Nährung akkumulieren, 
+            # statt auf den Default zurückgesetzt zu müssen. 
+            # Alternativ können wir diese Option erst in der Welt mit den besseren Überlebensparameter einräumen. 
 
     def entferne_lebewesen(self, lebewesen):
         self.lebewesen.remove(lebewesen)
+    #   self.lebewesen_counter -= 1
 
 class Game:
     def __init__(self):
