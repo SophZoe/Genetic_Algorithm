@@ -136,6 +136,8 @@ class Game:
     def run(self):
         
         for round in range(ROUNDS):
+            
+            #ending the simulation in case there are no agents left
             if len(self.board.agents_list) == 0:
                 print("--------------------------")
                 print("\nall agents deceased\n")
