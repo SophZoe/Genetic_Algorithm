@@ -11,11 +11,11 @@ ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
-NUMBER_AGENTS = 10
-ROUNDS = 21
+NUMBER_AGENTS = 1
+ROUNDS = 10
 ENERGY_FOOD = 5
-FOOD_PERCENTAGE_BEGINNING = 0.5
-ADDITIONAL_FOOD_PERCENTAGE = 0.05
+FOOD_PERCENTAGE_BEGINNING = 0.01
+ADDITIONAL_FOOD_PERCENTAGE = 0.001
 
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
@@ -118,7 +118,10 @@ class Board:
             
             #platzieren der Nahrung
             self.food[x][y] = ENERGY_FOOD
-    
+    def place_agents(self):
+        for agent in self.agents_list:
+            x, y = agent.position
+            self.world[x][y] = 1
         
     def remove_agents(self, agent):
         #removing the agents in the list 'lebewesen'
@@ -134,19 +137,16 @@ class Game:
         
             
     def run(self):
-        print(type(self.board))
+        
         for round in range(ROUNDS):
-            if round % 10 == 0:
-                self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
-                
-                #visualisieren des boardes
-                self.visualize_board()
-                
-                
+            
             for agent in self.board.agents_list[:]:
                 #bewegt die agents
                 result = agent.move(self.board)
-
+                for agent in self.board.agents_list:
+                    print(f"position: {agent.position}")
+                    
+                    
                 
                 #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
                 if result == "deceased":
@@ -158,10 +158,21 @@ class Game:
                     for partner in self.board.agents_list:
                         if agent != partner:
                             agent.reproduce(partner, self.board)
+                
+                
+            if round % 10 == 0:
+                print(f"number of agents: {len(self.board.agents_list)}")
+                
+                self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
+                
+                
+               
             
-            
+        self.board.place_agents()  
+        #visualisieren des boardes
+        self.visualize_board()  
             ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
-        self.safe_data()
+        #self.safe_data()
 
     def safe_data(self):
         with open('agents_daten.csv', 'w', newline='') as file:
@@ -173,7 +184,13 @@ class Game:
     def visualize_board(self):
         for runde  in range(ROUNDS):
             
-            imshow(self.board.nahrung, cmap='gray')
+            imshow(self.board.food, cmap='gray')
+            plt.show()
+            time.sleep(1)
+            imshow(self.board.world)#, cmap="gray")
+            plt.show()
+            time.sleep(1)
+            
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
 
