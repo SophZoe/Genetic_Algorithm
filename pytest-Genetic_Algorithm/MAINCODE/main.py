@@ -9,10 +9,10 @@ from matplotlib.pyplot import imshow
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
-WIDTH = 10
-HEIGHT = 10
-NUMBER_AGENTS = 1
-ROUNDS = 10
+WIDTH = 100
+HEIGHT = 100
+NUMBER_AGENTS = 100
+ROUNDS = 50
 ENERGY_FOOD = 5
 FOOD_PERCENTAGE_BEGINNING = 0.01
 ADDITIONAL_FOOD_PERCENTAGE = 0.001
@@ -119,9 +119,13 @@ class Board:
             #platzieren der Nahrung
             self.food[x][y] = ENERGY_FOOD
     def place_agents(self):
+        #deleting the array so deceased agents will not be shown
+        self.world = np.zeros_like(self.world)
+        
+        #placing agents in array
         for agent in self.agents_list:
             x, y = agent.position
-            self.world[x][y] = 1
+            self.world[x][y] += 1
         
     def remove_agents(self, agent):
         #removing the agents in the list 'lebewesen'
@@ -138,19 +142,15 @@ class Game:
             
     def run(self):
         
-        if len(self.board.agents_list) == 0:
-            print("--------------------------")
-            print("\nall agents deceased\n")
-            print("--------------------------")
+        
         for round in range(ROUNDS):
             
             for agent in self.board.agents_list[:]:
+                
                 #bewegt die agents
                 result = agent.move(self.board)
-                for agent in self.board.agents_list:
-                    print(f"position: {agent.position}")
-                    
-                    
+                """for agent in self.board.agents_list:
+                    print(f"position: {agent.position}")"""
                 
                 #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
                 if result == "deceased":
@@ -165,9 +165,9 @@ class Game:
                 
                 
             if round % 10 == 0:
-                print(f"number of agents: {len(self.board.agents_list)}")
-                
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
+                self.board.place_agents()
+                self.visualize_board()
                 
                 
                
@@ -188,14 +188,15 @@ class Game:
                 writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
                 
     def visualize_board(self):
-        for runde  in range(ROUNDS):
-            
-            imshow(self.board.food, cmap='gray')
-            plt.show()
-            time.sleep(1)
-            imshow(self.board.world)#, cmap="gray")
-            plt.show()
-            time.sleep(1)
+        time.sleep(5)
+        imshow(self.board.food, cmap='gray')
+        plt.show()
+        #
+        imshow(self.board.world)
+        plt.show()
+        #time.sleep(1)
+        print(self.board.world)
+        print(len(self.board.agents_list))
             
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
