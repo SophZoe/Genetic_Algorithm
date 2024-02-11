@@ -9,8 +9,8 @@ from matplotlib.pyplot import imshow
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
-WIDTH = 100
-HEIGHT = 100
+WIDTH = 10
+HEIGHT = 10
 NUMBER_AGENTS = 100
 ROUNDS = 50
 ENERGY_FOOD = 5
@@ -194,7 +194,7 @@ class Game:
         imshow(self.board.world)
         plt.show()
         print(self.board.world)
-        print(len(self.board.agents_list))
+        print(f"number of agents: {len(self.board.agents_list)}")
             
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
