@@ -191,10 +191,8 @@ class Game:
         time.sleep(5)
         imshow(self.board.food, cmap='gray')
         plt.show()
-        #
         imshow(self.board.world)
         plt.show()
-        #time.sleep(1)
         print(self.board.world)
         print(len(self.board.agents_list))
             
