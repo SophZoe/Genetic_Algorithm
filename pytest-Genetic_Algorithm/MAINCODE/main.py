@@ -15,8 +15,8 @@ HEIGHT = 10
 NUMBER_AGENTS = 10
 ROUNDS = 50
 ENERGY_FOOD = 5
-FOOD_PERCENTAGE_BEGINNING = 0.001
-ADDITIONAL_FOOD_PERCENTAGE = 1
+FOOD_PERCENTAGE_BEGINNING = 0
+ADDITIONAL_FOOD_PERCENTAGE = 0
 
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
@@ -199,10 +199,13 @@ class Game:
                 writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
                 
     def visualize_board(self):
-        time.sleep(5)
-        imshow(self.board.food, cmap='YlGn')
+        #time.sleep(5)
+        imshow(self.board.food, cmap='YlGn', vmin = 0)
+        plt.title('Food Distribution')
         plt.show()
-        imshow(self.board.world, cmap = 'YlOrRd')
+        
+        imshow(self.board.world, cmap = 'YlOrRd', vmin = 0)
+        plt.title('Agents per field')
         plt.show()
         
         #showing food array
