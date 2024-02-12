@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import csv
+import os
 import matplotlib.pyplot as plt
 import time
 from matplotlib.pyplot import imshow
@@ -125,7 +126,8 @@ class Board:
         self.agents_list.remove(agent)
 
 class Game:
-    def __init__(self):
+    def __init__(self, saving = False):
+        self.saving = saving
         self.board = Board(WIDTH, HEIGHT)
         for i in range(1, NUMBER_AGENTS + 1):
             self.board.add_agent(Agent(i))
@@ -157,27 +159,49 @@ class Game:
                             agent.reproduce(partner, self.board)
             
             
-            ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
-        self.safe_data()
+        if self.saving is True:    ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
+            self.save_data()
 
-    def safe_data(self):
-        with open('agents_daten.csv', 'w', newline='') as file:
+        
+    def save_data(self):
+        # Generiere den Pfad für das "results" Verzeichnis im aktuellen Arbeitsverzeichnis
+        current_working_directory = os.getcwd()
+        result_dir = os.path.join(current_working_directory, 'results')
+        csv_index = 0
+        
+        # Erstelle das Verzeichnis, wenn es nicht existiert
+        if not os.path.exists(result_dir):
+            os.makedirs(result_dir)
+
+        # Erstelle den Dateinamen für die CSV-Datei
+        filename = os.path.join(result_dir, f'agent_data_{csv_index}.csv')
+        while os.path.exists(filename):
+            csv_index += 1
+            filename = os.path.join(result_dir, f'agent_data_{csv_index}.csv')
+        
+        # Schreibe die Agenten-Daten in die CSV-Datei
+        with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Number', 'Tribe', 'Kondition', 'Visibilityrange', 'Fortpflanzungs-Counter', 'Position'])
+            writer.writerow(['Number', 'Tribe', 'Condition', 'Visibility Range', 'Reproduction Counter', 'Position'])
             for agent in self.board.agents_list:
-                writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
+                writer.writerow([
+                    agent.number, 
+                    agent.genetic['Tribe'], 
+                    agent.genetic['Kondition'], 
+                    agent.genetic['Visibilityrange'], 
+                    agent.reproduction_counter, 
+                    agent.position
+                ])
+
                 
     
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
 
-start = time.time()
-
 if __name__ == "__main__":
+    start = time.time()
+    #game = Game(saving=True)
     game = Game()
     game.run()
-
-end = time.time()
-
-timee = end-start
-print(timee)
+    timee = np.round(time.time() - start, 2)
+    print(timee)
