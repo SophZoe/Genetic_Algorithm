@@ -199,7 +199,7 @@ class Game:
                 writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
                 
     def visualize_board(self):
-        #time.sleep(5)
+        time.sleep(5)
         imshow(self.board.food, cmap='YlGn', vmin = 0)
         plt.title('Food Distribution')
         plt.show()
@@ -212,6 +212,7 @@ class Game:
         print(self.board.food)
         #showing world array
         print(self.board.world)
+        #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
             
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
