@@ -4,6 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 import time
 from matplotlib.pyplot import imshow
+import numba
 
 # Konstanten
 ENERGYCOSTS_MOVEMENT = 1
@@ -11,11 +12,11 @@ ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
-NUMBER_AGENTS = 100
+NUMBER_AGENTS = 10
 ROUNDS = 50
 ENERGY_FOOD = 5
-FOOD_PERCENTAGE_BEGINNING = 0.01
-ADDITIONAL_FOOD_PERCENTAGE = 0.001
+FOOD_PERCENTAGE_BEGINNING = 0.001
+ADDITIONAL_FOOD_PERCENTAGE = 1
 
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
@@ -118,6 +119,8 @@ class Board:
             
             #platzieren der Nahrung
             self.food[x][y] = ENERGY_FOOD
+            
+            
     def place_agents(self):
         #deleting the array so deceased agents will not be shown
         self.world = np.zeros_like(self.world)
@@ -144,6 +147,14 @@ class Game:
         
         
         for round in range(ROUNDS):
+            #ending the simulation in case there are no agents left
+            if len(self.board.agents_list) == 0:
+                print("--------------------------")
+                print("\nall agents deceased\n")
+                print("--------------------------")
+                
+                break 
+            
             
             for agent in self.board.agents_list[:]:
                 
@@ -189,10 +200,14 @@ class Game:
                 
     def visualize_board(self):
         time.sleep(5)
-        imshow(self.board.food, cmap='gray')
+        imshow(self.board.food, cmap='YlGn')
         plt.show()
-        imshow(self.board.world)
+        imshow(self.board.world, cmap = 'YlOrRd')
         plt.show()
+        
+        #showing food array
+        print(self.board.food)
+        #showing world array
         print(self.board.world)
         print(f"number of agents: {len(self.board.agents_list)}")
             
