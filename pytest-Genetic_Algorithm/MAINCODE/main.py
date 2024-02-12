@@ -152,7 +152,6 @@ class Game:
                 #bewegt die agents
                 result = agent.move(self.board)
 
-                
                 #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
                 if result == "deceased":
                     self.board.remove_agents(agent)
