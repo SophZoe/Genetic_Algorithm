@@ -12,8 +12,8 @@ ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
-NUMBER_AGENTS = 10
-ROUNDS = 50
+NUMBER_AGENTS = 50
+ROUNDS = 90
 ENERGY_FOOD = 5
 FOOD_PERCENTAGE_BEGINNING = 0.1
 ADDITIONAL_FOOD_PERCENTAGE = 0.1
@@ -144,7 +144,11 @@ class Game:
         
             
     def run(self):
+        #fillng the world with agents for the start
+        self.board.place_agents()
         
+        #visualizing the board
+        self.visualize_board() 
         
         for round in range(ROUNDS):
             #ending the simulation in case there are no agents left
@@ -158,7 +162,7 @@ class Game:
             
             for agent in self.board.agents_list[:]:
                 
-                #bewegt die agents
+                #moves the agents
                 result = agent.move(self.board)
                 """for agent in self.board.agents_list:
                     print(f"position: {agent.position}")"""
@@ -176,14 +180,17 @@ class Game:
                 
                 
             if round % 10 == 0:
+                #placing additional food and all agents
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
-                self.visualize_board()
+                #visualizing the board
+                self.visualize_board() 
                 
                 
                
             
         self.board.place_agents()  
+        
         #visualisieren des boardes
         self.visualize_board()  
             ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
@@ -199,7 +206,7 @@ class Game:
                 writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
     def visualize_board(self):
         #5 seconds pause between each time visualizing 
-        time.sleep(5)
+        time.sleep(1)
         
         plt.rcParams["figure.figsize"] = [7.50, 3.50]
         plt.rcParams["figure.autolayout"] = True
@@ -215,7 +222,28 @@ class Game:
         plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        plot = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        
+        
+        # set imshow outline to white
+        for spine in plot.axes.spines.values():
+            spine.set_edgecolor("white")
+            
+        cb = plt.colorbar(plot)
+        
+        # COLORBAR
+        # set colorbar label plus label color for agents
+        cb.set_label('amount of agents', color="white")
+        
+        # set colorbar tick color
+        cb.ax.yaxis.set_tick_params(color="white")
+        
+        # set colorbar edgecolor 
+        cb.outline.set_edgecolor("white")
+        
+        # set colorbar ticklabels
+        plt.setp(plt.getp(cb.ax.axes, 'yticklabels'), color="white")
+
         
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
@@ -256,3 +284,4 @@ end = time.time()
 
 timee = end-start
 print(timee)
+
