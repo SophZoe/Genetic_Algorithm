@@ -217,6 +217,7 @@ class Game:
         data2 = self.board.world
         plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
         
+        plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
         
         #imshow(self.board.food, cmap='YlGn', vmin = 0,alpha=.9, interpolation='bilinear', extent=extent)
@@ -240,30 +241,7 @@ class Game:
             print(f'still some food left')
         else:
             print("no food left")            
-    """def visualize_board(self):
-        time.sleep(5)
-        imshow(self.board.food, cmap='YlGn', vmin = 0)
-        plt.title('Food Distribution')
-        plt.show()
-        
-        imshow(self.board.world, cmap = 'YlOrRd', vmin = 0)
-        plt.title('Agents per field')
-        plt.show()
-        
-        #showing food array
-        #print(self.board.food)
-        #showing world array
-        #print(self.board.world)
-        
-        #showing number of angents still living
-        print(f"number of agents: {len(self.board.agents_list)}")
-        
-        #checking amount of food to see if there is some left in the world
-        food_count = 0
-        if self.board.food.any() >=1 :
-            print(f'still some food left')
-        else:
-            print("no food left")"""
+    
             
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
