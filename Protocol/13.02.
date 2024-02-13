@@ -1,0 +1,18 @@
+heute, online:
+- Stand der Visualisierung durchgegangen
+- Veränderungen im Main Code: hinzugefügte Gene, [..]
+
+heute besprochene Vorhaben:
+- sämtliche Counter einfügen im Hinblick auf die Auswertung
+- Aggressivität implementieren: Bei gleicher Chance auf Nahrung gewinnt aggressives Wesen die Nahrung für sich allein
+- .. und seinen Gegenpol Sozialität: bei Nahrung nah beieinander stehende Wesen vereinigen sich
+und können Nahrung dem (einem?) Aggressiven Wesen vorwegnehmen
+- .. oder den Gegenpol Intelligenz: merkt sich, welche Nahrung es einmal vergiftet hat und vermeidet diese danach
+- Dokumentation: Downloadanleitung, Programmstruktur einfügen
+- evtl. den Tupel "Gene" in ein Dictionary umwandeln
+- Parameter in den Konstanten für (eine?) neue Welt anpassen
+
+Plan für morgiges Treffen:
+1) Fragen klären
+2) alle Merges abschließen
+3) gesamten restlichen Plan & Aufgabenteilung aufstellen
