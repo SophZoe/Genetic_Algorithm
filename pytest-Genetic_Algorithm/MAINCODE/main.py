@@ -252,25 +252,18 @@ class Game:
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
         
-        #imshow(self.board.food, cmap='YlGn', vmin = 0,alpha=.9, interpolation='bilinear', extent=extent)
-        #plt.title('Food Distribution')
-        #plt.show()
-        
-        #imshow(self.board.world, cmap = 'YlOrRd', vmin = 0, interpolation='nearest', extent=extent)
-        #plt.title('Agents per field')
-        #plt.show()
-        
-        plt.show()
-        
-        #showing food array
+        #showing food array to check visualization (optional)
         #print(self.board.food)
-        #showing world array
+        #showing world array to check visualization (optional)
         #print(self.board.world)
+        
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        food_count = 0
+        
+        #checking if there is food left in the world
+        #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :
-            print(f'still some food left')
+            print('still some food left')
         else:
             print("no food left")            
     
