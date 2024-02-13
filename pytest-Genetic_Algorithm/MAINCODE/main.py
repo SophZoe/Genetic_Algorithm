@@ -206,7 +206,7 @@ class Game:
                 writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
     def visualize_board(self):
         #5 seconds pause between each time visualizing 
-        time.sleep(1)
+        time.sleep(3)
         
         plt.rcParams["figure.figsize"] = [7.50, 3.50]
         plt.rcParams["figure.autolayout"] = True
