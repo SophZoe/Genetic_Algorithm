@@ -197,8 +197,50 @@ class Game:
             writer.writerow(['Number', 'Tribe', 'Kondition', 'Visibilityrange', 'Fortpflanzungs-Counter', 'Position'])
             for agent in self.board.agents_list:
                 writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
-                
     def visualize_board(self):
+        #5 seconds pause between each time visualizing 
+        time.sleep(5)
+        
+        plt.rcParams["figure.figsize"] = [7.50, 3.50]
+        plt.rcParams["figure.autolayout"] = True
+        
+        dx, dy = 0.05, 0.05
+        x = np.arange(-3.0, 3.0, dx)
+        y = np.arange(-3.0, 3.0, dy)
+        extent = np.min(x), np.max(x), np.min(y), np.max(y)
+        
+        fig = plt.figure(frameon=False)
+        
+        data1 = self.board.food
+        plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
+        
+        data2 = self.board.world
+        plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        
+        plt.show()
+        
+        #imshow(self.board.food, cmap='YlGn', vmin = 0,alpha=.9, interpolation='bilinear', extent=extent)
+        #plt.title('Food Distribution')
+        #plt.show()
+        
+        #imshow(self.board.world, cmap = 'YlOrRd', vmin = 0, interpolation='nearest', extent=extent)
+        #plt.title('Agents per field')
+        #plt.show()
+        
+        plt.show()
+        
+        #showing food array
+        #print(self.board.food)
+        #showing world array
+        #print(self.board.world)
+        #showing number of angents still living
+        print(f"number of agents: {len(self.board.agents_list)}")
+        food_count = 0
+        if self.board.food.any() >=1 :
+            print(f'still some food left')
+        else:
+            print("no food left")            
+    """def visualize_board(self):
         time.sleep(5)
         imshow(self.board.food, cmap='YlGn', vmin = 0)
         plt.title('Food Distribution')
@@ -221,7 +263,7 @@ class Game:
         if self.board.food.any() >=1 :
             print(f'still some food left')
         else:
-            print("no food left")
+            print("no food left")"""
             
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
