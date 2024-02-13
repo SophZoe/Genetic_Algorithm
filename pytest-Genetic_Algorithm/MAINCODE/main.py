@@ -18,6 +18,7 @@ FOOD_PERCENTAGE_BEGINNING = 1
 ADDITIONAL_FOOD_PERCENTAGE = 0.5
 SICKNESS_DURATION = ROUNDS // 10
 
+
 # Globaler Counter
 agents_counter = NUMBER_AGENTS
 
@@ -174,17 +175,24 @@ class Game:
         
             
     def run(self):
-        print(type(self.board))
+        
         for round in range(ROUNDS):
+            
+            #ending the simulation in case there are no agents left
+            if len(self.board.agents_list) == 0:
+                print("--------------------------")
+                print("\nall agents deceased\n")
+                print("--------------------------")
+                
+                break
             if round % 10 == 0:
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
-                
+                print(self.board.food)
                 
             for agent in self.board.agents_list[:]:
                 #bewegt die agents
                 result = agent.move(self.board)
 
-                
                 #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
                 if result == "deceased":
                     self.board.remove_agents(agent)
