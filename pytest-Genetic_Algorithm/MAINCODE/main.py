@@ -219,30 +219,34 @@ class Game:
         fig = plt.figure(frameon=False)
         
         data1 = self.board.food
-        plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
+        plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plot = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        plot2 = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
         
         
         # set imshow outline to white
-        for spine in plot.axes.spines.values():
+        for spine in plot2.axes.spines.values():
             spine.set_edgecolor("white")
             
-        cb = plt.colorbar(plot)
+        cb2 = plt.colorbar(plot2)
+        cb1 = plt.colorbar(plot1)
         
         # COLORBAR
         # set colorbar label plus label color for agents
-        cb.set_label('amount of agents', color="white")
-        
+        cb2.set_label('amount of agents', color="white")
+        cb1.set_label('amount of food per field', color="white")
         # set colorbar tick color
-        cb.ax.yaxis.set_tick_params(color="white")
+        cb2.ax.yaxis.set_tick_params(color="white")
+        cb1.ax.yaxis.set_tick_params(color="white")
         
         # set colorbar edgecolor 
-        cb.outline.set_edgecolor("white")
+        cb2.outline.set_edgecolor("white")
+        cb1.outline.set_edgecolor("white")
         
         # set colorbar ticklabels
-        plt.setp(plt.getp(cb.ax.axes, 'yticklabels'), color="white")
+        plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="white")
+        plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="white")
 
         
         plt.title("Distribution of food and agents in the world",color = "white")
