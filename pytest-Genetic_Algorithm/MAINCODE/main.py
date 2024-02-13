@@ -190,13 +190,11 @@ class Game:
             if round % 10 == 0:
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 print(self.board.food)
-
-            for agent in self.board.agents_list:
-                agent.lifespan += 1
                 
             for agent in self.board.agents_list[:]:
                 #bewegt die agents
                 result = agent.move(self.board)
+                agent.lifespan += 1
 
                 #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
                 if result == "deceased":
