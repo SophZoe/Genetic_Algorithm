@@ -9,11 +9,11 @@ from matplotlib.pyplot import imshow
 # Konstanten
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
-START_ENERGY = 10
+START_ENERGY = 20
 WIDTH = 100
 HEIGHT = 100
-NUMBER_AGENTS = 10
-ROUNDS = 10
+NUMBER_AGENTS = 50
+ROUNDS = 100
 FOOD_PERCENTAGE_BEGINNING = 1
 ADDITIONAL_FOOD_PERCENTAGE = 0.5
 SICKNESS_DURATION = ROUNDS // 10
@@ -58,6 +58,8 @@ class Agent:
         self.sick = False
         self.sickness_duration = 0
         self.previous_kondition = None
+        self.parent_A  = None
+        self.parent_B = None
 
     def genedistribution(self):
         #simulieren des Genverteilung aus dem festgelegten Dictionarie 'GENPOOL'
@@ -133,7 +135,9 @@ class Agent:
     def genedistribution_thru_heredity(self, parent1, parent2):
         for gen in GENPOOL["Genes"]:
             if gen == "Tribe":
-                self.genetic[gen] = (parent1.genetic[gen], parent2.genetic[gen])
+                self.genetic[gen] = random.choice([parent1.genetic[gen], parent2.genetic[gen]])
+                self.parent_A = parent1.number
+                self.parent_B = parent2.number
             else:
                 gewicht = random.uniform(0, 1)
                 gen_value = (gewicht * parent1.genetic[gen] + (1 - gewicht) * parent2.genetic[gen]) / 2
@@ -212,7 +216,7 @@ class Game:
         
     def save_data(self):
         # Generiere den Pfad für das "results" Verzeichnis im aktuellen Arbeitsverzeichnis
-        current_working_directory = os.getcwd()
+        current_working_directory = os.getcwd() + "/pytest-Genetic_Algorithm/" + "MAINCODE"
         result_dir = os.path.join(current_working_directory, 'results')
         csv_index = 0
         
@@ -229,7 +233,7 @@ class Game:
         # Schreibe die Agenten-Daten in die CSV-Datei
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Number', 'Tribe', 'Condition', 'Visibility Range', 'Reproduction Counter', 'Consume Counter', 'Position'])
+            writer.writerow(['Number', 'Tribe', 'Condition', 'Visibility Range', 'Reproduction Counter', 'Consume Counter','Parent A', 'Parent B', 'Position'])
             for agent in self.board.agents_list:
                 writer.writerow([
                     agent.number, 
@@ -238,6 +242,8 @@ class Game:
                     agent.genetic['Visibilityrange'], 
                     agent.reproduction_counter,
                     agent.consume_counter, 
+                    agent.parent_A,
+                    agent.parent_B,
                     agent.position
                 ])
 
