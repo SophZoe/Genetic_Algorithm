@@ -10,13 +10,13 @@ import numba
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
-WIDTH = 10
-HEIGHT = 10
-NUMBER_AGENTS = 50
+WIDTH = 100
+HEIGHT = 100
+NUMBER_AGENTS = 100
 ROUNDS = 90
 ENERGY_FOOD = 5
 FOOD_PERCENTAGE_BEGINNING = 0.1
-ADDITIONAL_FOOD_PERCENTAGE = 0.1
+ADDITIONAL_FOOD_PERCENTAGE = 0
 
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
@@ -144,6 +144,7 @@ class Game:
         
             
     def run(self):
+        print("----------Round 0------------")
         #fillng the world with agents for the start
         self.board.place_agents()
         
@@ -151,6 +152,9 @@ class Game:
         self.visualize_board() 
         
         for round in range(ROUNDS):
+            #counter for Rounds
+            print(f"------------Round {round+1}------------")  
+            
             #ending the simulation in case there are no agents left
             if len(self.board.agents_list) == 0:
                 print("--------------------------")
@@ -179,19 +183,30 @@ class Game:
                             agent.reproduce(partner, self.board)
                 
                 
+                
+            
+              
+            #placing additional food and all agents in every round
+            self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
+            self.board.place_agents()
+            #visualizing the board in every round
+            self.visualize_board() 
+            
             if round % 10 == 0:
-                #placing additional food and all agents
+                #placing additional food and all agents every 10 rounds
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
-                #visualizing the board
+                
+                #visualizing the board every 10 rounds
                 self.visualize_board() 
+                
                 
                 
                
             
         self.board.place_agents()  
         
-        #visualisieren des boardes
+        #visualizing after ending teh simulation
         self.visualize_board()  
             ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
             
@@ -204,9 +219,10 @@ class Game:
             writer.writerow(['Number', 'Tribe', 'Kondition', 'Visibilityrange', 'Fortpflanzungs-Counter', 'Position'])
             for agent in self.board.agents_list:
                 writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
+   
     def visualize_board(self):
         #5 seconds pause between each time visualizing 
-        time.sleep(3)
+        time.sleep(2)
         
         plt.rcParams["figure.figsize"] = [7.50, 3.50]
         plt.rcParams["figure.autolayout"] = True
