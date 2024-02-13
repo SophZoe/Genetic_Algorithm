@@ -209,11 +209,19 @@ class Game:
         plt.show()
         
         #showing food array
-        print(self.board.food)
+        #print(self.board.food)
         #showing world array
-        print(self.board.world)
+        #print(self.board.world)
+        
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
+        
+        #checking amount of food to see if there is some left in the world
+        food_count = 0
+        if self.board.food.any() >=1 :
+            print(f'still some food left')
+        else:
+            print("no food left")
             
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
