@@ -23,13 +23,13 @@ SICKNESS_DURATION = ROUNDS // 10
 agents_counter = NUMBER_AGENTS
 
 FOOD = {
-    "1": {'Energy': 5, 'consume_time': 3, 'disease_risk': 0.0},  
-    "2": {'Energy': 10, 'consume_time': 6, 'disease_risk': 0.0},
-    "3": {'Energy': 15, 'consume_time': 9, 'disease_risk': 0.0},
-    "5": {'Energy': 20, 'consume_time': 12, 'disease_risk': 0.},
-    "4": {'Energy': 5, 'consume_time': 3, 'disease_risk': 0.0},
-    "6": {'Energy': 10, 'consume_time': 6, 'disease_risk': 0.0},
-    "7": {'Energy': 15, 'consume_time': 3, 'disease_risk': 0.0}   
+    "1": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},  
+    "2": {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
+    "3": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
+    "5": {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
+    "4": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
+    "6": {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
+    "7": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}   
 }
 FOOD_KEYS = list(FOOD.keys())
 
@@ -40,7 +40,8 @@ GENPOOL = {
         "Kondition": (1, 3),
         "Visibilityrange": (1, 3),
         "Tribe": (1, 3),
-        "Resistance": (1, 5)
+        "Resistance": (1, 3),
+        "Metabolism": (1, 3),
     }
 }
 
@@ -60,6 +61,8 @@ class Agent:
         self.previous_kondition = None
         self.parent_A  = None
         self.parent_B = None
+        self.consumption_time = 0
+        self.covered_distance = 0
 
     def genedistribution(self):
         #simulieren des Genverteilung aus dem festgelegten Dictionarie 'GENPOOL'
@@ -70,34 +73,41 @@ class Agent:
     def consuming_food(self, food_dict):
         food = food_dict
         risk = food["disease_risk"]
-        if random.random() < risk * (1 - self.genetic["Resistance"] / 5.0):
+        if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
             self.sick = True
             self.sickness_duration = SICKNESS_DURATION
             self.sickness_counter += 1
             self.previous_kondition = self.genetic['Kondition']
             self.genetic["Kondition"] = 1
+        self.consumption_time = food["consumption_time"] // max(1, self.genetic['Metabolism'])
         self.energy += food["Energy"]
         self.consume_counter += 1
 
     def move(self, board):
-        if self.energy > ENERGYCOSTS_MOVEMENT:
-            if self.sick is True:
-                self.check_for_sickness()
+
+        if self.consumption_time > 0:
+            self.consumption_time -= 1
             
-            else:
-                self.energy -= ENERGYCOSTS_MOVEMENT
-                new_position = self.search_food(board)
-                if new_position:
-                    self.position = new_position
-                else:
-                    # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
-                    dx = random.choice([-1, 1]) * self.genetic['Kondition']
-                    dy = random.choice([-1, 1]) * self.genetic['Kondition']
-                    new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-                    new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
-                    self.position = (new_x, new_y)
         else:
-            return "deceased"
+            if self.energy > ENERGYCOSTS_MOVEMENT:
+                if self.sick is True:
+                    self.check_for_sickness()
+                
+                else:
+                    self.energy -= ENERGYCOSTS_MOVEMENT
+                    new_position = self.search_food(board)
+                    if new_position:
+                        self.position = new_position
+                    else:
+                        # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
+                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                        self.position = (new_x, new_y)
+                self.covered_distance += 1
+            else:
+                return "deceased"
 
     def check_for_sickness(self):
         if self.sick:
@@ -233,15 +243,18 @@ class Game:
         # Schreibe die Agenten-Daten in die CSV-Datei
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Number', 'Tribe', 'Condition', 'Visibility Range', 'Reproduction Counter', 'Consume Counter','Parent A', 'Parent B', 'Position'])
+            writer.writerow(['Number', ' Tribe', ' Condition', ' Visibility Range', ' Metabolism', ' Covered Distance', ' Reproduction Counter', ' Consume Counter', ' Sickness Counter' ,' Parent A', ' Parent B', ' Position'])
             for agent in self.board.agents_list:
                 writer.writerow([
                     agent.number, 
                     agent.genetic['Tribe'], 
                     agent.genetic['Kondition'], 
                     agent.genetic['Visibilityrange'], 
+                    agent.genetic['Metabolism'],
+                    agent.covered_distance, 
                     agent.reproduction_counter,
-                    agent.consume_counter, 
+                    agent.consume_counter,
+                    agent.sickness_counter,
                     agent.parent_A,
                     agent.parent_B,
                     agent.position
