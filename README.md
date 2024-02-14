@@ -1,4 +1,4 @@
-<img width="1000" height = "500" alt="gen_alg" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/177d348b-8fa6-466a-81f8-b3f121f6f576">
+<img width="1200" height = "700" alt="gen_alg" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/177d348b-8fa6-466a-81f8-b3f121f6f576">
 
 # Dokumentation zum Projekt „Genetische Algorithmen auf Basis von NumPy-Arrays“. 
 
