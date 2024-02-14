@@ -90,7 +90,7 @@ class Agent:
                 self.sickness_duration = SICKNESS_DURATION
                 self.sickness_counter += 1
                 self.previous_kondition = self.genetic['Kondition']
-                self.genetic["Kondition"] = 1
+                self.genetic["Kondition"] = 0
 
 
 
@@ -110,7 +110,7 @@ class Agent:
                 if self.sick is True:
                     self.check_for_sickness()
                 
-                else:
+                
                     if self.flee_counter > 0:  # Fluchtmodus
                         self.flee_counter -= 1  
 
