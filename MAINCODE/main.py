@@ -42,7 +42,8 @@ GENPOOL = {
         "Tribe": (1, 3),
         "Resistance": (1, 3),
         "Metabolism": (1, 3),
-        "Intelligent": [True, False]  # Verwendung einer Liste statt eines Tupels, um Klarheit zu schaffen
+        "Intelligent": [True, False],  # Verwendung einer Liste statt eines Tupels, um Klarheit zu schaffen
+        "Aggressive": [True, False]
     }
 }
 
@@ -59,19 +60,25 @@ class Agent:
         self.consume_counter = 0
         self.sick = False
         self.sickness_duration = 0
+        self.flee_counter = 0
         self.previous_kondition = None
         self.parent_A  = None
         self.parent_B = None
         self.consumption_time = 0
         self.covered_distance = 0
+        self.expelled = 0
 
     def genedistribution(self):
         for gen, bereich in GENPOOL["Genes"].items():
-            if isinstance(bereich[0], bool):  # Prüft, ob der Bereich Booleans enthält
-                self.genetic[gen] = random.choice(bereich)
+            if isinstance(bereich[0], bool):  
+                self.genetic[gen] = random.choice(bereich)  # Gen zuerst initialisieren
+                if self.genetic["Intelligent"] == True:  # Überprüfung des gesetzten Wertes
+                    self.genetic["Aggressive"] = False
+                else:
+                    self.genetic["Aggressive"] = True
             else:
                 self.genetic[gen] = random.randint(*bereich)
-                
+
     def consuming_food(self, food_dict):
         food = food_dict
         risk = food["disease_risk"]
@@ -101,18 +108,31 @@ class Agent:
                 if self.sick is True:
                     self.check_for_sickness()
                 
+
+
                 else:
-                    self.energy -= ENERGYCOSTS_MOVEMENT
-                    new_position = self.search_food(board)
-                    if new_position:
-                        self.position = new_position
-                    else:
+                    if self.flee_counter > 0:  # Fluchtmodus
+                        self.flee_counter -= 1  
+
                         # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
                         dx = random.choice([-1, 1]) * self.genetic['Kondition']
                         dy = random.choice([-1, 1]) * self.genetic['Kondition']
                         new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
                         new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
                         self.position = (new_x, new_y)
+                       
+                    else:
+                        self.energy -= ENERGYCOSTS_MOVEMENT
+                        new_position = self.search_food(board)
+                        if new_position:
+                            self.position = new_position
+                        else:
+                            # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
+                            dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                            dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                            new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                            new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                            self.position = (new_x, new_y)
                 self.covered_distance += 1
             else:
                 return "deceased"
@@ -129,8 +149,20 @@ class Agent:
         for dx in range(-visibilityrange, visibilityrange + 1):
             for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
+
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
                     food_dict = board.food[x][y]
+                    # Prüfen, ob sich aggressive Agents in der Nähe befinden
+                    aggressive_agents_nearby = self.check_for_aggressive_agents(board, x, y)
+
+                    if aggressive_agents_nearby:
+                        if not self.genetic["Aggressive"]:
+                            # Nicht-aggressives Lebewesen hört auf zu fressen und bewegt sich weg
+                            self.consumption_time = 0  # Beende das Essen
+                            self.move_away_from_aggressive(board, aggressive_agents_nearby)
+                            self.expelled += 1
+                            return None  # Gehe zum Nächsten Futter        
+
                     if self.genetic["Intelligent"] is True and food_dict["disease_risk"] == 0:
                         self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
                         board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
@@ -141,6 +173,18 @@ class Agent:
                         return (x, y)
         return None
 
+    def check_for_aggressive_agents(self, board, x, y):
+        aggressive_agents = []
+        search_radius = 2
+        for agent in board.agents_list:
+            if agent is not self and agent.genetic["Aggressive"]:
+                distance = max(abs(agent.position[0] - x), abs(agent.position[1] - y))
+                if distance <= search_radius:
+                    aggressive_agents.append(agent)
+        return aggressive_agents
+
+    def move_away_from_aggressive(self, board, aggressive_agents):
+        self.flee_counter = 5  # Initialisieren des Fluchtszählers 
 
     def reproduce(self, partner, board):
         global agents_counter
@@ -167,6 +211,10 @@ class Agent:
                 gewicht = random.uniform(0, 1)
                 gen_value = (gewicht * parent1.genetic[gen] + (1 - gewicht) * parent2.genetic[gen]) / 2
                 self.genetic[gen] = int(round(gen_value, 3))
+                if self.genetic["Intelligent"] == True:  # Überprüfung des gesetzten Wertes
+                    self.genetic["Aggressive"] = False
+                else:
+                    self.genetic["Aggressive"] = True
 
 class Board:
     def __init__(self, width, height):
@@ -258,7 +306,7 @@ class Game:
         # Schreibe die Agenten-Daten in die CSV-Datei
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Number', ' Tribe', ' Condition', ' Visibility Range', ' Metabolism', ' Intelligent', ' Covered Distance', ' Reproduction Counter', ' Consume Counter', ' Sickness Counter' ,' Parent A', ' Parent B', ' Position'])
+            writer.writerow(['Number', ' Tribe', ' Condition', ' Visibility Range', ' Metabolism', ' Intelligent', ' Aggressive', ' Covered Distance', ' Reproduction Counter', ' Consume Counter', ' Sickness Counter' ,' Parent A', ' Parent B', ' Position', ' Expelled'])
             for agent in self.board.agents_list:
                 writer.writerow([
                     agent.number, 
@@ -267,13 +315,15 @@ class Game:
                     agent.genetic['Visibilityrange'], 
                     agent.genetic['Metabolism'],
                     agent.genetic['Intelligent'],
+                    agent.genetic['Aggressive'],
                     agent.covered_distance, 
                     agent.reproduction_counter,
                     agent.consume_counter,
                     agent.sickness_counter,
                     agent.parent_A,
                     agent.parent_B,
-                    agent.position
+                    agent.position,
+                    agent.expelled
                 ])
 
                 
