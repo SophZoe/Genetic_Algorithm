@@ -4,12 +4,16 @@ import csv
 import matplotlib.pyplot as plt
 import time
 from matplotlib.pyplot import imshow
+<<<<<<< HEAD
 import numba
+=======
+>>>>>>> main
 
 # Konstanten
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
+<<<<<<< HEAD
 WIDTH = 100
 HEIGHT = 100
 NUMBER_AGENTS = 100
@@ -17,6 +21,15 @@ ROUNDS = 90
 ENERGY_FOOD = 5
 FOOD_PERCENTAGE_BEGINNING = 0.1
 ADDITIONAL_FOOD_PERCENTAGE = 0
+=======
+WIDTH = 10
+HEIGHT = 10
+NUMBER_AGENTS = 10
+ROUNDS = 21
+ENERGY_FOOD = 5
+FOOD_PERCENTAGE_BEGINNING = 0.5
+ADDITIONAL_FOOD_PERCENTAGE = 0.05
+>>>>>>> main
 
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
@@ -119,6 +132,7 @@ class Board:
             
             #platzieren der Nahrung
             self.food[x][y] = ENERGY_FOOD
+<<<<<<< HEAD
             
             
     def place_agents(self):
@@ -130,6 +144,10 @@ class Board:
             x, y = agent.position
             self.world[x][y] += 1
         
+=======
+    
+        
+>>>>>>> main
     def remove_agents(self, agent):
         #removing the agents in the list 'lebewesen'
         self.agents_list.remove(agent)
@@ -144,6 +162,7 @@ class Game:
         
             
     def run(self):
+<<<<<<< HEAD
         print("----------Round 0------------")
         #fillng the world with agents for the start
         self.board.place_agents()
@@ -284,6 +303,42 @@ class Game:
             print("no food left")            
     
             
+=======
+        print(type(self.board))
+        for round in range(ROUNDS):
+            if round % 10 == 0:
+                self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
+                
+                
+            for agent in self.board.agents_list[:]:
+                #bewegt die agents
+                result = agent.move(self.board)
+
+                
+                #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
+                if result == "deceased":
+                    self.board.remove_agents(agent)
+
+                #wenn agent noch lebt wird die fortpflanzung weitergeführt
+                    #vergleicht Agent mit potentiellen partnern
+                else:
+                    for partner in self.board.agents_list:
+                        if agent != partner:
+                            agent.reproduce(partner, self.board)
+            
+            
+            ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
+        self.safe_data()
+
+    def safe_data(self):
+        with open('agents_daten.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(['Number', 'Tribe', 'Kondition', 'Visibilityrange', 'Fortpflanzungs-Counter', 'Position'])
+            for agent in self.board.agents_list:
+                writer.writerow([agent.number, agent.genetic['Tribe'], agent.genetic['Kondition'], agent.genetic['Visibilityrange'], agent.reproduction_counter, agent.position])
+                
+    
+>>>>>>> main
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
 
