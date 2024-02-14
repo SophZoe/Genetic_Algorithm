@@ -1,7 +1,12 @@
+<img width="1000" height = "200" alt="gen_alg" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/177d348b-8fa6-466a-81f8-b3f121f6f576">
+
 # Dokumentation zum Projekt „Genetische Algorithmen auf Basis von NumPy-Arrays“. 
 
 Aufgabestellung:
 https://moodle.hs-duesseldorf.de/pluginfile.php/461132/mod_resource/content/0/Projektauftrag_Genetic_algorithm.pdf
+
+
+![GitHub repo size](https://img.shields.io/github/repo-size/SophZoe/Genetic_Algorithm) ![GitHub License](https://img.shields.io/github/license/SophZoe/Genetic_Algorithm) ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/SophZoe/Genetic_Algorithm/main.yml) ![Python Version](https://img.shields.io/badge/python-3.11%20and%20below-blue)
 
 
                                  Nutzer*innen Dokumentation & Developer Dokumentation
