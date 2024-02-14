@@ -42,6 +42,7 @@ GENPOOL = {
         "Tribe": (1, 3),
         "Resistance": (1, 3),
         "Metabolism": (1, 3),
+        "Intelligent": [True, False]  # Verwendung einer Liste statt eines Tupels, um Klarheit zu schaffen
     }
 }
 
@@ -65,23 +66,30 @@ class Agent:
         self.covered_distance = 0
 
     def genedistribution(self):
-        #simulieren des Genverteilung aus dem festgelegten Dictionarie 'GENPOOL'
-            for gen, bereich in GENPOOL["Genes"].items():
-                # Ganzzahliger Wert für jedes Gen innerhalb der definierten Grenzen
+        for gen, bereich in GENPOOL["Genes"].items():
+            if isinstance(bereich[0], bool):  # Prüft, ob der Bereich Booleans enthält
+                self.genetic[gen] = random.choice(bereich)
+            else:
                 self.genetic[gen] = random.randint(*bereich)
                 
     def consuming_food(self, food_dict):
         food = food_dict
         risk = food["disease_risk"]
-        if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
-            self.sick = True
-            self.sickness_duration = SICKNESS_DURATION
-            self.sickness_counter += 1
-            self.previous_kondition = self.genetic['Kondition']
-            self.genetic["Kondition"] = 1
-        self.consumption_time = food["consumption_time"] // max(1, self.genetic['Metabolism'])
-        self.energy += food["Energy"]
-        self.consume_counter += 1
+        if self.genetic["Intelligent"] is False:
+            if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
+                self.sick = True
+                self.sickness_duration = SICKNESS_DURATION
+                self.sickness_counter += 1
+                self.previous_kondition = self.genetic['Kondition']
+                self.genetic["Kondition"] = 1
+            self.consumption_time = food["consumption_time"] // max(1, self.genetic['Metabolism'])
+            self.energy += food["Energy"]
+            self.consume_counter += 1
+        else: 
+            self.consumption_time = food["consumption_time"] // max(1, self.genetic['Metabolism'])
+            self.energy += food["Energy"]
+            self.consume_counter += 1
+
 
     def move(self, board):
 
@@ -122,10 +130,15 @@ class Agent:
             for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
-                    food_dict = board.food[x][y]  # Schlüssel des Nahrungstyps
-                    self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
-                    board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
-                    return (x, y)
+                    food_dict = board.food[x][y]
+                    if self.genetic["Intelligent"] is True and food_dict["disease_risk"] == 0:
+                        self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
+                        board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
+                        return (x, y)
+                    else:
+                        self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
+                        board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
+                        return (x, y)
         return None
 
 
@@ -148,6 +161,8 @@ class Agent:
                 self.genetic[gen] = random.choice([parent1.genetic[gen], parent2.genetic[gen]])
                 self.parent_A = parent1.number
                 self.parent_B = parent2.number
+            elif gen == "Intelligent":
+                self.genetic[gen] == random.choice([parent1.genetic[gen], parent2.genetic[gen]])
             else:
                 gewicht = random.uniform(0, 1)
                 gen_value = (gewicht * parent1.genetic[gen] + (1 - gewicht) * parent2.genetic[gen]) / 2
@@ -226,7 +241,7 @@ class Game:
         
     def save_data(self):
         # Generiere den Pfad für das "results" Verzeichnis im aktuellen Arbeitsverzeichnis
-        current_working_directory = os.getcwd() + "/pytest-Genetic_Algorithm/" + "MAINCODE"
+        current_working_directory = os.getcwd() + "/MAINCODE/"
         result_dir = os.path.join(current_working_directory, 'results')
         csv_index = 0
         
@@ -243,7 +258,7 @@ class Game:
         # Schreibe die Agenten-Daten in die CSV-Datei
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Number', ' Tribe', ' Condition', ' Visibility Range', ' Metabolism', ' Covered Distance', ' Reproduction Counter', ' Consume Counter', ' Sickness Counter' ,' Parent A', ' Parent B', ' Position'])
+            writer.writerow(['Number', ' Tribe', ' Condition', ' Visibility Range', ' Metabolism', ' Intelligent', ' Covered Distance', ' Reproduction Counter', ' Consume Counter', ' Sickness Counter' ,' Parent A', ' Parent B', ' Position'])
             for agent in self.board.agents_list:
                 writer.writerow([
                     agent.number, 
@@ -251,6 +266,7 @@ class Game:
                     agent.genetic['Kondition'], 
                     agent.genetic['Visibilityrange'], 
                     agent.genetic['Metabolism'],
+                    agent.genetic['Intelligent'],
                     agent.covered_distance, 
                     agent.reproduction_counter,
                     agent.consume_counter,
