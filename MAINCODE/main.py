@@ -45,7 +45,7 @@ GENPOOL = {
 }
 
 class Agent:
-    def __init__(self, number, sick = 0):
+    def __init__(self, number, sick = 0, birth):
         global agents_counter
         self.sickness_counter = 0
         self.number = number
@@ -58,6 +58,8 @@ class Agent:
         self.sick = False
         self.sickness_duration = 0
         self.previous_kondition = None
+        self.birth = birth
+        self.lifespan = 0
 
     def genedistribution(self):
         #simulieren des Genverteilung aus dem festgelegten Dictionarie 'GENPOOL'
@@ -169,7 +171,7 @@ class Game:
         self.saving = saving
         self.board = Board(WIDTH, HEIGHT)
         for i in range(1, NUMBER_AGENTS + 1):
-            self.board.add_agent(Agent(i))
+            self.board.add_agent(Agent(i, birth = 0))
         self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
         
         
@@ -192,6 +194,7 @@ class Game:
             for agent in self.board.agents_list[:]:
                 #bewegt die agents
                 result = agent.move(self.board)
+                agent.lifespan += 1
 
                 #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
                 if result == "deceased":
@@ -229,7 +232,7 @@ class Game:
         # Schreibe die Agenten-Daten in die CSV-Datei
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(['Number', 'Tribe', 'Condition', 'Visibility Range', 'Reproduction Counter', 'Consume Counter', 'Position'])
+            writer.writerow(['Number', 'Tribe', 'Condition', 'Visibility Range', 'Reproduction Counter', 'Consume Counter', 'Position', 'Lifespan'])
             for agent in self.board.agents_list:
                 writer.writerow([
                     agent.number, 
@@ -238,7 +241,8 @@ class Game:
                     agent.genetic['Visibilityrange'], 
                     agent.reproduction_counter,
                     agent.consume_counter, 
-                    agent.position
+                    agent.position,
+                    agent.lifespan
                 ])
 
                 
