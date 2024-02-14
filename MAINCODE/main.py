@@ -81,6 +81,8 @@ class Agent:
 
     def consuming_food(self, food_dict):
         food = food_dict
+        self.consumption_time = food_dict["consumption_time"] // max(1, self.genetic['Metabolism'])
+        self.last_consumed_food_energy = food_dict["Energy"]  # Store the energy value for later
         risk = food["disease_risk"]
         if self.genetic["Intelligent"] is False:
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
@@ -89,27 +91,25 @@ class Agent:
                 self.sickness_counter += 1
                 self.previous_kondition = self.genetic['Kondition']
                 self.genetic["Kondition"] = 1
-            self.consumption_time = food["consumption_time"] // max(1, self.genetic['Metabolism'])
-            self.energy += food["Energy"]
-            self.consume_counter += 1
-        else: 
-            self.consumption_time = food["consumption_time"] // max(1, self.genetic['Metabolism'])
-            self.energy += food["Energy"]
-            self.consume_counter += 1
+
 
 
     def move(self, board):
 
         if self.consumption_time > 0:
-            self.consumption_time -= 1
+            self.consumption_time -= 1  # Decrement the consumption timer
             
+            # If consumption has just finished, add the energy from the last consumed food
+            if self.consumption_time == 0:
+                self.energy += self.last_consumed_food_energy  # Add the stored energy
+                self.consume_counter += 1  # Increment the consume counter
+                self.last_consumed_food_energy = 0  # Reset the stored energy to 0 for the next consumption
+        
         else:
             if self.energy > ENERGYCOSTS_MOVEMENT:
                 if self.sick is True:
                     self.check_for_sickness()
                 
-
-
                 else:
                     if self.flee_counter > 0:  # Fluchtmodus
                         self.flee_counter -= 1  
@@ -184,7 +184,8 @@ class Agent:
         return aggressive_agents
 
     def move_away_from_aggressive(self, board, aggressive_agents):
-        self.flee_counter = 5  # Initialisieren des Fluchtszählers 
+        self.flee_counter = 5  # Initialisieren des Fluchtszählers
+        self.consumption_time = 0
 
     def reproduce(self, partner, board):
         global agents_counter
