@@ -4,7 +4,7 @@ Aufgabestellung:
 https://moodle.hs-duesseldorf.de/pluginfile.php/461132/mod_resource/content/0/Projektauftrag_Genetic_algorithm.pdf
 
 
-                                                            # Nutzer*innen Dokumentation & Developer Dokumentation
+                                 Nutzer*innen Dokumentation & Developer Dokumentation
 
 1. Systemanforderungen
 
@@ -20,7 +20,8 @@ pip install matplotlib
 pip install numba
 
 3. Erklärung des Spiel-Konzepts: 
-Dieses Simulationsspiel modelliert das Verhalten von Agenten (Lebewesen) in einer virtuellen Welt. Jeder Agent verfügt über Energie, eine genetische Ausstattung, kann sich bewegen, Nahrung konsumieren, wodurch ihr Energyscore erhöhrt wird, und sich fortpflanzen. Die Welt ist als ein zweidimensionales Feld (Default 100x100) organisiert, auf dem Nahrung zufällig platziert wird. Die Simulation durchläuft mehrere Runden, in denen Agenten agieren, bis sie entweder sterben oder die maximale Anzahl von Runden erreicht wird. Die Fprtpflanzung finktioniert wie folg:
+Dieses Simulationsspiel modelliert das Verhalten von Agenten (Lebewesen) in einer virtuellen Welt. Jeder Agent verfügt über Energie, eine genetische Ausstattung, kann sich bewegen, Nahrung konsumieren, wodurch ihr Energyscore erhöhrt wird, und sich fortpflanzen. Die Welt ist als ein zweidimensionales Feld (Default 100x100) organisiert, auf dem Nahrung zufällig platziert wird. Die Simulation durchläuft mehrere Runden, in denen Agenten agieren, bis sie entweder sterben oder die maximale Anzahl von Runden erreicht wird. Eine Simulation des Fortpflanzungsprozesses basiert sich auf der Berechnung von Energiekosten, berücksichtigt werden außerdem die Erfolgswahrscheinlichkeit auf der Grundlage der Stammeszugehörigkeit und die Übertragung genetischer Merkmale von den Eltern auf den Nachwuchs (Tribes), was zu einer Vielzahl und Dynamik an Agenten führt.
+
 
 3.1 
 Starten der Simulation
@@ -44,7 +45,7 @@ FOOD_PERCENTAGE_BEGINNING: Prozentualer Anteil der zufällig plazierten Nahrung 
 ADDITIONAL_FOOD_PERCENTAGE: Die Menge der zusätzlichen Nahrung (in Prozentsatz), die in jeder neuen Runde hinzugefügt wird.
 
 
-                                                                          Entwickler*innen Dokumentation
+                    Entwickler*innen Dokumentation
 
 5. Code-Struktur
 Der Code besteht aus mehreren Klassen, die die Agenten, das Spielbrett und das Spiel selbst modellieren. Die wichtigsten Klassen sind:
@@ -133,7 +134,148 @@ Zweck: Validiert, dass das Spiel ohne Fehler ausgeführt wird und die Simulation
 
 - test_save_data
 Beschreibung: Testet die speichere_daten-Methode des Spiels.
-Zweck: Bestätigt, dass die Simulationsergebnisse korrekt in eine CSV-Datei geschrieben werden können und ke
+Zweck: Bestätigt, dass die Simulationsergebnisse korrekt in eine CSV-Datei geschrieben werden können.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+ENG: 
+Documentation for the project "Genetic algorithms based on NumPy arrays". 
+
+Assignment Description:
+https://moodle.hs-duesseldorf.de/pluginfile.php/461132/mod_resource/content/0/Projektauftrag_Genetic_algorithm.pdf
+
+
+                                 User documentation & developer documentation
+
+1. System Requirements
+
+- Python 3.3 and above
+- NumPy Module
+- Matplotlib Library
+- Numba Library (optional for performance optimization)
+
+2. Installation
+Make sure that Python and the required libraries are installed on your system. You can install them using the pip:
+pip install numpy
+pip install matplotlib
+pip install numba
+
+3. Game Concept
+This simulation game mreproduce the behavior of agents (living beings) in a virtual world. Each agent has energy, genetic inheritance features, can move, consumes food, which increases their energy score, and reproduce. The world is organized as a two-dimensional field (default 100x100) on which food is randomly placed. The simulation runs through several rounds (up to 100) in which agents act until they either die or the maximum number of rounds is reached. Reproduction works as follows:
+firstly the  energy costs will be accounted, secondly the success rate based on strain affiliation is to be added, and the transfer (inheritance) of genetic traits from parents to offspring takes place, resulting in a diverse and dynamic population of agents over time.
+
+3.1 
+Starting the simulation
+To start the simulation, the Python code must be executed. The code automatically initializes a game instance and runs the simulation with the preset parameters.
+
+3.2 
+End of the simulation
+At the end of the simulation, the execution time is displayed in seconds. If saving is activated, the agent data is saved in a CSV file in the "results" folder. The file contains information on each agent, including strain affiliation, condition, visibility, reproduction counter, consumption counter, position and lifespan.
+
+4 Constants and settings
+The simulation uses a set of constants to define the behavior and environment of the agents:
+
+ENERGYCOSTS_MOVEMENT: the energy cost of moving an agent.
+ENERGYCOSTS_REPRODUCTION: The energy costs for reproduction.
+START_ENERGY: The starting energy of an agent.
+WIDTH, HEIGHT: The dimensions of the board.
+NUMBER_AGENTS: The initial number of agents.
+ROUNDS: The number of simulation rounds.
+ENERGY_FOOD: The amount of energy provided by the food consumed.
+FOOD_PERCENTAGE_BEGINNING: Percentage of randomly placed food at the beginning of the simulation. 
+ADDITIONAL_FOOD_PERCENTAGE: The amount of additional food (in percentage) that is added in each new round.
+
+
+                    Developer documentation
+
+5. code structure
+The code consists of several classes that model the agents, the game board and the game itself. The most important classes are:
+- Agent: Represents a single agent with the properties energy, genetic traits and position. Methods of this class allow the agent to move, consume food and reproduce.
+- Board: Manages the game board, including the position of food and agents. It allows the addition of food and the removal of agents.
+- Game: Coordinates the simulation process, including initializing the game board, adding agents and conducting rounds.
+
+5.1 
+Important methods of each class and their functions
+
+- Agent
+The Agent class represents a single living being in the ecosystem with the following properties and methods:
+
+- __init__(): Initializes a new agent with a unique number, starting energy, random position and empty genetic profile.
+- genedistribution(): Assigns genetic properties from the GENPOOL to the agent.
+- move(): Moves the agent and consumes energy, updates the position of the agent.
+- search_food(): Searches for food near the agent. If food is within reach, the agent consumes it.
+- reproduce(): Enables reproduction between two agents if they are on the same field and have enough energy.
+- genedistribution_thru_heredity(): Determines the genetic traits of a newborn agent based on the parents' genes.
+
+- Board
+The board class manages the simulated world in which the agents live:
+
+__init__(): Initializes the game board, a list for agents and a Zero-NumPy array for food distribution.
+add_agent(): Adds a new agent to the world.
+place_food(): Places food on the board based on a specified percentage of spaces
+place_agents(): Places agents on the game board for the further visualization.
+remove_agents(): Removes an agent from the game board.
+
+- Game
+The Game class controls the simulation process:
+- __init__(): Initializes the game on the game board and adds agents and food.
+- run(): Runs the specified number of simulation rounds in which agents move randomly. Coordinates reproduction and the search for food.
+- safe_data(): Saves the simulation data in a CSV file.
+- visualize_board(): Visualizes the world and the distribution of agents and food.
+
+6. Customization and possible feature extension
+The structure of the code can be extended and changed dynamically. In particular, the initially defined constants can be adapted according to the conditions of a new world. Possible adaptations include
+- Changing the energy costs for movement and reproduction,
+- Agent behavior (possibly introducing agents that behave aggressively towards other agents,
+- dynamics of the simulation (the game board could be scaled to speed up the execution time for the rounds,
+- the introduction of new genetic traits,
+- the adjustment of probabilities for diseases.
+
+7. Saving and analyzing the generated data
+The option to save the simulation results in a CSV file enables the subsequent analysis and evaluation of the simulation runs in order to gain additional insights with regard to possible improvements/extensions of the simulation or to carry out data-related analyses.
+
+8. Tests and measures for the continuous integration of the code
+  
+8.1 
+General instructions for running the tests: 
+Install pytest and make sure that all required libraries are installed.
+Execute the tests with the pytest command in your terminal or integrated development environment (IDE).
+Check the output for errors and make sure that all tests pass to ensure the integrity of the simulation code.
+The tests are designed to cover the core functionality of the simulation code and ensure that the basic logic of agent movement, feeding, reproduction and inheritance works as intended. 
+
+8.2 
+Test cases:
+- test_add_agent
+Description: Checks whether an agent (living being) is initialized correctly with the intended start values.
+Purpose: Ensures that the agents are created with the correct number, starting energy and a valid starting position within the game limits and that the propagation counter is set to 0.
+
+- test_genedistribution 
+Description: Tests the gene distribution method of an agent.
+Purpose: Confirms that the agent's genes are correctly assigned from the GENPOOL by checking that the keywords are present in the agent's genetics dictionary.
+
+- test_move
+Description: Checks the move method of an agent.
+Purpose: Checks whether the agent moves (by changing position) or whether the agent's energy decreases after attempting to move if no movement occurs.
+
+- test_search_food
+Description: Tests whether an agent can successfully search for food on the board and increase its energy.
+Purpose: Confirms that the search_food method increases the agent's energy if there is food at its position.
+
+- test_reproduction
+Description: Checks the reproduce method between two agents.
+Purpose: Ensures that a new agent object is added to the agent list of the game board after the method is called and that the number of the new agent increases correctly.
+
+- test_gen_distribution_through_inheritance
+Description: Tests the inheritance of genes in the gene_distribution_through_inheritance method.
+Purpose: Checks whether the genes of the offspring are correctly combined from the genes of the parents.
+
+- test_run
+Description: Tests the run method of the game.
+Purpose: Validates that the game is executed without errors and runs through the simulation rounds.
+
+- test_save_data
+Description: Tests the save_data method of the game.
+Purpose: Validates that the simulation results can be correctly written to a CSV file and that no errors occur.
+
 
 
 
