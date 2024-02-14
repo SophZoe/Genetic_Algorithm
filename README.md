@@ -11,7 +11,7 @@ https://moodle.hs-duesseldorf.de/pluginfile.php/461132/mod_resource/content/0/Pr
 
                                  Nutzer*innen Dokumentation & Developer Dokumentation
 
-# 1. Systemanforderungen
+**1. Systemanforderungen**
 
 - Python 3.3 und höher
 - NumPy-Bibliothek
