@@ -1,5 +1,5 @@
 import pytest
-from Genetic_Algorithm.MAINCODE.main import Agent, Board, Game
+from MAINCODE.main import Agent, Board, Game
 
 
 
