@@ -16,7 +16,7 @@ VERSION = '0.1.0'
 
 # required packages besides the standard python modules
 REQUIRED = [
-    # 'packagename'
+    'pytest'
 ]
 
 # optional packages
