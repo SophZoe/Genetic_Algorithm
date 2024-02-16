@@ -1,5 +1,5 @@
 import pytest
-from MAINCODE.main import Agent, Board, Game, GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCTION, ROUNDS
+from MAINCODE.main import Agent, Board, Game, GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCTION, ROUNDS, FOOD_PERCENTAGE_BEGINNING
 import os
 
 # ----------------------   AGENT  ----------------------
@@ -102,11 +102,10 @@ def test_board_add_agent():
 
 def test_board_place_food():
     board = Board(WIDTH, HEIGHT)
-    food_percentage = 0.2
-    board.place_food(food_percentage)
+    board.place_food(FOOD_PERCENTAGE_BEGINNING)
     
     # calc. expected number of food-locations (based on the percentage):
-    expected_food_count = int(WIDTH * HEIGHT * food_percentage)
+    expected_food_count = int(WIDTH * HEIGHT * FOOD_PERCENTAGE_BEGINNING)
     
     # check actual number of food-locations matches expected number:
     actual_food_count = sum(1 for row in board.food for cell in row if cell is not None)
