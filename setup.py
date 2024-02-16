@@ -16,7 +16,8 @@ VERSION = '0.1.0'
 
 # required packages besides the standard python modules
 REQUIRED = [
-    'pytest'
+    'pytest',
+    'numpy'
 ]
 
 # optional packages
