@@ -11,12 +11,12 @@ DESCRIPTION = 'Genetic Algorithm'
 URL = 'https://github.com/SophZoe/Genetic_Algorithm'
 EMAIL = 'marie-juliette.yek@study.hs-duesseldorf.de'
 AUTHOR = 'Joschua, Sophie, Anna, Marko, Marie'
-REQUIRES_PYTHON = '>=3.6.0'
+REQUIRES_PYTHON = '>=3.8.0'
 VERSION = '0.1.0'
 
 # required packages besides the standard python modules
 REQUIRED = [
-    # 'packagename'
+    'pytest'
 ]
 
 # optional packages
@@ -110,7 +110,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy'
     ],

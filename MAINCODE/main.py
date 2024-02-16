@@ -18,19 +18,9 @@ FOOD_PERCENTAGE_BEGINNING = 0.1
 ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
 
+
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
-
-FOOD = {
-    "1": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},  
-    "2": {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
-    "3": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
-    "5": {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
-    "4": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
-    "6": {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
-    "7": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}   
-}
-FOOD_KEYS = list(FOOD.keys())
 
 # Genpool
 ## evtl. Gene mit Wahrscheinlichkeiten, zb. Mut 
@@ -43,13 +33,13 @@ GENPOOL = {
         "Metabolism": (1, 3),
         "Intelligent": [True, False],  # Verwendung einer Liste statt eines Tupels, um Klarheit zu schaffen
         "Aggressive": [True, False]
+
     }
 }
 
 class Agent:
-    def __init__(self, number, sick = 0):
+    def __init__(self, number):
         global agents_counter
-        self.sickness_counter = 0
         self.number = number
         self.energy = START_ENERGY
         self.genetic = {}
@@ -130,8 +120,9 @@ class Agent:
                     self.position = (new_x, new_y)
                     self.covered_distance += 1
             else:
-                return "deceased"
+              return "deceased"
 
+                
     def search_food(self, board):
         visibilityrange = self.genetic["Visibilityrange"]
         for dx in range(-visibilityrange, visibilityrange + 1):
@@ -160,6 +151,7 @@ class Agent:
                         self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
                         board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
                         return (x, y)
+
 
         return None
 
@@ -198,6 +190,7 @@ class Agent:
                 self.parent_B = parent2.number
             elif gen == "Intelligent":
                 self.genetic[gen] == random.choice([parent1.genetic[gen], parent2.genetic[gen]])
+
             else:
                 gewicht = random.uniform(0, 1)
                 gen_value = (gewicht * parent1.genetic[gen] + (1 - gewicht) * parent2.genetic[gen]) / 2
@@ -221,6 +214,8 @@ class Board:
     def place_food(self, prozent):
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
+            
+            #random Koordinaten an dem die Nahrung pltziert werden soll
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
             food_key = random.choice(FOOD_KEYS)
             #food_dict = FOOD[food_type]
@@ -247,8 +242,7 @@ class Board:
         self.agents_list.remove(agent)
 
 class Game:
-    def __init__(self, saving = False):
-        self.saving = saving
+    def __init__(self):
         self.board = Board(WIDTH, HEIGHT)
         for i in range(1, NUMBER_AGENTS + 1):
             self.board.add_agent(Agent(i))
@@ -262,7 +256,7 @@ class Game:
         self.board.place_agents()
         
         #visualizing the board
-        ###self.visualize_board(FOOD) 
+        self.visualize_board() 
         
         for round in range(ROUNDS):
             #counter for Rounds
@@ -278,7 +272,6 @@ class Game:
             
             
             for agent in self.board.agents_list[:]:
-
                 #moves the agents
                 result = agent.move(self.board)
                 """for agent in self.board.agents_list:
@@ -309,8 +302,14 @@ class Game:
                 self.board.place_agents()
         
                 #visualizing the board every 10 rounds
-                self.visualize_board(FOOD)             
+                self.visualize_board(FOOD)       
             
+              
+            #placing additional food and all agents in every round
+            self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
+            self.board.place_agents()
+            #visualizing the board in every round
+            self.visualize_board() 
             
         self.board.place_agents()  
 
@@ -369,9 +368,7 @@ class Game:
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
         
         fig = plt.figure(frameon=False)
-
-
-
+        
         data1 = self.board.food
         plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
         
@@ -419,16 +416,16 @@ class Game:
         if self.board.food.any() >=1 :
             print('still some food left')
         else:
-            print("no food left")            
+            print("no food left")       
     
-    
+            
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
 
+start = time.time()
+
 if __name__ == "__main__":
-    start = time.time()
-    game = Game(saving=True)
-    #game = Game()
+    game = Game()
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(script_time)
