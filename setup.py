@@ -17,7 +17,8 @@ VERSION = '0.1.0'
 # required packages besides the standard python modules
 REQUIRED = [
     'pytest',
-    'numpy'
+    'numpy',
+    'matplotlib.pyplot'
 ]
 
 # optional packages
