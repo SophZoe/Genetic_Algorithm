@@ -1,7 +1,6 @@
 import pytest
-from MAINCODE.main import Agent, Board, Game
-
-
+from MAINCODE.main import Agent, Board, Game, GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCTION, ROUNDS
+import os
 
 # ----------------------   AGENT  ----------------------
 def test_agent_initialization():
@@ -50,8 +49,8 @@ def test_agent_reproduce():
 def test_genedistribution_thru_heredity():
     parent1 = Agent(1)
     parent2 = Agent(2)
-    parent1.genetic = {'Kondition': 2, 'Visibilityrange': 1, 'Tribe': 3, 'Resistance': 2, 'Metabolism': 1}
-    parent2.genetic = {'Kondition': 1, 'Visibilityrange': 3, 'Tribe': 1, 'Resistance': 3, 'Metabolism': 2}
+    parent1.genetic = {'Kondition': 2, 'Visibilityrange': 1, 'Tribe': 3, 'Resistance': 2, 'Metabolism': 1, 'Intelligent': True, 'Aggressive': False}
+    parent2.genetic = {'Kondition': 1, 'Visibilityrange': 3, 'Tribe': 1, 'Resistance': 3, 'Metabolism': 2, 'Intelligent': False, 'Aggressive': True}
     
     # create child and apply genedistribution_thru_heredity:
     child = Agent(3)
@@ -130,11 +129,13 @@ def test_board_remove_agents():
 
 # ----------------------   GAME  ----------------------
 def test_game_initialization():
-    # Create a game instance with saving disabled
+    # Create a game instance with saving disabled (saving=False) --> not implemented anymore
     # because: ""helps focus the test on the core initialization aspects"""
     # ""without worrying about the actual file writing""
-    game = Game(saving=False)
+    # game = Game(saving=False)
     
+    game = Game()
+
     # check if game has a board with correct width & height
     assert game.board.width == WIDTH
     assert game.board.height == HEIGHT
@@ -143,11 +144,12 @@ def test_game_initialization():
     assert len(game.board.agents_list) > 0
     
     # check if saving is set correctly:
-    assert game.saving is False
+    # assert game.saving is False
 
 
 def test_game_run():
-    game = Game(saving=False)
+    #game = Game(saving=False)
+    game = Game()
     game.run()
     
     # check if the simulation ran for the expected number of rounds as set:
@@ -155,11 +157,12 @@ def test_game_run():
 
 
 def test_game_save_data():
-    game = Game(saving=True) #now enable saving bc it is being tested
+    #game = Game(saving=True) #now enable saving bc it is being tested
+    game = Game()
     game.run()
     
     # check if the results-directory and the CSV were created:
-    result_dir = f"Genetic_Algorithm/MAINCODE/results"
+    result_dir = f"MAINCODE/results"
     assert os.path.exists(result_dir)
     csv_file = f"{result_dir}/agent_data_0.csv"
     assert os.path.exists(csv_file)
