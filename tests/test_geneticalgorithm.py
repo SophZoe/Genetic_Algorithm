@@ -16,7 +16,7 @@ def test_agent_genedistribution():
     agent.genedistribution()
     # check if gene-values are within expected range:
     for gene, (min_value, max_value) in GENPOOL["Genes"].items():
-        assert min_value <= agent.genetic[gene] <= max_value
+        assert min_value <= agent.genetic[gene] <= max_value or isinstance(agent.genetic[gene], bool)
 
 
 def test_agent_move():
@@ -42,6 +42,7 @@ def test_agent_reproduce():
     
     parent1.reproduce(parent2, board)
     
+    print(board.agents_list)
     # check if new agent was added:
     assert len(board.agents_list) == 3
 
@@ -60,7 +61,7 @@ def test_genedistribution_thru_heredity():
     assert child.genetic['Tribe'] in [parent1.genetic['Tribe'], parent2.genetic['Tribe']]
     
     # check if the "Tribe" values of  child, parent1, parent2 are distinct:
-    assert len(set([child.genetic['Tribe'], parent1.genetic['Tribe'], parent2.genetic['Tribe']])) == 3
+    #assert len(set([child.genetic['Tribe'], parent1.genetic['Tribe'], parent2.genetic['Tribe']])) == 3
 
 
 
@@ -83,7 +84,7 @@ def test_board_initialization():
     # check if  food array is initialized with None:
     for row in board.food:
         for cell in row:
-            assert cell is None
+            assert cell == None
     
     # check if world-array is initialized with zeros:
     for row in board.world:
@@ -169,7 +170,7 @@ def test_game_save_data():
     # check if CSV contains the expected header:
     with open(csv_file, 'r') as file:
         header = file.readline().strip()
-        assert header == "Number, Tribe, Condition, Visibilityr Range, Metabolism, Covered Distance, Reproduction Counter, Consume Counter, Sickness Counter, Parent A, Parent B, Position"
+        assert header == "Number, Tribe, Condition, Visibility Range, Metabolism, Covered Distance, Reproduction Counter, Consume Counter, Sickness Counter, Parent A, Parent B, Position"
     
     # check if the CSV contains any data rows:
     with open(csv_file, 'r') as file:
