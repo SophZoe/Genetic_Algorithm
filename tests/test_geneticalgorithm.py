@@ -32,7 +32,7 @@ def test_agent_reproduce():
     board = Board(WIDTH, HEIGHT)
     parent1 = Agent(1)
     parent2 = Agent(2)
-    parent1.energy = ENERGYCOSTS_REPRODUCTION * 2  # to get sure that there is enough energy for reproduction
+    parent1.energy = ENERGYCOSTS_REPRODUCTION * 2  # making sure that there is enough energy for reproduction
     parent2.energy = ENERGYCOSTS_REPRODUCTION * 2
     board.add_agent(parent1)
     board.add_agent(parent2)
@@ -84,7 +84,7 @@ def test_board_initialization():
     # check if  food array is initialized with None:
     for row in board.food:
         for cell in row:
-            assert cell == None
+            assert cell == 0
     
     # check if world-array is initialized with zeros:
     for row in board.world:
