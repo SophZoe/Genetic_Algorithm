@@ -108,21 +108,24 @@ class Agent:
         
         else:
             if self.energy > ENERGYCOSTS_MOVEMENT:
-                if self.sick is True:
+                if self.sick is True:        # Check for Sickness
                     self.check_for_sickness()
                 
                 
-                    if self.flee_counter > 0:  # Fluchtmodus
-                        self.flee_counter -= 1  
+                elif self.flee_counter > 0:  # Check if agent needs to flee
+                    self.flee_counter -= 1  
 
-                        # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
-                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
-                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
-                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
-                        self.position = (new_x, new_y)
+                    # Random move multiplied by agents kondition
+                    dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                    dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                    new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                    new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                    self.position = (new_x, new_y)
                        
                 else:
+
+                                ### This shouldn't be random -> we need to call "search food" here!
+
                     # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
                     dx = random.choice([-1, 1]) * self.genetic['Kondition']
                     dy = random.choice([-1, 1]) * self.genetic['Kondition']
@@ -131,6 +134,8 @@ class Agent:
                     new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
                     self.position = (new_x, new_y)
                     self.covered_distance += 1
+
+
             else:
                 return "deceased"
 
