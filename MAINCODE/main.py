@@ -22,6 +22,17 @@ SICKNESS_DURATION = ROUNDS // 10
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
 
+FOOD = {
+    "1": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},  
+    "2": {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
+    "3": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
+    "5": {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
+    "4": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
+    "6": {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
+    "7": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}   
+}
+FOOD_KEYS = list(FOOD.keys())
+
 # Genpool
 ## evtl. Gene mit Wahrscheinlichkeiten, zb. Mut 
 GENPOOL = {
@@ -38,8 +49,9 @@ GENPOOL = {
 }
 
 class Agent:
-    def __init__(self, number):
+    def __init__(self, number, sick = 0):
         global agents_counter
+        self.sickness_counter = 0
         self.number = number
         self.energy = START_ENERGY
         self.genetic = {}
@@ -120,7 +132,8 @@ class Agent:
                     self.position = (new_x, new_y)
                     self.covered_distance += 1
             else:
-              return "deceased"
+                return "deceased"
+
 
                 
     def search_food(self, board):
@@ -151,7 +164,6 @@ class Agent:
                         self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
                         board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
                         return (x, y)
-
 
         return None
 
@@ -214,8 +226,6 @@ class Board:
     def place_food(self, prozent):
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
-            
-            #random Koordinaten an dem die Nahrung pltziert werden soll
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
             food_key = random.choice(FOOD_KEYS)
             #food_dict = FOOD[food_type]
@@ -242,7 +252,8 @@ class Board:
         self.agents_list.remove(agent)
 
 class Game:
-    def __init__(self):
+    def __init__(self, saving = False):
+        self.saving = saving
         self.board = Board(WIDTH, HEIGHT)
         for i in range(1, NUMBER_AGENTS + 1):
             self.board.add_agent(Agent(i))
@@ -256,7 +267,7 @@ class Game:
         self.board.place_agents()
         
         #visualizing the board
-        self.visualize_board() 
+        ###self.visualize_board(FOOD) 
         
         for round in range(ROUNDS):
             #counter for Rounds
@@ -291,7 +302,6 @@ class Game:
                   
             #placing additional food and all agents in every round
             self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
-            print(self.board.food)
             self.board.place_agents()
             #visualizing the board in every round
             self.visualize_board(FOOD) 
@@ -302,14 +312,8 @@ class Game:
                 self.board.place_agents()
         
                 #visualizing the board every 10 rounds
-                self.visualize_board(FOOD)       
+                self.visualize_board(FOOD)             
             
-              
-            #placing additional food and all agents in every round
-            self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
-            self.board.place_agents()
-            #visualizing the board in every round
-            self.visualize_board() 
             
         self.board.place_agents()  
 
@@ -368,7 +372,9 @@ class Game:
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
         
         fig = plt.figure(frameon=False)
-        
+
+
+
         data1 = self.board.food
         plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
         
@@ -418,15 +424,14 @@ class Game:
         else:
             print("no food left")       
     
-            
+    
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
 
-start = time.time()
-
 if __name__ == "__main__":
-    game = Game()
+    start = time.time()
+    game = Game(saving=True)
+    #game = Game()
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(script_time)
-
