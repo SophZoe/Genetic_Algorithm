@@ -6,7 +6,7 @@ import time
 from matplotlib.pyplot import imshow
 import os
 
-# Konstanten
+# global constants
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
@@ -19,11 +19,11 @@ ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
 
 
-# Globaler Counter für die Nummerierung der Lebewesen
+# global counter for enumerating the agents
 agents_counter = NUMBER_AGENTS
 
-# Genpool
-## evtl. Gene mit Wahrscheinlichkeiten, zb. Mut 
+# Genepool
+## maybe adding genes with propabilities, e.g courage
 GENPOOL = {
     "Genes": {
         "Kondition": (1, 3),
@@ -31,7 +31,7 @@ GENPOOL = {
         "Tribe": (1, 3),
         "Resistance": (1, 3),
         "Metabolism": (1, 3),
-        "Intelligent": [True, False],  # Verwendung einer Liste statt eines Tupels, um Klarheit zu schaffen
+        "Intelligent": [True, False],  # using a list instead of touple for clarity
         "Aggressive": [True, False]
 
     }
@@ -60,8 +60,8 @@ class Agent:
     def genedistribution(self):
         for gen, bereich in GENPOOL["Genes"].items():
             if isinstance(bereich[0], bool):  
-                self.genetic[gen] = random.choice(bereich)  # Gen zuerst initialisieren
-                if self.genetic["Intelligent"] == True:  # Überprüfung des gesetzten Wertes
+                self.genetic[gen] = random.choice(bereich)  # initialize Gene first
+                if self.genetic["Intelligent"] == True:  # check initialized value
                     self.genetic["Aggressive"] = False
                 else:
                     self.genetic["Aggressive"] = True
@@ -100,10 +100,10 @@ class Agent:
                     self.check_for_sickness()
                 
                 
-                    if self.flee_counter > 0:  # Fluchtmodus
+                    if self.flee_counter > 0:  # escapemode
                         self.flee_counter -= 1  
 
-                        # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
+                        # random movement: -1 or +1, multiplied with 'Kondition'
                         dx = random.choice([-1, 1]) * self.genetic['Kondition']
                         dy = random.choice([-1, 1]) * self.genetic['Kondition']
                         new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
@@ -111,7 +111,7 @@ class Agent:
                         self.position = (new_x, new_y)
                        
                 else:
-                    # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
+                    # Zrandom movement: -1 or +1, multiplied with 'Kondition'
                     dx = random.choice([-1, 1]) * self.genetic['Kondition']
                     dy = random.choice([-1, 1]) * self.genetic['Kondition']
 
@@ -132,24 +132,24 @@ class Agent:
 
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
                     food_dict = board.food[x][y]
-                    # Prüfen, ob     sich aggressive Agents in der Nähe befinden
+                    # PCheck if aggressive agents are nearby
                     aggressive_agents_nearby = self.check_for_aggressive_agents(board, x, y)
 
                     if aggressive_agents_nearby:
                         if not self.genetic["Aggressive"]:
-                            # Nicht-aggressives Lebewesen hört auf zu fressen und bewegt sich weg
+                            # non-aggressive agents stop eating and move away
                             self.consumption_time = 0  # Beende das Essen
                             self.move_away_from_aggressive(board, aggressive_agents_nearby)
                             self.expelled += 1
-                            return None  # Gehe zum Nächsten Futter        
+                            return None  # Move on to next available food        
 
                     if self.genetic["Intelligent"] is True and food_dict["disease_risk"] == 0:
-                        self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
-                        board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
+                        self.consuming_food(food_dict)  # calls on consuming_food using the key
+                        board.food[x][y] = None  # remove food from coordinates
                         return (x, y)
                     else:
-                        self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
-                        board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
+                        self.consuming_food(food_dict)  # calls on consuming_food using the key
+                        board.food[x][y] = None  # Eremove food from coordinates
                         return (x, y)
 
 
@@ -166,7 +166,7 @@ class Agent:
         return aggressive_agents
 
     def move_away_from_aggressive(self, board, aggressive_agents):
-        self.flee_counter = 5  # Initialisieren des Fluchtszählers
+        self.flee_counter = 5  # initialize escape counter
         self.consumption_time = 0
 
     def reproduce(self, partner, board):
@@ -195,7 +195,7 @@ class Agent:
                 gewicht = random.uniform(0, 1)
                 gen_value = (gewicht * parent1.genetic[gen] + (1 - gewicht) * parent2.genetic[gen]) / 2
                 self.genetic[gen] = int(round(gen_value, 3))
-                if self.genetic["Intelligent"] == True:  # Überprüfung des gesetzten Wertes
+                if self.genetic["Intelligent"] == True:  # check set value
                     self.genetic["Aggressive"] = False
                 else:
                     self.genetic["Aggressive"] = True
@@ -215,30 +215,30 @@ class Board:
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
             
-            #random Koordinaten an dem die Nahrung pltziert werden soll
+            # random coordinates where food should be placed
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
             food_key = random.choice(FOOD_KEYS)
-            #food_dict = FOOD[food_type]
-            # Speichern des Nahrungstyps und der zugehörigen Werte direkt im food-Array
+            # food_dict = FOOD[food_type]
+            # save food_type and associated value directly in food-array
             self.food[x][y] = food_key
     
         
     def remove_agents(self, agent):
-        #removing the agents in the list 'lebewesen'
+        # removing the agents in the list 'agents_list'
         self.agents_list.remove(agent)
             
 
     def place_agents(self):
-        #deleting the array so deceased agents will not be shown
+        # deleting the array so deceased agents will not be shown
         self.world = np.zeros_like(self.world)
         
-        #placing agents in array
+        # placing agents in array
         for agent in self.agents_list:
             x, y = agent.position
             self.world[x][y] += 1
 
     def remove_agents(self, agent):
-        #removing the agents in the list 'lebewesen'
+        # removing the agents in the list 'agents_list'
         self.agents_list.remove(agent)
 
 class Game:
@@ -252,17 +252,17 @@ class Game:
             
     def run(self):
         print("----------Round 0------------")
-        #fillng the world with agents for the start
+        # fillng the world with agents for the start
         self.board.place_agents()
         
         #visualizing the board
         self.visualize_board() 
         
         for round in range(ROUNDS):
-            #counter for Rounds
+            # counter for Rounds
             print(f"------------Round {round+1}------------")  
             
-            #ending the simulation in case there are no agents left
+            # ending the simulation in case there are no agents left
             if len(self.board.agents_list) == 0:
                 print("--------------------------")
                 print("\nall agents deceased\n")
@@ -272,17 +272,17 @@ class Game:
             
             
             for agent in self.board.agents_list[:]:
-                #moves the agents
+                # moves the agents
                 result = agent.move(self.board)
                 """for agent in self.board.agents_list:
                     print(f"position: {agent.position}")"""
                 
-                #schaut ob der agent deceased ist, wenn ja, dann entfernt er diesen
+                # checks if agent is deceased and, if yes, removes them from board
                 if result == "deceased":
                     self.board.remove_agents(agent)
 
-                #wenn agent noch lebt wird die fortpflanzung weitergeführt
-                    #vergleicht Agent mit potentiellen partnern
+                # checks if agent is still alive and, if yes, continue reproduction
+                    # compares agent with potential reproduction partners
                 else:
                     for partner in self.board.agents_list:
                         if agent != partner:
@@ -313,12 +313,12 @@ class Game:
             
         self.board.place_agents()  
 
-        if self.saving is True:    ### Mögliches Laufzeitproblem: Doppelte For-Schleife sorgt für Quadratische Laufzeit O(n2)
+        if self.saving is True:    ### Possible runtime problem: double for-loop causes square runtime O(n2)
             self.save_data()
 
         
     def save_data(self):
-        # Generiere den Pfad für das "results" Verzeichnis im aktuellen Arbeitsverzeichnis
+        # generate path for 'result' directory in working directory
         current_working_directory = os.getcwd()
         result_dir = os.path.join(current_working_directory, 'results')
         csv_index = 0
@@ -326,13 +326,13 @@ class Game:
         if not os.path.exists(result_dir):
             os.makedirs(result_dir)
 
-        # Erstelle den Dateinamen für die CSV-Datei
+        # generate filename vor .csv
         filename = os.path.join(result_dir, f'agent_data_{csv_index}.csv')
         while os.path.exists(filename):
             csv_index += 1
             filename = os.path.join(result_dir, f'agent_data_{csv_index}.csv')
 
-        # Schreibe die Agenten-Daten in die CSV-Datei
+        # write agent data into .csv
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(['Number', ' Tribe', ' Condition', ' Visibility Range', ' Metabolism', ' Intelligent', ' Aggressive', ' Covered Distance', ' Reproduction Counter', ' Consume Counter', ' Sickness Counter' ,' Parent A', ' Parent B', ' Position', ' Expelled'])
@@ -419,8 +419,8 @@ class Game:
             print("no food left")       
     
             
-# Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
-# Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
+# implement counter for reproduction rate of each agent
+# improve tribal affiliation: right now toupel for tribe of child
 
 start = time.time()
 
