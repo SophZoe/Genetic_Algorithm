@@ -18,6 +18,7 @@ FOOD_PERCENTAGE_BEGINNING = 0.1
 ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
 
+
 # Globaler Counter für die Nummerierung der Lebewesen
 agents_counter = NUMBER_AGENTS
 
@@ -43,6 +44,7 @@ GENPOOL = {
         "Metabolism": (1, 3),
         "Intelligent": [True, False],  # Verwendung einer Liste statt eines Tupels, um Klarheit zu schaffen
         "Aggressive": [True, False]
+
     }
 }
 
@@ -132,6 +134,8 @@ class Agent:
             else:
                 return "deceased"
 
+
+                
     def search_food(self, board):
         visibilityrange = self.genetic["Visibilityrange"]
         for dx in range(-visibilityrange, visibilityrange + 1):
@@ -198,6 +202,7 @@ class Agent:
                 self.parent_B = parent2.number
             elif gen == "Intelligent":
                 self.genetic[gen] == random.choice([parent1.genetic[gen], parent2.genetic[gen]])
+
             else:
                 gewicht = random.uniform(0, 1)
                 gen_value = (gewicht * parent1.genetic[gen] + (1 - gewicht) * parent2.genetic[gen]) / 2
@@ -278,7 +283,6 @@ class Game:
             
             
             for agent in self.board.agents_list[:]:
-
                 #moves the agents
                 result = agent.move(self.board)
                 """for agent in self.board.agents_list:
@@ -298,7 +302,6 @@ class Game:
                   
             #placing additional food and all agents in every round
             self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
-            
             self.board.place_agents()
             #visualizing the board in every round
             self.visualize_board(FOOD) 
@@ -419,7 +422,7 @@ class Game:
         if self.board.food.any() >=1 :
             print('still some food left')
         else:
-            print("no food left")            
+            print("no food left")       
     
     
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
