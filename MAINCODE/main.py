@@ -91,7 +91,10 @@ class Agent:
                 self.previous_kondition = self.genetic['Kondition']
                 self.genetic["Kondition"] = 0
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e13095a063a5d769f956a25972aae494b527f4ff
     def check_for_sickness(self):
         if self.sick:
             self.sickness_duration -= 1
@@ -99,7 +102,10 @@ class Agent:
                 self.sick = False
                 self.genetic["Kondition"] = self.previous_kondition
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e13095a063a5d769f956a25972aae494b527f4ff
     def move(self, board):
         if self.consumption_time > 0:
             self.consumption_time -= 1  # Decrement the consumption timer
