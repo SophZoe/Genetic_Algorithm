@@ -47,7 +47,69 @@ GENPOOL = {
 }
 
 class Agent:
+    """ 
+     Class to represent an Agent in this simulated environment with various genetic traits and behaviours.
+      
+    Attributes
+    ----------
+    number : int
+        unique identifier for agent
+    energy : int
+        current energy of agent
+    genetic : dict
+        genetic traits of agent
+    position : touple
+        current position of agent on board
+    covered_distance: int
+        distance covered by agent, starts at 0
+    expelled : int
+        number of times agent has been expelled, starts at 0
+    flee_counter : int
+        checks if agent is in flight mode, starts at 0
+    consume_counter : int
+        number of times agent has consumed food, starts at 0
+    consumption_time : int
+        time needed for agent to consume different food
+    sick : bool
+        initial health of agent, default set to false
+    sickness_counter : int
+        number of times agent has been sick, starts at 0
+    sickness_duration : int
+        duration of agents sickness
+    previous_condition : int
+        previous condition of agent, default set to none
+    reproduction_counter : int
+        number of times agent has reproduced with a partner, starts at 0
+    parent_A : int
+        unique identifier for agents parent A, default set to none
+    parent_B : int
+        unique identifier for agents parent B, default set to none
+
+    Methods
+    -------
+    genedistribution():
+        randomly sets the genedistribution of each agent based on predetermined genes
+        in the global dictionary GENPOOL
+    consuming_food(food_dict):
+        adjusting health and status values of an agent based on food properties, which 
+        are predetermined through the food_dict and the agents unique genedistribution
+    move(board):
+    search_food(board):
+
+
+    """
+
     def __init__(self, number, sick=0):
+        """
+        Initializes all necessary attributes for the agent object
+        
+        Parameters
+        ----------
+        number : int
+            unique identifier for agent
+        sick : bool
+            initial health of agent, default set to false
+        """
         global agents_counter
         self.sickness_counter = 0
         self.number = number
