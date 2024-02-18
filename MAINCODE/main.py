@@ -22,8 +22,19 @@ SICKNESS_DURATION = ROUNDS // 10
 # global counter for enumerating the agents
 agents_counter = NUMBER_AGENTS
 
-# Genepool
-## maybe adding genes with propabilities, e.g courage
+FOOD = {
+    "1": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},  
+    "2": {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
+    "3": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
+    "5": {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
+    "4": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
+    "6": {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
+    "7": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}   
+}
+FOOD_KEYS = list(FOOD.keys())
+
+# Genpool
+## evtl. Gene mit Wahrscheinlichkeiten, zb. Mut 
 GENPOOL = {
     "Genes": {
         "Kondition": (1, 3),
@@ -38,8 +49,9 @@ GENPOOL = {
 }
 
 class Agent:
-    def __init__(self, number):
+    def __init__(self, number, sick = 0):
         global agents_counter
+        self.sickness_counter = 0
         self.number = number
         self.energy = START_ENERGY
         self.genetic = {}
@@ -96,22 +108,25 @@ class Agent:
         
         else:
             if self.energy > ENERGYCOSTS_MOVEMENT:
-                if self.sick is True:
+                if self.sick is True:        # Check for Sickness
                     self.check_for_sickness()
                 
                 
-                    if self.flee_counter > 0:  # escapemode
-                        self.flee_counter -= 1  
+                elif self.flee_counter > 0:  # Check if agent needs to flee
+                    self.flee_counter -= 1  
 
-                        # random movement: -1 or +1, multiplied with 'Kondition'
-                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
-                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
-                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
-                        self.position = (new_x, new_y)
+                    # Random move multiplied by agents kondition
+                    dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                    dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                    new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                    new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                    self.position = (new_x, new_y)
                        
                 else:
-                    # Zrandom movement: -1 or +1, multiplied with 'Kondition'
+
+                                ### This shouldn't be random -> we need to call "search food" here!
+
+                    # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
                     dx = random.choice([-1, 1]) * self.genetic['Kondition']
                     dy = random.choice([-1, 1]) * self.genetic['Kondition']
 
@@ -119,8 +134,11 @@ class Agent:
                     new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
                     self.position = (new_x, new_y)
                     self.covered_distance += 1
+
+
             else:
-              return "deceased"
+                return "deceased"
+
 
                 
     def search_food(self, board):
@@ -151,7 +169,6 @@ class Agent:
                         self.consuming_food(food_dict)  # calls on consuming_food using the key
                         board.food[x][y] = None  # Eremove food from coordinates
                         return (x, y)
-
 
         return None
 
@@ -214,8 +231,6 @@ class Board:
     def place_food(self, prozent):
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
-            
-            # random coordinates where food should be placed
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
             food_key = random.choice(FOOD_KEYS)
             # food_dict = FOOD[food_type]
@@ -242,7 +257,8 @@ class Board:
         self.agents_list.remove(agent)
 
 class Game:
-    def __init__(self):
+    def __init__(self, saving = False):
+        self.saving = saving
         self.board = Board(WIDTH, HEIGHT)
         for i in range(1, NUMBER_AGENTS + 1):
             self.board.add_agent(Agent(i))
@@ -256,7 +272,7 @@ class Game:
         self.board.place_agents()
         
         #visualizing the board
-        self.visualize_board() 
+        ###self.visualize_board(FOOD) 
         
         for round in range(ROUNDS):
             # counter for Rounds
@@ -291,7 +307,6 @@ class Game:
                   
             #placing additional food and all agents in every round
             self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
-            print(self.board.food)
             self.board.place_agents()
             #visualizing the board in every round
             self.visualize_board(FOOD) 
@@ -302,14 +317,8 @@ class Game:
                 self.board.place_agents()
         
                 #visualizing the board every 10 rounds
-                self.visualize_board(FOOD)       
+                self.visualize_board(FOOD)             
             
-              
-            #placing additional food and all agents in every round
-            self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
-            self.board.place_agents()
-            #visualizing the board in every round
-            self.visualize_board() 
             
         self.board.place_agents()  
 
@@ -368,7 +377,9 @@ class Game:
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
         
         fig = plt.figure(frameon=False)
-        
+
+
+
         data1 = self.board.food
         plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
         
@@ -422,11 +433,10 @@ class Game:
 # implement counter for reproduction rate of each agent
 # improve tribal affiliation: right now toupel for tribe of child
 
-start = time.time()
-
 if __name__ == "__main__":
-    game = Game()
+    start = time.time()
+    game = Game(saving=True)
+    #game = Game()
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(script_time)
-
