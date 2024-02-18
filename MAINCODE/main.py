@@ -93,7 +93,12 @@ class Agent:
                 self.previous_kondition = self.genetic['Kondition']
                 self.genetic["Kondition"] = 0
 
-
+    def check_for_sickness(self):
+        if self.sick:
+            self.sickness_duration -= 1
+            if self.sickness_duration <= 0:
+                self.sick = False
+                self.genetic["Kondition"] = self.previous_kondition
 
     def move(self, board):
 
