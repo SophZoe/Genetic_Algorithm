@@ -82,6 +82,7 @@ There have been a dictionary with 7 types of food created. Those foods are diffe
 The initial distribution of genes (genedistribution method) links "Intelligence to "Aggression", such that if an agent is intelligent (self.genetic["Intelligent"] == True), it is not aggressive (self.genetic["Aggressive"] = False). This setup implies that intelligence in agents is associated with non-aggressive behavior, indicating a strategic approach to survival that avoids unnecessary risks.
 "Intelligent": Makes agents be able to detect poisonous food  and thus avoid consuming it, as well as to avoid direct interaction with agents with the "Agressive" gene. 
 "Aggressive": Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to get immobilized for a round after consuming the poisonous food. 
+
 <img width="251" alt="genpool" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/e2cc09b0-62c3-4e54-a7dc-0c00fd518dfa">
 
 ## Code Structure
@@ -130,10 +131,9 @@ The method uses the Matplotlib library to visualize the state of a board in a si
 ## Customization and possible feature extension**
 The structure of the code can be extended and changed dynamically. In particular, the initially defined constants can be adapted according to the conditions of a new world. Possible adaptations include
 - Changing the energy costs for movement and reproduction,
-- Agent behavior (possibly introducing agents that behave aggressively towards other agents,
-- dynamics of the simulation (the game board could be scaled to speed up the execution time for the rounds),
+- Agent behavior (possibly introducing agents that behave aggressively towards other agents, dynamics of the simulation (the game board could be scaled to speed up the execution time for the rounds),
 - the introduction of new genetic traits,
-- the adjustment of probabilities for diseases and the success rate for the reproduction, comparing the simulation dynamics if the random placement of food is replaced with the normal distribution of foof onevery board field. .
+- the adjustment of probabilities for diseases and the success rate for the reproduction, comparing the simulation dynamics if the random placement of food is replaced with the normal distribution of foof onevery board field.
 
 ## Saving and analyzing the generated data
 The option to save the simulation results in a CSV file enables the subsequent analysis and evaluation of the simulation runs in order to gain additional insights with regard to possible improvements/extensions of the simulation or to carry out data-related analyses.
