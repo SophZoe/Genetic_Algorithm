@@ -410,7 +410,7 @@ class Game:
         
         # set colorbar label plus label color for agents
         if VISUALIZING_TYPE == "Intelligence":
-            cb2.set_label('    no agents       intelligent agents  agressiv agents', color="white")
+            cb2.set_label('    no agents    intelligent agents  agressiv agents', color="white")
             cb2.set_ticks([])
         else:
             cb2.set_label('amount of agents', color="white")
