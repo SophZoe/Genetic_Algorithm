@@ -228,12 +228,15 @@ class Board:
         self.agents_list.append(agents_to_add)
 
     def place_food(self, prozent):
+        food_placed_this_round = 0
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
             food_key = random.choice(FOOD_KEYS)
             self.food[x][y] = food_key
+            food_placed_this_round += 1
 
+        print(f"Food placed this round: {food_placed_this_round}")
         self.food_placement_counter += 1
 
     def remove_agents(self, agent):
@@ -263,6 +266,7 @@ class Game:
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"----------World {world + 1}------------")
             agents_counter = NUMBER_AGENTS  # separate counter for each world
+            deceased_agents_counter = 0
             game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
 
             # now this is configured for each world:
@@ -275,6 +279,7 @@ class Game:
 
             for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
+                round_deceased_agents = 0
                 
                 # ending the simulation in case there are no agents left
                 if len(self.board.agents_list) == 0:
@@ -290,12 +295,14 @@ class Game:
                     if result == "deceased":
                         self.board.remove_agents(agent)
                         self.remove_agents_counter += 1
+                        round_deceasd_agents += 1
 
                     else:
                         for partner in self.board.agents_list:
                             if agent != partner:
                                 agent.reproduce(partner, self.board)
-
+                deceased_agents_counter += round_deceased_agents
+                print(f"Agents deceased this round: {round_deceased_agents}")
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
 
@@ -317,6 +324,7 @@ class Game:
         
         print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
         print(f"{self.board.remove_agents_counter} agents perished during the simulation.")
+        print(f"Total deceased agents in world {world + 1}: {deceased_agents_counter}")
 
     def collect_agent_data(self, board):  # new method to collect agent-data
         agent_data = []
