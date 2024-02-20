@@ -414,6 +414,57 @@ class Agent:
 
 
 class Board:
+    """
+    class to represent the board, on which the agents and food are placed/removed
+
+    Attributes
+    ----------
+    width : int
+        width of the board (cells along the x axis)
+    \n
+    height : int
+        height of the board (cells along the y axis)
+    \n    
+    energy_costs_movement : int
+        minimum amount of energy needed by the agent to move
+    \n
+    energy_costs_reproduction : int
+        minimum amount of energy needed by the agent to reproduce
+    \n
+    start_energy : int
+        initial amount of energy agent recieve when being created
+    \n
+    number_agents : int
+        initial number of agents placed on board
+    \n
+    rounds : int
+        how many rounds the simulation will run before ending
+    \n
+    food_percentage_beginning : float
+        initial percentage of the board filled with food
+    \n
+    additional_food_percentage : float
+        percentage of additional food being placed on the board each round
+    \n
+    sickness_duration : int
+        number of rounds agent remains sick if inflicted with sickness
+    
+    Methods
+    -------
+    add_agent(agents_to_add):
+        adds new agent to an already existing list of agents
+    \n
+    place_agent():
+        every agent in agent_list is placed on the board based on its position
+    \n
+    place_food(prozent):
+        initially places random food randomly on the board and adds food each round\n
+        according to additional_food_percentage
+    \n
+    remove_agent(agent):
+        removes deceased agent from agents_list
+    """
+
     def __init__(self, width=WIDTH, height=HEIGHT, energy_costs_movement=ENERGYCOSTS_MOVEMENT,
                  energy_costs_reproduction=ENERGYCOSTS_REPRODUCTION, start_energy=START_ENERGY,
                  number_agents=NUMBER_AGENTS, rounds=ROUNDS,
