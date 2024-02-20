@@ -452,7 +452,7 @@ class Board:
     Methods
     -------
     add_agent(agents_to_add):
-        adds new agent to an already existing list of agents
+        adds new agent(s) to an already existing list of agents
     \n
     place_agent():
         every agent in agent_list is placed on the board based on its position
@@ -487,9 +487,32 @@ class Board:
         self.world = np.zeros((width, height))
 
     def add_agent(self, agents_to_add):
+        """
+        adds new agent(s) to an already existing list of agents
+        
+        Parameters
+        ----------
+        agents_to_add : Any
+
+        Returns
+        -------
+        None
+        """
         self.agents_list.append(agents_to_add)
 
     def place_food(self, prozent):
+        """
+        initially places random food randomly on the board and adds food each round\n
+        according to additional_food_percentage
+
+        Parameters
+        ----------
+        percent : float
+
+        Returns
+        -------
+        None
+        """
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
@@ -497,9 +520,33 @@ class Board:
             self.food[x][y] = food_key
 
     def remove_agents(self, agent):
+        """
+        removes deceased agent from agents_list
+        
+        Parameters
+        ----------
+        agent : Any
+        
+        Returns
+        -------
+        None
+        """
         self.agents_list.remove(agent)
 
     def place_agents(self):
+        """
+        every agent in agent_list is placed on the board based on its position\n
+        clears the board every round and then re-places the updated agents\n
+        using the agents in agents_list
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
         self.world = np.zeros_like(self.world)
 
         for agent in self.agents_list:
