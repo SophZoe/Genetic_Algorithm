@@ -1,11 +1,12 @@
 """ main.py but with world-comparison """
-import random
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
-from matplotlib import colormap as cm
-import matplotlib
 import time
+from matplotlib.pyplot import imshow
+from matplotlib import colormaps as cm
+from matplotlib.colors import ListedColormap
+from matplotlib.colors import LinearSegmentedColormap
 import os
 
 
@@ -376,7 +377,7 @@ class Game:
         ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
         
         # Create a new colormap with modified colors
-        modified_YlGn = matplotlib.LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
+        modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
         
         #get YlOrRd colormap
         YlOrRd_cmap= cm.get_cmap('YlOrRd')
@@ -388,7 +389,7 @@ class Game:
         YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
         
         # Create a new colormap with modified colors
-        modified_YlOrRd = matplotlib.LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
+        modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
         
         
 
