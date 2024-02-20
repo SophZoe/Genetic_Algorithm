@@ -4,7 +4,9 @@ import csv
 import matplotlib.pyplot as plt
 import time
 from matplotlib.pyplot import imshow
+from matplotlib import colormaps as cm
 from matplotlib.colors import ListedColormap
+from matplotlib.colors import LinearSegmentedColormap
 import os
 
 # Konstanten
@@ -258,10 +260,13 @@ class Board:
                         self.intel_world[x][y] = 1
                     else :
                         self.intel_world[x][y] = 2
-                        
+                elif self.intel_world[x][y] == 1 and agent.genetic['Intelligent'] == True:
+                    self.intel_world[x][y] = 3
+                elif self.intel_world[x][y] == 1 and agent.genetic['Intelligent'] == True:
+                    self.intel_world[x][y] = 4
                 #will be colored the same color as 0
                 else:
-                    self.intel_world[x][y] = 3
+                    self.intel_world[x][y] = 5
                 
             #else:
             self.world[x][y] += 1
@@ -394,35 +399,60 @@ class Game:
         fig = plt.figure(frameon=False)
 
         #------setting up colormaps------
+        
         #color for visualization mode- intelligence
-        colors_intelligence = ['beige', 'aqua', 'navy', 'beige']
+        colors_intelligence = ['white', 'aqua', 'navy','white']
         
         # Erstelle eine Liste von Farbwerten für die Colormap
         cmap_intelligence = ListedColormap(colors_intelligence)
+        
+        #------changing colormaps so first value is lpotted white--------
+        # Get the 'YlGn' colormap
+        ylgn_cmap = cm.get_cmap('YlGn')
+        
+        # Get the colormap values
+        ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
+        
+        # Set the color at the beginning (where the value is 0) to white
+        ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        
+        # Create a new colormap with modified colors
+        modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
+        
+        #get YlOrRd colormap
+        YlOrRd_cmap= cm.get_cmap('YlOrRd')
+        
+        # Get the colormap values
+        YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
+        
+        # Set the color at the beginning (where the value is 0) to white
+        YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        
+        # Create a new colormap with modified colors
+        modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
+        
+        
+        
         if VISUALIZING_TYPE == "Intelligence":
-            data3 = self.board.intel_world
-            plot3 = imshow(data3, cmap_intelligence,alpha = 1, interpolation='nearest', extent=extent)
+            data_intelligence = self.board.intel_world
+            plot_intelligence = imshow(data_intelligence, cmap_intelligence,alpha = 1,interpolation='nearest', extent=extent)
             
-        data1 = self.board.food
-        plot1 = imshow(data1, cmap="YlGn", alpha = 0.5,interpolation='nearest', extent=extent)
+        data_food = self.board.food
+        plot_food = imshow(data_food, cmap= modified_YlGn, alpha = 0.5,interpolation='nearest', extent=extent)
         
-        data2 = self.board.world
-        """if VISUALIZING_TYPE == "Intelligence":
-                plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent)
-        else:
-            plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)"""
-        plot2 = imshow(data2, cmap="YlOrRd",alpha = .5, interpolation='bilinear', extent=extent)
+        data_world = self.board.world
+        plot_world = imshow(data_world, cmap= modified_YlOrRd,alpha = .5, interpolation='gaussian', extent=extent)
         
         
         
-        # set imshow outline to white
-        for spine in plot2.axes.spines.values():
+        # set imshow outline to white (using plot_world because its the last one plotted)
+        for spine in plot_world.axes.spines.values():
             spine.set_edgecolor("white")
         
         # COLORBAR
-        cb2 = plt.colorbar(plot2)
-        cb1 = plt.colorbar(plot1)
-        cb3 = plt.colorbar(plot3)
+        cb2 = plt.colorbar(plot_world)
+        cb1 = plt.colorbar(plot_food)
+        cb3 = plt.colorbar(plot_intelligence)
         
         
         if VISUALIZING_TYPE == "Intelligence":
@@ -446,6 +476,7 @@ class Game:
         
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
+        
         
         #showing food array to check visualization (optional)
         #print(self.board.food)
