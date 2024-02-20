@@ -4,6 +4,7 @@ import csv
 import matplotlib.pyplot as plt
 import time
 from matplotlib.pyplot import imshow
+from matplotlib.colors import ListedColormap
 import os
 
 # Konstanten
@@ -17,6 +18,7 @@ ROUNDS = 2
 FOOD_PERCENTAGE_BEGINNING = 0.1
 ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
+VISUALIZING_TYPE = "Intelligence" #or use None
 
 
 # Globaler Counter für die Nummerierung der Lebewesen
@@ -245,7 +247,13 @@ class Board:
         #placing agents in array
         for agent in self.agents_list:
             x, y = agent.position
-            self.world[x][y] += 1
+            if VISUALIZING_TYPE == "Intelligence":
+                if agent.genetic['Intelligent'] == True:
+                    self.world[x][y] = 1
+                else :
+                    self.world[x][y] = 2
+            else:
+                self.world[x][y] += 1
 
     def remove_agents(self, agent):
         #removing the agents in the list 'lebewesen'
@@ -371,16 +379,24 @@ class Game:
         x = np.arange(-3.0, 3.0, dx)
         y = np.arange(-3.0, 3.0, dy)
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
-        
+    
         fig = plt.figure(frameon=False)
 
-
+        #------setting colormaps------
+        #color for visualization mode- intelligence
+        colors_intelligence = ['beige', 'aqua', 'red']
+        
+        # Erstelle eine Liste von Farbwerten für die Colormap
+        cmap_intelligence = ListedColormap(colors_intelligence)
 
         data1 = self.board.food
-        plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
+        plot1 = imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plot2 = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        if VISUALIZING_TYPE == "Intelligence":
+                plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent)
+        else:
+            plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
         
         
         # set imshow outline to white
@@ -424,7 +440,7 @@ class Game:
             print('still some food left')
         else:
             print("no food left")       
-    
+        print(self.board.world)
     
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
