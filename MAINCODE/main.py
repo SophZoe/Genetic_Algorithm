@@ -3,12 +3,12 @@ import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import time
+import random
 from matplotlib.pyplot import imshow
 from matplotlib import colormaps as cm
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 import os
-
 
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
@@ -392,13 +392,13 @@ class Game:
         modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
         
         
-
-
+    
+    
         data1 = self.board.food
-        plot1 = plt.imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
+        plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plot2 = plt.imshow(data2, cmap= modified_YlOrRd, alpha = .7, interpolation='bilinear', extent=extent)
+        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .7, interpolation='bilinear', extent=extent)
         
         
         # set imshow outline to white
@@ -423,7 +423,7 @@ class Game:
         # set colorbar ticklabels
         plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="white")
         plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="white")
-
+    
         
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
@@ -442,7 +442,7 @@ class Game:
             print('still some food left')
         else:
             print("no food left")       
-    
+
     
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
