@@ -3,6 +3,8 @@ import random
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
+from matplotlib import colormap as cm
+import matplotlib
 import time
 import os
 
@@ -360,14 +362,42 @@ class Game:
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
         
         fig = plt.figure(frameon=False)
-
+        
+        
+        
+        #------changing colormaps so first value is lpotted white--------
+        # Get the 'YlGn' colormap
+        ylgn_cmap = cm.get_cmap('YlGn')
+        
+        # Get the colormap values
+        ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
+        
+        # Set the color at the beginning (where the value is 0) to white
+        ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        
+        # Create a new colormap with modified colors
+        modified_YlGn = matplotlib.LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
+        
+        #get YlOrRd colormap
+        YlOrRd_cmap= cm.get_cmap('YlOrRd')
+        
+        # Get the colormap values
+        YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
+        
+        # Set the color at the beginning (where the value is 0) to white
+        YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        
+        # Create a new colormap with modified colors
+        modified_YlOrRd = matplotlib.LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
+        
+        
 
 
         data1 = self.board.food
-        plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
+        plot1 = plt.imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plot2 = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        plot2 = plt.imshow(data2, cmap= modified_YlOrRd, alpha = .7, interpolation='bilinear', extent=extent)
         
         
         # set imshow outline to white
