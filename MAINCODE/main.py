@@ -307,6 +307,7 @@ class Game:
 
         #PROBLEM---- this still necessary?
         if self.saving:
+            pass
             self.save_data()
 
     def collect_agent_data(self, board):  # new method to collect agent-data
@@ -350,7 +351,7 @@ class Game:
         #5 seconds pause between each time visualizing 
         #time.sleep(2)
         
-        plt.rcParams["figure.figsize"] = [7.50, 3.50]
+        plt.rcParams["figure.figsize"] = [7.50, 4.50]
         plt.rcParams["figure.autolayout"] = True
         
         dx, dy = 0.05, 0.05
@@ -379,7 +380,7 @@ class Game:
         # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
-        cb1.set_label('amount of food per field', color="white")
+        cb1.set_label('food ID', color="white")
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
