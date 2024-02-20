@@ -249,11 +249,19 @@ class Board:
         #placing agents in array
         for agent in self.agents_list:
             x, y = agent.position
+            
+            #checking visualization type
             if VISUALIZING_TYPE == "Intelligence":
-                if agent.genetic['Intelligent'] == True:
-                    self.intel_world[x][y] = 1
-                else :
-                    self.intel_world[x][y] = 2
+                if self.intel_world[x][y] == 0:
+                    
+                    if agent.genetic['Intelligent'] == True:
+                        self.intel_world[x][y] = 1
+                    else :
+                        self.intel_world[x][y] = 2
+                        
+                #will be colored the same color as 0
+                else:
+                    self.intel_world[x][y] = 3
                 
             #else:
             self.world[x][y] += 1
@@ -387,7 +395,7 @@ class Game:
 
         #------setting up colormaps------
         #color for visualization mode- intelligence
-        colors_intelligence = ['beige', 'aqua', 'red']
+        colors_intelligence = ['beige', 'aqua', 'navy', 'beige']
         
         # Erstelle eine Liste von Farbwerten für die Colormap
         cmap_intelligence = ListedColormap(colors_intelligence)
@@ -403,18 +411,23 @@ class Game:
                 plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent)
         else:
             plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)"""
-        plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        plot2 = imshow(data2, cmap="YlOrRd",alpha = .5, interpolation='bilinear', extent=extent)
         
         
         
         # set imshow outline to white
         for spine in plot2.axes.spines.values():
             spine.set_edgecolor("white")
-            
-        cb2 = plt.colorbar(plot2)
-        cb1 = plt.colorbar(plot1)
         
         # COLORBAR
+        cb2 = plt.colorbar(plot2)
+        cb1 = plt.colorbar(plot1)
+        cb3 = plt.colorbar(plot3)
+        
+        
+        if VISUALIZING_TYPE == "Intelligence":
+            cb3.set_label('    no agents    intelligent agents  agressiv agents', color="white")
+            cb3.set_ticks([])
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
         cb1.set_label('amount of food per field', color="white")
