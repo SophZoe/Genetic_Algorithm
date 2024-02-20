@@ -393,6 +393,7 @@ class Game:
         plot1 = imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
         
         data2 = self.board.world
+        #changing data depending on visualization mode
         if VISUALIZING_TYPE == "Intelligence":
                 plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent)
         else:
@@ -402,13 +403,18 @@ class Game:
         # set imshow outline to white
         for spine in plot2.axes.spines.values():
             spine.set_edgecolor("white")
-            
+        
+        # COLORBAR
         cb2 = plt.colorbar(plot2)
         cb1 = plt.colorbar(plot1)
         
-        # COLORBAR
         # set colorbar label plus label color for agents
-        cb2.set_label('amount of agents', color="white")
+        if VISUALIZING_TYPE == "Intelligence":
+            cb2.set_label('    no agents       intelligent agents  agressiv agents', color="white")
+            cb2.set_ticks([])
+        else:
+            cb2.set_label('amount of agents', color="white")
+            
         cb1.set_label('amount of food per field', color="white")
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
