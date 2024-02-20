@@ -363,7 +363,7 @@ class Game:
         #5 seconds pause between each time visualizing 
         #time.sleep(2)
         
-        plt.rcParams["figure.figsize"] = [7.50, 3.50]
+        plt.rcParams["figure.figsize"] = [7.50, 4.50]
         plt.rcParams["figure.autolayout"] = True
         
         dx, dy = 0.05, 0.05
