@@ -557,6 +557,49 @@ class Board:
         self.agents_list.remove(agent)
 
 class Game:
+    """
+    class to run the simulation allowing it to be modelled across multiple "worlds"\n
+    visualizing the simulation and data collection for every round
+
+    Attributes
+    ----------
+    saving : bool
+        determines, if data for simulation is saved, default set to False
+    \n
+    worlds : int
+        number of seperate simulated "worlds", default set to 1
+    \n
+    data_list : list
+        list to store data for each simulated world
+    \n
+    board : Board
+        instance of the Board class
+    
+    Parameters
+    ----------
+    **kwargs : dict
+        unpack dict of keyword arguments passed to board
+    
+    Methods
+    -------
+    run():
+        runs the simulation, iterating through number of worlds,\n
+        each with a predefined number of rounds\n
+        updates states of agents and food, optionally collects data for simulation\n
+        ends simulation if no agents left or max number of rounds is reached
+    \n
+    collect_agent_data(board):
+        collect and return data for each agent in agents_list
+    \n
+    save_data():
+        saves collected data into seperate .csv files\n
+        creates directory for collected data if none exists
+    \n
+    visualize_board(food):
+        visualizes state of simulation for each round\n
+        visualizes distribution of food and agents for each round
+    """
+
     def __init__(self, saving=False, worlds=1, **kwargs):
         self.saving = saving
         self.worlds = worlds
@@ -566,6 +609,20 @@ class Game:
         self.board = Board(**kwargs)
 
     def run(self):
+        """
+        runs the simulation, iterating through number of worlds,\n
+        each with a predefined number of rounds\n
+        updates states of agents and food, optionally collects data for simulation\n
+        ends simulation if no agents left or max number of rounds is reached
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"----------World {world + 1}------------")
             agents_counter = NUMBER_AGENTS  # separate counter for each world
@@ -621,6 +678,17 @@ class Game:
             self.save_data()
 
     def collect_agent_data(self, board):  # new method to collect agent-data
+        """
+        collect and return data for each agent in agents_list
+
+        Parameters
+        ----------
+        board : Any
+
+        Returns
+        -------
+        list() of agent_data
+        """
         agent_data = []
         for agent in board.agents_list:
             agent_data.append({
@@ -637,6 +705,18 @@ class Game:
 
 
     def save_data(self):  # new: a separate CSV file is created for each world
+        """
+        saves collected data into seperate .csv files\n
+        creates directory for collected data if none exists
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
         if not os.path.exists('results_worlds'):
             os.makedirs('results_worlds')
 
@@ -658,6 +738,20 @@ class Game:
             print(f"Data was saved: for world {world_num} in {filename}")
 
     def visualize_board(self, food):
+        """
+        visualizes state of simulation for each round\n
+        visualizes distribution of food and agents for each round\n
+        this is achieved by overlaying two heatmaps that visualize the density
+        
+        Parameters
+        ----------
+        food : Any
+            not currently used in method
+        
+        Returns
+        -------
+        None
+        """
         #5 seconds pause between each time visualizing 
         #time.sleep(2)
         
