@@ -13,8 +13,8 @@ START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
 NUMBER_AGENTS = 10
-ROUNDS = 2
-FOOD_PERCENTAGE_BEGINNING = 0.1
+ROUNDS = 1
+FOOD_PERCENTAGE_BEGINNING = 0.3
 ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
 
@@ -82,9 +82,9 @@ class Agent:
 
     def consuming_food(self, food_dict):
         food = food_dict
-        self.consumption_time = food_dict["consumption_time"] // max(1, self.genetic['Metabolism'])
-        self.last_consumed_food_energy = food_dict["Energy"]  # Store the energy value for later
-        risk = food["disease_risk"]
+        self.consumption_time = food_dict#["consumption_time"] // max(1, self.genetic['Metabolism'])
+        self.last_consumed_food_energy = food_dict#["Energy"]  # Store the energy value for later
+        risk = food#["disease_risk"]
         if self.genetic["Intelligent"] is False:
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
                 self.sick = True
@@ -112,17 +112,21 @@ class Agent:
                     self.check_for_sickness()
                 
                 
-                    if self.flee_counter > 0:  # Fluchtmodus
-                        self.flee_counter -= 1  
+                elif self.flee_counter > 0:  # Fluchtmodus
+                    self.flee_counter -= 1  
 
-                        # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
-                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
-                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
-                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
-                        self.position = (new_x, new_y)
+                    # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
+                    dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                    dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                    new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                    new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                    self.position = (new_x, new_y)
                        
                 else:
+                    new_position = self.search_food(board)
+                    if new_position:
+                        self.position = new_position
+                        
                     # Zufällige Bewegung: -1 oder 1, multipliziert mit der Kondition
                     dx = random.choice([-1, 1]) * self.genetic['Kondition']
                     dy = random.choice([-1, 1]) * self.genetic['Kondition']
@@ -145,6 +149,9 @@ class Agent:
 
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
                     food_dict = board.food[x][y]
+                    food_dict = int(food_dict)
+                    #print(type(food_dict))
+                    #print(food_dict)
                     # Prüfen, ob     sich aggressive Agents in der Nähe befinden
                     aggressive_agents_nearby = self.check_for_aggressive_agents(board, x, y)
 
@@ -156,7 +163,7 @@ class Agent:
                             self.expelled += 1
                             return None  # Gehe zum Nächsten Futter        
 
-                    if self.genetic["Intelligent"] is True and food_dict["disease_risk"] == 0:
+                    if self.genetic["Intelligent"] is True:# and food_dict["disease_risk"] == 0:
                         self.consuming_food(food_dict)  # Aufrufen von consuming_food mit dem Schlüssel
                         board.food[x][y] = None  # Entfernen der Nahrung von den Koordinaten
                         return (x, y)
@@ -363,7 +370,7 @@ class Game:
         #5 seconds pause between each time visualizing 
         #time.sleep(2)
         
-        plt.rcParams["figure.figsize"] = [7.50, 3.50]
+        plt.rcParams["figure.figsize"] = [7.50, 4.50]
         plt.rcParams["figure.autolayout"] = True
         
         dx, dy = 0.05, 0.05
@@ -376,7 +383,7 @@ class Game:
 
 
         data1 = self.board.food
-        plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
+        plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent) #YlGn
         
         data2 = self.board.world
         plot2 = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
@@ -392,7 +399,7 @@ class Game:
         # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
-        cb1.set_label('amount of food per field', color="white")
+        cb1.set_label('food ID', color="white")
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
@@ -421,6 +428,7 @@ class Game:
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :
             print('still some food left')
+            print(np.count_nonzero(self.board.food))
         else:
             print("no food left")       
     
