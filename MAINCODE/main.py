@@ -1,4 +1,4 @@
-""" main.py but with world-comparison """
+#""" main.py but with world-comparison """
 import random
 import numpy as np
 import csv
@@ -217,6 +217,8 @@ class Board:
         self.food_percentage_beginning = food_percentage_beginning
         self.additional_food_percentage = additional_food_percentage
         self.sickness_duration = sickness_duration
+        self.food_placement_counter = 0
+        self.remove_agents_counter = 0
 
         self.agents_list = []
         self.food = np.zeros((width, height))
@@ -232,8 +234,11 @@ class Board:
             food_key = random.choice(FOOD_KEYS)
             self.food[x][y] = food_key
 
+        self.food_placement_counter += 1
+
     def remove_agents(self, agent):
         self.agents_list.remove(agent)
+        
 
     def place_agents(self):
         self.world = np.zeros_like(self.world)
@@ -284,6 +289,7 @@ class Game:
 
                     if result == "deceased":
                         self.board.remove_agents(agent)
+                        self.remove_agents_counter += 1
 
                     else:
                         for partner in self.board.agents_list:
@@ -308,6 +314,9 @@ class Game:
         #PROBLEM---- this still necessary?
         if self.saving:
             self.save_data()
+        
+        print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
+        print(f"{self.board.remove_agents_counter} agents perished during the simulation.")
 
     def collect_agent_data(self, board):  # new method to collect agent-data
         agent_data = []
