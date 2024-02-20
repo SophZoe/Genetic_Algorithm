@@ -221,6 +221,8 @@ class Board:
         self.agents_list = []
         self.food = np.zeros((width, height))
         self.world = np.zeros((width, height))
+        if VISUALIZING_TYPE == "Intelligence":
+            self.intel_world = np.zeros((width, height))
 
     def add_agent(self, agents_to_add):
         self.agents_list.append(agents_to_add)
@@ -249,11 +251,12 @@ class Board:
             x, y = agent.position
             if VISUALIZING_TYPE == "Intelligence":
                 if agent.genetic['Intelligent'] == True:
-                    self.world[x][y] = 1
+                    self.intel_world[x][y] = 1
                 else :
-                    self.world[x][y] = 2
-            else:
-                self.world[x][y] += 1
+                    self.intel_world[x][y] = 2
+                
+            #else:
+            self.world[x][y] += 1
 
     def remove_agents(self, agent):
         #removing the agents in the list 'lebewesen'
@@ -382,21 +385,26 @@ class Game:
     
         fig = plt.figure(frameon=False)
 
-        #------setting colormaps------
+        #------setting up colormaps------
         #color for visualization mode- intelligence
         colors_intelligence = ['beige', 'aqua', 'red']
         
         # Erstelle eine Liste von Farbwerten für die Colormap
         cmap_intelligence = ListedColormap(colors_intelligence)
-
+        if VISUALIZING_TYPE == "Intelligence":
+            data3 = self.board.intel_world
+            plot3 = imshow(data3, cmap_intelligence,alpha = 1, interpolation='nearest', extent=extent)
+            
         data1 = self.board.food
-        plot1 = imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
+        plot1 = imshow(data1, cmap="YlGn", alpha = 0.5,interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        if VISUALIZING_TYPE == "Intelligence":
+        """if VISUALIZING_TYPE == "Intelligence":
                 plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent)
         else:
-            plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+            plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)"""
+        plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        
         
         
         # set imshow outline to white
@@ -452,3 +460,4 @@ if __name__ == "__main__":
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(script_time)
+
