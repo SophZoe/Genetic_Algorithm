@@ -173,6 +173,7 @@ class Agent:
         self.consumption_time = 0
         self.covered_distance = 0
         self.expelled = 0
+        self.last_consumed_food_energy = 0
 
     def genedistribution(self):
         """
@@ -222,6 +223,10 @@ class Agent:
                 self.sickness_counter += 1
                 self.previous_kondition = self.genetic['Kondition']
                 self.genetic["Kondition"] = 0
+    
+    def check_for_sickness(self):
+        #either we need this method or we cant self.check_for_sickness in move()
+        pass
 
     def move(self, board):
         """
@@ -556,8 +561,9 @@ class Board:
             x, y = agent.position
             self.world[x][y] += 1
 
-    def remove_agents(self, agent):
-        self.agents_list.remove(agent)
+    # def remove_agents(self, agent):
+    #     self.agents_list.remove(agent)
+    #     outcommentes because duplicate rn
 
 class Game:
     """
