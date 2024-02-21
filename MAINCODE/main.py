@@ -13,13 +13,13 @@ import os
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
-START_ENERGY = 50
+START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
 NUMBER_AGENTS = 10
-ROUNDS = 1
-FOOD_PERCENTAGE_BEGINNING = 1
-ADDITIONAL_FOOD_PERCENTAGE = 0
+ROUNDS = 35
+FOOD_PERCENTAGE_BEGINNING = 0
+ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
 
 VISUALIZE_POISON = True # other option is False
@@ -666,7 +666,7 @@ class Game:
         None
         """
         for world in range(self.worlds):  # iterate over the specified number of worlds
-            print(f"----------World {world + 1}------------")
+            print(f"\n\n----------World {world + 1}------------\n\n")
             agents_counter = NUMBER_AGENTS  # separate counter for each world
             deceased_agents_counter = 0
             game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
@@ -681,6 +681,7 @@ class Game:
             
             for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
+                self.visualize_board()
                 round_deceased_agents = 0
                 
                 # ending the simulation in case there are no agents left
@@ -697,7 +698,6 @@ class Game:
                     if result == "deceased":
                         self.board.remove_agents(agent)
 
-                        self.board.remove_agents_counter += 1
                         round_deceased_agents += 1
 
 
@@ -709,7 +709,7 @@ class Game:
                 print(f"Agents deceased this round: {round_deceased_agents}")
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
-                self.visualize_board()
+                
                 """if round % 10 == 0:
                     self.visualize_board()"""
 
@@ -722,7 +722,12 @@ class Game:
                 pass
                 game_data['agent_data'] = self.collect_agent_data(self.board)
                 self.data_list.append(game_data)
-
+            
+            #resetting so the following worlds (if multiple in one simulation) start from scratch
+            self.board.agents_list = []
+            self.board.food = np.zeros_like(self.board.food)
+            self.board.world = np.zeros_like(self.board.world)
+            
         #PROBLEM---- this still necessary?
         if self.saving:
             pass
