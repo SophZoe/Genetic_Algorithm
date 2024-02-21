@@ -100,13 +100,21 @@ The Agent class represents the living being in the ecosystem with the following 
 
 
 **- __init__():** Initializes a new agent with a unique number, starting energy, random position and empty genetic profile.
+
 - **genedistribution():** Assigns genetic properties from the GENPOOL to the agent.
+- 
 **- consuming_food():** This method is a simulation of how an agent consumes food and the consequences of that action, including the time it takes to consume the food, the energy gained, and the potential risk of disease that may come with the food. It also shows that the agent's genetic attributes play a significant role in these interactions, affecting both the efficiency of food consumption ("Metabolism") and the agent's susceptibility to disease ("Resistance").
+  
 **- move():** Moves the agent and consumes energy, updates the position of the agent and regulates the logic of the flight mode in the agents that stumble upon their agressive counterparts. 
+
 **- search_food():** Searches for food near the agent. If food is within reach, the agent consumes it. Apart from that the search_food method includes logic where an agent checks for aggressive agents nearby before consuming food. If an aggressive agent is detected, a non-aggressive, intelligent agent may stop eating and move away to avoid conflict (self.move_away_from_aggressive(board, aggressive_agents_nearby)). This behavior suggests that intelligence equips agents with the foresight to avoid potentially dangerous situations, prioritizing safety.
+
 **- check_for_aggressive_agents():** Activates the mechanism of detecting the aggressive agents by all the agents with (self.genetic["Aggressive"] = False).
+
 **- move_away_from_aggressive():** Initiates the flight response where a non-aggressive agent, upon encountering aggressive agents, prioritizes its safety over continuing to consume food. By resetting the consumption_time to 0, the agent effectively stops eating and prepares to move away, with the flee_counter indicating how long this fleeing behavior will last.
+
 **- reproduce():** Enables reproduction between two agents if they are on the same field and have enough energy.
+
 **- genedistribution_throgh_heredity():** Determines the genetic traits of a newborn agent based on the parents' genes.
 
 **- Board**
@@ -116,9 +124,13 @@ The board class manages the simulated world in which the agents live:
 
 
 **- __init__():** Initializes the game board, a list for agents and a Zero-NumPy array for food distribution.
+
 **- add_agent():** Adds a new agent to the world.
-**- place_food():** Places food on the board based on a specified percentage of spaces
+
+**- place_food():** Places food on the board based on a specified percentage of spaces.
+
 **- place_agents():** Places agents on the game board for the further visualization.
+
 **- remove_agents():** Removes an agent from the game board.
 
 **- Game**
@@ -127,11 +139,15 @@ The Game class controls the simulation process:
 ![game_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/f88e8eda-6a71-441c-b39b-46686ad67342)
 
 ** - __init__():** Initializes the game on the game board and adds agents and food.
+
 ** - run():** Runs the specified number of simulation rounds in which agents move randomly. Coordinates reproduction and the search for food as well as placing additional food after every 10th round of the simulation.
+
 ** - save_data():** Saves the simulation data in a CSV file.
 
-**- Visualization**
+
+## Visualization**
 ** - visualize_board():** Visualizes the world and the distribution of agents and food.
+
 The method uses the Matplotlib library to visualize the state of a board in a simulation game, which consists of agents and food distributed on a grid (100x100). Defines a grid using NumPy's arange function. Includes the Agent counter display and checks if there is any food left on the board and how many agents are still living.
 
 The old version (only 1 type of food and 1 type of agents)
