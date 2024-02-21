@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import time
 import random
 from matplotlib.pyplot import imshow
-import matplotlib.cm as cm
+import matplotlib
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 import os
@@ -850,7 +850,7 @@ class Game:
         
         #------changing colormaps so first value is plotted white--------
         # Get the 'YlGn' colormap
-        ylgn_cmap = cm.get_cmap('YlGn')
+        ylgn_cmap = matplotlib.colormaps.get_cmap('YlGn')
         
         # Get the colormap values3
         ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
@@ -862,7 +862,7 @@ class Game:
         modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
         
         #get YlOrRd colormap
-        YlOrRd_cmap= cm.get_cmap('YlOrRd')
+        YlOrRd_cmap= matplotlib.colormaps.get_cmap('YlOrRd')
         
         # Get the colormap values
         YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
@@ -888,7 +888,7 @@ class Game:
             plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .6, interpolation='bilinear', extent=extent)
+        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .65, interpolation='hanning', extent=extent)
         
         
         # set imshow outline to white
@@ -898,10 +898,15 @@ class Game:
         cb2 = plt.colorbar(plot2)
         cb1 = plt.colorbar(plot1)
         
-        # COLORBAR
+        # COLORBARS
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
-        cb1.set_label('food ID', color="white")
+        if VISUALIZE_POISON == True:
+            cb1.set_label('no food          non-poisonous          poisonous', color="white")
+            cb1.set_ticks([])
+        else:
+            cb1.set_label('food ID', color="white")
+            
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
