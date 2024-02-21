@@ -29,22 +29,31 @@ def test_agent_move():
 
 
 def test_agent_reproduce():
-    board = Board(WIDTH, HEIGHT)
-    parent1 = Agent(1)
-    parent2 = Agent(2)
-    parent1.energy = ENERGYCOSTS_REPRODUCTION * 2  # making sure that there is enough energy for reproduction
-    parent2.energy = ENERGYCOSTS_REPRODUCTION * 2
-    board.add_agent(parent1)
-    board.add_agent(parent2)
+    agent1 = Agent(1, energy=ENERGYCOSTS_REPRODUCTION + 1, position=(0, 0), genetic={"Tribe": 1})
+    agent2 = Agent(2, energy=ENERGYCOSTS_REPRODUCTION + 1, position=(0, 0), genetic={"Tribe": 1})
 
-    # check if agent-list-length is correct before reproduction:
-    assert len(board.agents_list) == 2
-    
-    parent1.reproduce(parent2, board)
-    
-    print(board.agents_list)
-    # check if new agent was added:
+    # add agents to board
+    board = Board()
+    board.add_agent(agent1)
+    board.add_agent(agent2)
+
+    # test the success of reproduction
+    agent1.reproduce(agent2, board)
     assert len(board.agents_list) == 3
+
+    # check if energy of parents were reduced
+    assert agent1.energy == 1  # ENERGYCOSTS_REPRODUCTION + 1 - ENERGYCOSTS_REPRODUCTION
+    assert agent2.energy == 1  # ENERGYCOSTS_REPRODUCTION + 1 - ENERGYCOSTS_REPRODUCTION
+
+    # check if reproduction counter counts correctly
+    assert agent1.reproduction_counter == 1
+    assert agent2.reproduction_counter == 1
+
+    # check the attributes of the new agent
+    new_agent = board.agents_list[2]
+    assert new_agent.parent_A == agent1.number
+    assert new_agent.parent_B == agent2.number
+    assert new_agent.genetic["Tribe"] == 1
 
 
 def test_genedistribution_thru_heredity():
