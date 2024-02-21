@@ -1,11 +1,14 @@
 """ main.py but with world-comparison """
-import random
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import time
+import random
+from matplotlib.pyplot import imshow
+from matplotlib import colormaps as cm
+from matplotlib.colors import ListedColormap
+from matplotlib.colors import LinearSegmentedColormap
 import os
-
 
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
@@ -672,6 +675,7 @@ class Game:
 
         #PROBLEM---- this still necessary?
         if self.saving:
+            pass
             self.save_data()
 
 
@@ -778,7 +782,7 @@ class Game:
         #5 seconds pause between each time visualizing 
         #time.sleep(2)
         
-        plt.rcParams["figure.figsize"] = [7.50, 3.50]
+        plt.rcParams["figure.figsize"] = [7.50, 4.50]
         plt.rcParams["figure.autolayout"] = True
         
         dx, dy = 0.05, 0.05
@@ -787,14 +791,42 @@ class Game:
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
         
         fig = plt.figure(frameon=False)
-
-
-
+        
+        
+        
+        #------changing colormaps so first value is lpotted white--------
+        # Get the 'YlGn' colormap
+        ylgn_cmap = cm.get_cmap('YlGn')
+        
+        # Get the colormap values
+        ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
+        
+        # Set the color at the beginning (where the value is 0) to white
+        ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        
+        # Create a new colormap with modified colors
+        modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
+        
+        #get YlOrRd colormap
+        YlOrRd_cmap= cm.get_cmap('YlOrRd')
+        
+        # Get the colormap values
+        YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
+        
+        # Set the color at the beginning (where the value is 0) to white
+        YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        
+        # Create a new colormap with modified colors
+        modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
+        
+        
+    
+    
         data1 = self.board.food
-        plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
+        plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plot2 = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .7, interpolation='bilinear', extent=extent)
         
         
         # set imshow outline to white
@@ -807,7 +839,7 @@ class Game:
         # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
-        cb1.set_label('amount of food per field', color="white")
+        cb1.set_label('food ID', color="white")
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
@@ -819,7 +851,7 @@ class Game:
         # set colorbar ticklabels
         plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="white")
         plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="white")
-
+    
         
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
@@ -838,7 +870,7 @@ class Game:
             print('still some food left')
         else:
             print("no food left")       
-    
+
     
 # Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
