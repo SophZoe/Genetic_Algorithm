@@ -13,10 +13,10 @@ ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
-NUMBER_AGENTS = 1
+NUMBER_AGENTS = 10
 ROUNDS = 10
-FOOD_PERCENTAGE_BEGINNING = 0
-ADDITIONAL_FOOD_PERCENTAGE = 0
+FOOD_PERCENTAGE_BEGINNING = 0.1
+ADDITIONAL_FOOD_PERCENTAGE = 0.1
 SICKNESS_DURATION = ROUNDS // 10
 
 
@@ -294,7 +294,6 @@ class Game:
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
                 self.visualize_board()
-                print(self.board.food)
                 """if round % 10 == 0:
                     self.visualize_board(FOOD)"""
 
@@ -400,14 +399,10 @@ class Game:
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
         
-        #showing food array to check visualization (optional)
-        #print(self.board.food)
-        #showing world array to check visualization (optional)
-        #print(self.board.world)
         
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        print(self.board.world)
+        
         #checking if there is food left in the world
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :
