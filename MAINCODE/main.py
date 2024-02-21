@@ -727,7 +727,7 @@ class Game:
             self.board.agents_list = []
             self.board.food = np.zeros_like(self.board.food)
             self.board.world = np.zeros_like(self.board.world)
-            print("set to zero")
+            
         #PROBLEM---- this still necessary?
         if self.saving:
             pass
