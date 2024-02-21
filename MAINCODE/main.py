@@ -898,7 +898,7 @@ class Game:
         cb2 = plt.colorbar(plot2)
         cb1 = plt.colorbar(plot1)
         
-        # COLORBARS
+        # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
         if VISUALIZE_POISON == True:
@@ -906,7 +906,6 @@ class Game:
             cb1.set_ticks([])
         else:
             cb1.set_label('food ID', color="white")
-            
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
