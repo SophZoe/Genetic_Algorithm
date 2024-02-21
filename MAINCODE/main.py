@@ -223,8 +223,11 @@ class Agent:
                 self.sickness_counter += 1
                 self.previous_kondition = self.genetic['Kondition']
                 self.genetic["Kondition"] = 0
-    
+
     def check_for_sickness(self):
+        """
+        needed if we use that method
+        """
         #either we need this method or we cant self.check_for_sickness in move()
         pass
 
@@ -247,7 +250,7 @@ class Agent:
             if self.consumption_time == 0:
                 self.energy += self.last_consumed_food_energy   # Add the stored energy
                 self.consume_counter += 1   # Increment the consume counter
-                self.last_consumed_food_energy = 0 
+                self.last_consumed_food_energy = 0
                 # Reset the stored energy to 0 for the next consumption
         else:
             if self.energy > ENERGYCOSTS_MOVEMENT:
@@ -614,7 +617,7 @@ class Game:
         self.worlds = worlds
         self.data_list = []
         # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
-        # is useful when we want to use constants but also want to adjust them 
+        # is useful when we want to use constants but also want to adjust them
         # when calling the method
         self.board = Board(**kwargs)
 
