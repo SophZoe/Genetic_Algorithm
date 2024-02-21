@@ -38,7 +38,7 @@ GENPOOL = {
     "Genes": {
         "Kondition": (1, 3),
         "Visibilityrange": (1, 3),
-        "Tribe": (1, 3),
+        "Tribe": (1, 3), #what use? 
         "Resistance": (1, 3),
         "Metabolism": (1, 3),
         "Intelligent": [True, False],
@@ -287,7 +287,6 @@ class Agent:
             for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
                 
-                
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
                     food_dict = board.food[x][y]
                     # check if aggressive agents are nearby
@@ -470,7 +469,7 @@ class Board:
                  number_agents=NUMBER_AGENTS, rounds=ROUNDS,
                  food_percentage_beginning=FOOD_PERCENTAGE_BEGINNING,
                  additional_food_percentage=ADDITIONAL_FOOD_PERCENTAGE,
-                 sickness_duration=SICKNESS_DURATION, **kwargs):
+                 sickness_duration=SICKNESS_DURATION, **kwargs):    # makes sure you can adjust individual parameters
         self.width = width
         self.height = height
         self.energy_costs_movement = energy_costs_movement
@@ -604,9 +603,7 @@ class Game:
         self.saving = saving
         self.worlds = worlds
         self.data_list = []
-        # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
-        # is useful when we want to use constants but also want to adjust them when calling the method
-        self.board = Board(**kwargs)
+        self.board = Board(**kwargs)    # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
 
     def run(self):
         """
@@ -628,8 +625,8 @@ class Game:
             agents_counter = NUMBER_AGENTS  # separate counter for each world
             game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
 
-            # now this is configured for each world:
-            #board = Board(WIDTH, HEIGHT)
+            # this now is configured for each world:
+            # board = Board(WIDTH, HEIGHT)
             for i in range(1, NUMBER_AGENTS + 1):
                 self.board.add_agent(Agent(i))
 
@@ -677,6 +674,7 @@ class Game:
         if self.saving:
             self.save_data()
 
+
     def collect_agent_data(self, board):  # new method to collect agent-data
         """
         collect and return data for each agent in agents_list
@@ -689,7 +687,9 @@ class Game:
         -------
         list() of agent_data
         """
+
         agent_data = []
+
         for agent in board.agents_list:
             agent_data.append({
                 'agent_number': agent.number,
@@ -699,9 +699,20 @@ class Game:
                 'covered_distance': agent.covered_distance,
                 'expelled': agent.expelled,
                 'parent_A': agent.parent_A,
-                'parent_B': agent.parent_B
+                'parent_B': agent.parent_B,
+                'genes': {
+                    'Kondition': agent.genetic['Kondition'],
+                    'Visibilityrange': agent.genetic['Visibilityrange'],
+                    'Tribe': agent.genetic['Tribe'],
+                    'Resistance': agent.genetic['Resistance'],
+                    'Metabolism': agent.genetic['Metabolism'],
+                    'Intelligent': agent.genetic['Intelligent'],
+                    'Aggressive': agent.genetic['Aggressive']
+                }
             })
+
         return agent_data
+
 
 
     def save_data(self):  # new: a separate CSV file is created for each world
@@ -717,23 +728,35 @@ class Game:
         -------
         None
         """
+
+    def save_data(self):
+        csv_index = 0
         if not os.path.exists('results_worlds'):
             os.makedirs('results_worlds')
 
         for world_data in self.data_list:
             world_num = world_data['world']
             filename = f'results_worlds/world_{world_num}_data.csv'
+            while os.path.exists(filename):
+                csv_index += 1
+                filename = os.path.join('results_worlds', f'{csv_index}_world_{world_num}_data.csv')
 
             with open(filename, 'w', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow(['agent_number', 'reproduction_counter', 'consume_counter',
-                                 'sickness_counter', 'covered_distance', 'expelled', 'parent_A', 'parent_B'])
+                fieldnames = ['agent_number', 'reproduction_counter', 'consume_counter',
+                               'sickness_counter', 'covered_distance', 'expelled', 'parent_A', 'parent_B']
+                
+                # add "fieldnames" for the Genes-dictionary keys
+                fieldnames.extend(['Kondition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism', 'Intelligent', 'Aggressive'])
+
+                writer = csv.DictWriter(file, fieldnames=fieldnames)
+                writer.writeheader()
 
                 for agent_data in world_data['agent_data']:
-                    writer.writerow([agent_data['agent_number'], agent_data['reproduction_counter'],
-                                     agent_data['consume_counter'], agent_data['sickness_counter'],
-                                     agent_data['covered_distance'], agent_data['expelled'],
-                                     agent_data['parent_A'], agent_data['parent_B']])
+                    # flatten the 'genes' dictionary into separate columns
+                    flat_agent_data = {**agent_data, **agent_data['genes']}
+
+                    del flat_agent_data['genes']
+                    writer.writerow(flat_agent_data)
 
             print(f"Data was saved: for world {world_num} in {filename}")
 

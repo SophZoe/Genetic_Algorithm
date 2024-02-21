@@ -1,4 +1,5 @@
-<img width="500" height = "300" alt="genetic_alg" <img alt="genetic_alg" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/eb9d936e-5e26-4106-a8c3-dcde95f36305">
+
+ <img alt="genetic_alg" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/eb9d936e-5e26-4106-a8c3-dcde95f36305">
 
 #  User & Developer Documentation for the Project „Genetic Algorithms Simulation based on the NumPy-Arrays“. 
 
@@ -125,7 +126,7 @@ The Game class controls the simulation process:
 ** - visualize_board():** Visualizes the world and the distribution of agents and food.
 The method uses the Matplotlib library to visualize the state of a board in a simulation game, which consists of agents and food distributed on a grid (100x100). Defines a grid using NumPy's arange function. Includes the Agent counter display and checks if there is any food left on the board and how many agents are still living.
 
-<img width="437" alt="Round 1 " src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/b7f4cf52-23f0-4009-8aad-7c1f6e202304">
+![viz](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/798120e3-18ce-438f-9e1a-940da51d2b1e)
 
 
 ## Customization and possible feature extension**
