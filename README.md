@@ -1,4 +1,5 @@
-alt="genetic_alg" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/eb9d936e-5e26-4106-a8c3-dcde95f36305">
+<img width="737" alt="gen_algorithms" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/fd23c140-6189-446a-8759-8b143fde6a30">
+
 
 #  User & Developer Documentation for the Project „Genetic Algorithms Simulation based on the NumPy-Arrays“. 
 
