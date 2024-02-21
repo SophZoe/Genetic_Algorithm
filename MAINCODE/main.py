@@ -13,9 +13,9 @@ ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
-NUMBER_AGENTS = 10
-ROUNDS = 20
-FOOD_PERCENTAGE_BEGINNING = 0.1
+NUMBER_AGENTS = 1
+ROUNDS = 10
+FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
 
@@ -114,6 +114,7 @@ class Agent:
                         new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
                         self.position = (new_x, new_y)
                 else:
+                    self.energy -= ENERGYCOSTS_MOVEMENT
                     # random move: -1 or 1, multiplied with condition
                     dx = random.choice([-1, 1]) * self.genetic['Kondition']
                     dy = random.choice([-1, 1]) * self.genetic['Kondition']
@@ -267,7 +268,7 @@ class Game:
 
             self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
-
+            
             for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
                 
@@ -292,9 +293,10 @@ class Game:
 
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
-
-                if round % 10 == 0:
-                    self.visualize_board(FOOD)
+                self.visualize_board()
+                print(self.board.food)
+                """if round % 10 == 0:
+                    self.visualize_board(FOOD)"""
 
             self.board.place_agents()
 
@@ -302,12 +304,14 @@ class Game:
             # creates dict 'game_data' to store the data for the current game-world
             # then collects agent-data from the board and stores in 'game_data' under the key 'agent_data'
             if self.saving is True:
+                pass
                 game_data['agent_data'] = self.collect_agent_data(self.board)
                 self.data_list.append(game_data)
 
         #PROBLEM---- this still necessary?
         if self.saving:
-            self.save_data()
+            pass
+            #self.save_data()
 
     def collect_agent_data(self, board):  # new method to collect agent-data
         agent_data = []
@@ -346,7 +350,7 @@ class Game:
 
             print(f"Data was saved: for world {world_num} in {filename}")
 
-    def visualize_board(self, food):
+    def visualize_board(self):
         #5 seconds pause between each time visualizing 
         #time.sleep(2)
         
@@ -403,7 +407,7 @@ class Game:
         
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        
+        print(self.board.world)
         #checking if there is food left in the world
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :
