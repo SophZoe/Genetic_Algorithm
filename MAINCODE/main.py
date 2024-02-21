@@ -214,7 +214,7 @@ class Agent:
         -------
         None
         """
-        self.consumption_time = FOOD[food_key]["consumption_time"] // self.genetic['Metabolism']
+        self.consumption_time = FOOD[food_key]["consumption_time"] // max(1, self.genetic['Metabolism'])
         self.last_consumed_food_energy = FOOD[food_key]["Energy"]
         risk = FOOD[food_key]["disease_risk"]
         if self.genetic["Intelligent"] is False:  
@@ -245,6 +245,7 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
+        self.energy -= ENERGYCOSTS_MOVEMENT
         if self.consumption_time > 0:
             self.consumption_time -= 1  # Decrement the consumption timer
             # If consumption has just finished, add the energy from the last consumed food
@@ -271,6 +272,7 @@ class Agent:
                     self.search_food(self.board)
             else:
                 return "deceased"
+
 
     def search_food(self, board):
         """
@@ -545,6 +547,7 @@ class Board:
         None
         """
         self.agents_list.remove(agent)
+        self.remove_agents_counter += 1
         
 
     def place_agents(self):
@@ -618,7 +621,9 @@ class Game:
         self.saving = saving
         self.worlds = worlds
         self.data_list = []
-        self.board = Board(**kwargs)    # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
+        self.board = Board(**kwargs)
+
+    # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
 
     def run(self):
         """
@@ -666,8 +671,7 @@ class Game:
 
                     if result == "deceased":
                         self.board.remove_agents(agent)
-                        self.remove_agents_counter += 1
-                        round_deceasd_agents += 1
+                        round_deceased_agents += 1
 
                     else:
                         for partner in self.board.agents_list:
