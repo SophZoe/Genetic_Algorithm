@@ -245,6 +245,7 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
+        print(f"Agent {self.number} bewegt sich.")
         self.energy -= ENERGYCOSTS_MOVEMENT
         if self.consumption_time > 0:
             self.consumption_time -= 1  # Decrement the consumption timer
@@ -506,6 +507,7 @@ class Board:
         None
         """
         self.agents_list.append(agents_to_add)
+        print(f"Agent {agents_to_add.number} hinzugefügt.")
 
     def place_food(self, prozent):
 
@@ -548,6 +550,7 @@ class Board:
         """
         self.agents_list.remove(agent)
         self.remove_agents_counter += 1
+        print(f"Agent {agent.number} entfernt.")
         
 
     def place_agents(self):
@@ -717,6 +720,8 @@ class Game:
         list() of agent_data
         """
 
+        print("Sammeln von Agentendaten gestartet.")
+
         agent_data = []
 
         for agent in board.agents_list:
@@ -740,6 +745,7 @@ class Game:
                 }
             })
 
+        print(f"Gesammelte Agentendaten: {agent_data}")
         return agent_data
 
 
@@ -757,13 +763,14 @@ class Game:
         -------
         None
         """
-
-    def save_data(self):
+    
         csv_index = 0
         if not os.path.exists('results_worlds'):
             os.makedirs('results_worlds')
 
         for world_data in self.data_list:
+            print(f"Speichere Daten für Welt {world_data['world']}.")
+            print(f"Zu speichernde Daten: {world_data['agent_data']}")
             world_num = world_data['world']
             filename = f'results_worlds/world_{world_num}_data.csv'
             while os.path.exists(filename):
