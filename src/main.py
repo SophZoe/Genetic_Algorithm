@@ -1,4 +1,3 @@
-""" main.py to experiment with """
 import numpy as np
 import time
 
