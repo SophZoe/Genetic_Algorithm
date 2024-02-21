@@ -231,7 +231,7 @@ class Board:
         for _ in range(amount_fields):
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
             food_key = random.choice(FOOD_KEYS)
-            self.food[x][y] = food_key
+            self.food[x][y] = FOOD[food_key]["Energy"]
 
     def remove_agents(self, agent):
         self.agents_list.remove(agent)
@@ -402,7 +402,7 @@ class Game:
         
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        
+        print(self.board.food)
         #checking if there is food left in the world
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :
