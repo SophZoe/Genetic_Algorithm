@@ -1,14 +1,11 @@
-
-#""" main.py but with world-comparison """
 import random
-
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import time
 import random
 from matplotlib.pyplot import imshow
-from matplotlib import colormaps as cm
+import matplotlib.cm as cm
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 import os
@@ -16,9 +13,9 @@ import os
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
-START_ENERGY = 10
-WIDTH = 10
-HEIGHT = 10
+START_ENERGY = 50
+WIDTH = 100
+HEIGHT = 100
 NUMBER_AGENTS = 10
 ROUNDS = 10
 FOOD_PERCENTAGE_BEGINNING = 0
@@ -30,13 +27,13 @@ SICKNESS_DURATION = ROUNDS // 10
 agents_counter = NUMBER_AGENTS
 
 FOOD = {
-    "1": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
-    "2": {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
-    "3": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
-    "5": {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
-    "4": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
-    "6": {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
-    "7": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}
+    1.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
+    2.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
+    3.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
+    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
+    5.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
+    6.0: {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
+    7.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}
 }
 FOOD_KEYS = list(FOOD.keys())
 
@@ -145,7 +142,7 @@ class Agent:
         from both parents, some selected at random (tribe, intelligence), others calculated
     """
 
-    def __init__(self, number, sick=0):
+    def __init__(self, number, board, sick=0):
         """
         Initializes all necessary attributes for the agent object
         
@@ -161,6 +158,7 @@ class Agent:
         None
         """
         global agents_counter
+        self.board = board
         self.sickness_counter = 0
         self.number = number
         self.energy = START_ENERGY
@@ -202,31 +200,37 @@ class Agent:
             else:
                 self.genetic[gen] = random.randint(*bereich)
 
-    def consuming_food(self, food_dict):
+    def consuming_food(self, food_key):
         """
         adjusting health and status values of an agent based on food properties, \n 
         which are predetermined through the food_dict and the agents unique genedistribution
 
         Parameters
         ----------
-        food_dict : dict
-            global dictionary with all food attributes listed
+        food_key : key
+            a key used as reference for food
         
         Returns
         -------
         None
         """
-        food = food_dict
-        self.consumption_time = food_dict["consumption_time"] // max(1, self.genetic['Metabolism'])
-        self.last_consumed_food_energy = food_dict["Energy"]
-        risk = food["disease_risk"]
-        if self.genetic["Intelligent"] is False:
+        self.consumption_time = FOOD[food_key]["consumption_time"] // max(1, self.genetic['Metabolism'])
+        self.last_consumed_food_energy = FOOD[food_key]["Energy"]
+        risk = FOOD[food_key]["disease_risk"]
+        if self.genetic["Intelligent"] is False:  
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
                 self.sick = True
                 self.sickness_duration = SICKNESS_DURATION
                 self.sickness_counter += 1
                 self.previous_kondition = self.genetic['Kondition']
                 self.genetic["Kondition"] = 0
+
+    def check_for_sickness(self):
+        if self.sick:
+            self.sickness_duration -= 1
+            if self.sickness_duration <= 0:
+                self.sick = False
+                self.genetic["Kondition"] = self.previous_kondition
 
     def move(self, board):
         """
@@ -262,18 +266,29 @@ class Agent:
                         new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
                         new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
                         self.position = (new_x, new_y)
-                else:
-                    self.energy -= ENERGYCOSTS_MOVEMENT
-                    # random move: -1 or 1, multiplied with condition
-                    dx = random.choice([-1, 1]) * self.genetic['Kondition']
-                    dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                        self.energy -= (ENERGYCOSTS_MOVEMENT*2)
 
-                    new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-                    new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
-                    self.position = (new_x, new_y)
-                    self.covered_distance += 1
+                    else:
+                        self.search_food(self.board)
+                        self.energy -= (ENERGYCOSTS_MOVEMENT*2)
+                else:
+                    if self.flee_counter > 0:   # flight-mode
+                        self.flee_counter -= 1
+
+                        # random move: -1 or 1, multiplied with condition
+                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                        self.position = (new_x, new_y)
+                        self.energy -= ENERGYCOSTS_MOVEMENT
+
+                    else:
+                        self.search_food(self.board)
+                        self.energy -= ENERGYCOSTS_MOVEMENT
             else:
                 return "deceased"
+
 
     def search_food(self, board):
         """
@@ -294,8 +309,8 @@ class Agent:
             for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
                 
-                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
-                    food_dict = board.food[x][y]
+                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] != 0:
+                    food_key = board.food[x][y]
                     # check if aggressive agents are nearby
                     aggressive_agents_nearby = self.check_for_aggressive_agents(board, x, y)
 
@@ -307,13 +322,13 @@ class Agent:
                             self.expelled += 1
                             return None # go to next available food source
 
-                    if self.genetic["Intelligent"] is True and food_dict["disease_risk"] == 0:
-                        self.consuming_food(food_dict)
-                        board.food[x][y] = None
+                    if self.genetic["Intelligent"] is True and FOOD[food_key]["disease_risk"] == 0:
+                        self.consuming_food(food_key)
+                        board.food[x][y] = 0
                         return (x, y)
                     else:
-                        self.consuming_food(food_dict)
-                        board.food[x][y] = None
+                        self.consuming_food(food_key)
+                        board.food[x][y] = 0
                         return (x, y)
         return None
 
@@ -381,7 +396,7 @@ class Agent:
             success_rate = 1 if self.genetic["Tribe"] == partner.genetic["Tribe"] else 0.3
             if random.random() < success_rate:
                 agents_counter += 1
-                kind = Agent(agents_counter)
+                kind = Agent(agents_counter, self.board)
                 kind.genedistribution_thru_heredity(self, partner)
                 self.energy -= ENERGYCOSTS_REPRODUCTION
                 self.reproduction_counter += 1
@@ -488,7 +503,7 @@ class Board:
         self.additional_food_percentage = additional_food_percentage
         self.sickness_duration = sickness_duration
         self.food_placement_counter = 0
-        self.remove_agents_counter = 0
+        self.removed_agents_counter = 0
 
         self.agents_list = []
         self.food = np.zeros((width, height))
@@ -548,6 +563,7 @@ class Board:
         None
         """
         self.agents_list.remove(agent)
+        self.removed_agents_counter += 1
         
 
     def place_agents(self):
@@ -621,7 +637,10 @@ class Game:
         self.saving = saving
         self.worlds = worlds
         self.data_list = []
-        self.board = Board(**kwargs)    # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
+        self.board = Board(**kwargs)
+        self.removed_agents = 0
+
+    # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
 
     def run(self):
         """
@@ -647,7 +666,7 @@ class Game:
             # this now is configured for each world:
             # board = Board(WIDTH, HEIGHT)
             for i in range(1, NUMBER_AGENTS + 1):
-                self.board.add_agent(Agent(i))
+                self.board.add_agent(Agent(i, self.board))
 
             self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
@@ -669,8 +688,10 @@ class Game:
 
                     if result == "deceased":
                         self.board.remove_agents(agent)
+
                         self.board.remove_agents_counter += 1
                         round_deceased_agents += 1
+
 
                     else:
                         for partner in self.board.agents_list:
@@ -699,8 +720,8 @@ class Game:
             pass
             #self.save_data()
         print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
-        print(f"{self.board.remove_agents_counter} agents perished during the simulation.")
-        print(f"Total deceased agents in world {world + 1}: {deceased_agents_counter}")
+        print(f"{self.removed_agents} agents perished during the simulation.")
+        print(f"Total deceased agents in world {world+ 1}: {deceased_agents_counter}")
 
 
     def collect_agent_data(self, board):  # new method to collect agent-data
@@ -715,6 +736,7 @@ class Game:
         -------
         list() of agent_data
         """
+
 
         agent_data = []
 
@@ -756,18 +778,18 @@ class Game:
         -------
         None
         """
-
-    def save_data(self):
-        csv_index = 0
         if not os.path.exists('results_worlds'):
             os.makedirs('results_worlds')
 
         for world_data in self.data_list:
+            #print(f"Saving data for world {world_data['world']}.")
             world_num = world_data['world']
-            filename = f'results_worlds/world_{world_num}_data.csv'
+            filename = os.path.join('results_worlds', f'0__World({world_num}).csv')
+            csv_index = 0
+
             while os.path.exists(filename):
                 csv_index += 1
-                filename = os.path.join('results_worlds', f'{csv_index}_world_{world_num}_data.csv')
+                filename = os.path.join('results_worlds/', f'{csv_index}___World({world_num}).csv')
 
             with open(filename, 'w', newline='') as file:
                 fieldnames = ['agent_number', 'reproduction_counter', 'consume_counter',
@@ -786,7 +808,7 @@ class Game:
                     del flat_agent_data['genes']
                     writer.writerow(flat_agent_data)
 
-            print(f"Data was saved: for world {world_num} in {filename}")
+            #print(f"Data was saved: for world {world_num} in {filename}")
 
     def visualize_board(self):
         """
@@ -822,7 +844,7 @@ class Game:
         # Get the 'YlGn' colormap
         ylgn_cmap = cm.get_cmap('YlGn')
         
-        # Get the colormap values
+        # Get the colormap values3
         ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
         
         # Set the color at the beginning (where the value is 0) to white
@@ -902,4 +924,4 @@ if __name__ == "__main__":
     #game = Game()
     game.run()
     script_time = np.round(time.time() - start, 2)
-    print(script_time)
+    print(f"Script time: {script_time}s")
