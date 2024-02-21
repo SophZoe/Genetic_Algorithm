@@ -21,8 +21,8 @@ WIDTH = 10
 HEIGHT = 10
 NUMBER_AGENTS = 10
 ROUNDS = 10
-FOOD_PERCENTAGE_BEGINNING = 0.1
-ADDITIONAL_FOOD_PERCENTAGE = 0.1
+FOOD_PERCENTAGE_BEGINNING = 0
+ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
 
 
@@ -669,7 +669,7 @@ class Game:
 
                     if result == "deceased":
                         self.board.remove_agents(agent)
-                        self.remove_agents_counter += 1
+                        self.board.remove_agents_counter += 1
                         round_deceased_agents += 1
 
                     else:
