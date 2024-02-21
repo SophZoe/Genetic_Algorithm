@@ -18,8 +18,8 @@ WIDTH = 100
 HEIGHT = 100
 NUMBER_AGENTS = 10
 ROUNDS = 10
-FOOD_PERCENTAGE_BEGINNING = 0.1
-ADDITIONAL_FOOD_PERCENTAGE = 0.1
+FOOD_PERCENTAGE_BEGINNING = 0
+ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
 
 
@@ -628,7 +628,7 @@ class Game:
         saves collected data into seperate .csv files\n
         creates directory for collected data if none exists
     \n
-    visualize_board(food):
+    visualize_board():
         visualizes state of simulation for each round\n
         visualizes distribution of food and agents for each round
     """
@@ -688,8 +688,10 @@ class Game:
 
                     if result == "deceased":
                         self.board.remove_agents(agent)
+
+                        self.board.remove_agents_counter += 1
                         round_deceased_agents += 1
-                        self.removed_agents += 1
+
 
                     else:
                         for partner in self.board.agents_list:
@@ -903,7 +905,7 @@ class Game:
         
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        
+        print(self.board.food)
         #checking if there is food left in the world
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :
