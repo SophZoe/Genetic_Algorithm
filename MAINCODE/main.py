@@ -17,9 +17,9 @@ START_ENERGY = 50
 WIDTH = 100
 HEIGHT = 100
 NUMBER_AGENTS = 10
-ROUNDS = 100
+ROUNDS = 10
 FOOD_PERCENTAGE_BEGINNING = 0.1
-ADDITIONAL_FOOD_PERCENTAGE = 0
+ADDITIONAL_FOOD_PERCENTAGE = 0.1
 SICKNESS_DURATION = ROUNDS // 10
 
 
@@ -670,7 +670,7 @@ class Game:
 
             self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
-
+            
             for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
                 round_deceased_agents = 0
@@ -699,9 +699,9 @@ class Game:
                 print(f"Agents deceased this round: {round_deceased_agents}")
                 self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
-
-                if round % 10 == 0:
-                    self.visualize_board(FOOD)
+                self.visualize_board()
+                """if round % 10 == 0:
+                    self.visualize_board()"""
 
             self.board.place_agents()
 
@@ -709,14 +709,14 @@ class Game:
             # creates dict 'game_data' to store the data for the current game-world
             # then collects agent-data from the board and stores in 'game_data' under the key 'agent_data'
             if self.saving is True:
+                pass
                 game_data['agent_data'] = self.collect_agent_data(self.board)
                 self.data_list.append(game_data)
 
         #PROBLEM---- this still necessary?
         if self.saving:
             pass
-            self.save_data()
-        
+            #self.save_data()
         print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
         print(f"{self.removed_agents} agents perished during the simulation.")
         print(f"Total deceased agents in world {world+ 1}: {deceased_agents_counter}")
@@ -808,7 +808,7 @@ class Game:
 
             #print(f"Data was saved: for world {world_num} in {filename}")
 
-    def visualize_board(self, food):
+    def visualize_board(self):
         """
         visualizes state of simulation for each round\n
         visualizes distribution of food and agents for each round\n
@@ -900,10 +900,6 @@ class Game:
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
         
-        #showing food array to check visualization (optional)
-        #print(self.board.food)
-        #showing world array to check visualization (optional)
-        #print(self.board.world)
         
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
