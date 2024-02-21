@@ -1,10 +1,10 @@
 """ main.py but with world-comparison """
-import random
-import numpy as np
-import csv
-import matplotlib.pyplot as plt
-import time
 import os
+import time
+import random
+import csv
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 # Constants
@@ -21,7 +21,7 @@ SICKNESS_DURATION = ROUNDS // 10
 
 
 # Global counter for the numbering of living beings
-agents_counter = NUMBER_AGENTS
+AGENTS_COUNTER = NUMBER_AGENTS
 
 FOOD = {
     "1": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
@@ -47,9 +47,10 @@ GENPOOL = {
 }
 
 class Agent:
-    """ 
-     Class to represent an Agent in this simulated environment with various genetic traits and behaviours.
-      
+    """
+     Class to represent an Agent in this simulated environment\n
+     with various genetic traits and behaviours.
+
     Attributes
     ----------
     number : int
@@ -94,10 +95,10 @@ class Agent:
     reproduction_counter : int
         number of times agent has reproduced with a partner, starts at 0
     \n
-    parent_A : int
+    parent_a : int
         unique identifier for agents parent A, default set to None
     \n
-    parent_B : int
+    parent_b : int
         unique identifier for agents parent B, default set to None
 
     Methods
@@ -115,12 +116,12 @@ class Agent:
         (linking the movement with it's energy, sickness and fleeing behaviour)
     \n
     search_food(board):
-        finding food is defined through the agents gene 'visibility_range', if food is found it 
+        finding food is defined through the agents gene 'visibility_range', if food is found it
         will be consumed, considering the agents unique genedistributions and intelligence
         (disease risk) and the presence of aggressive agents
     \n
     check_for_aggressive_agents(board, x, y):
-        ability of an agent to check for agressive agents within a specified search radius 
+        ability of an agent to check for agressive agents within a specified search radius
         from its given location; is called in the search_food method
     \n
     move_away_from_aggressive(board, aggressive_agents):
@@ -130,8 +131,8 @@ class Agent:
     \n
     reproduce(board, partner):
         agents that occupy the same position and have suficcient energy have a chance to reproduce,
-        success is dependant on tribal affiliation, with a guarantee if they are frome the same 
-        tribe. succesful reproduction results in a new agent inheriting genetic treits 
+        success is dependant on tribal affiliation, with a guarantee if they are frome the same
+        tribe. succesful reproduction results in a new agent inheriting genetic treits
         from both parents (calling the genedistribution_thru_heredity method)
     \n
     genedistribution_thru_heredity(parent1, parent2):
@@ -142,7 +143,7 @@ class Agent:
     def __init__(self, number, sick=0):
         """
         Initializes all necessary attributes for the agent object
-        
+
         Parameters
         ----------
         number : int
@@ -154,7 +155,7 @@ class Agent:
         -------
         None
         """
-        global agents_counter
+        global AGENTS_COUNTER
         self.sickness_counter = 0
         self.number = number
         self.energy = START_ENERGY
@@ -167,8 +168,8 @@ class Agent:
         self.sickness_duration = 0
         self.flee_counter = 0
         self.previous_kondition = None
-        self.parent_A = None
-        self.parent_B = None
+        self.parent_a = None
+        self.parent_b = None
         self.consumption_time = 0
         self.covered_distance = 0
         self.expelled = 0
@@ -198,14 +199,14 @@ class Agent:
 
     def consuming_food(self, food_dict):
         """
-        adjusting health and status values of an agent based on food properties, \n 
+        adjusting health and status values of an agent based on food properties, \n
         which are predetermined through the food_dict and the agents unique genedistribution
 
         Parameters
         ----------
         food_dict : dict
             global dictionary with all food attributes listed
-        
+
         Returns
         -------
         None
@@ -241,7 +242,8 @@ class Agent:
             if self.consumption_time == 0:
                 self.energy += self.last_consumed_food_energy   # Add the stored energy
                 self.consume_counter += 1   # Increment the consume counter
-                self.last_consumed_food_energy = 0  # Reset the stored energy to 0 for the next consumption
+                self.last_consumed_food_energy = 0 
+                # Reset the stored energy to 0 for the next consumption
         else:
             if self.energy > ENERGYCOSTS_MOVEMENT:
                 if self.sick is True:
@@ -286,8 +288,8 @@ class Agent:
         for dx in range(-visibilityrange, visibilityrange + 1):
             for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
-                
-                
+
+
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
                     food_dict = board.food[x][y]
                     # check if aggressive agents are nearby
@@ -356,7 +358,7 @@ class Agent:
 
     def reproduce(self, partner, board):
         """
-        agents in the same position on the board have a chance to reproduce,\n 
+        agents in the same position on the board have a chance to reproduce,\n
         given certain circumstances (position, energy, tribe affiliation)\n
         every reproduction is tracked within the agent\n
         the child is added onto the board as an agent
@@ -370,12 +372,12 @@ class Agent:
         -------
         None
         """
-        global agents_counter
+        global AGENTS_COUNTER
         if self.energy > ENERGYCOSTS_REPRODUCTION and self.position == partner.position:
             success_rate = 1 if self.genetic["Tribe"] == partner.genetic["Tribe"] else 0.3
             if random.random() < success_rate:
-                agents_counter += 1
-                kind = Agent(agents_counter)
+                AGENTS_COUNTER += 1
+                kind = Agent(AGENTS_COUNTER)
                 kind.genedistribution_thru_heredity(self, partner)
                 self.energy -= ENERGYCOSTS_REPRODUCTION
                 self.reproduction_counter += 1
@@ -385,7 +387,8 @@ class Agent:
     def genedistribution_thru_heredity(self, parent1, parent2):
         """
         determines the genetic traits of an agent created through reproduction,\n
-        combining traits from both parents, some selected at random (tribe, intelligence), others calculated
+        combining traits from both parents, some selected at random (tribe, intelligence),
+        others calculated
 
         Parameters
         ----------
@@ -399,8 +402,8 @@ class Agent:
         for gen in GENPOOL["Genes"]:
             if gen == "Tribe":
                 self.genetic[gen] = random.choice([parent1.genetic[gen], parent2.genetic[gen]])
-                self.parent_A = parent1.number
-                self.parent_B = parent2.number
+                self.parent_a = parent1.number
+                self.parent_b = parent2.number
             elif gen == "Intelligent":
                 self.genetic[gen] == random.choice([parent1.genetic[gen], parent2.genetic[gen]])
             else:
@@ -424,7 +427,7 @@ class Board:
     \n
     height : int
         height of the board (cells along the y axis)
-    \n    
+    \n
     energy_costs_movement : int
         minimum amount of energy needed by the agent to move
     \n
@@ -448,7 +451,7 @@ class Board:
     \n
     sickness_duration : int
         number of rounds agent remains sick if inflicted with sickness
-    
+
     Methods
     -------
     add_agent(agents_to_add):
@@ -489,7 +492,7 @@ class Board:
     def add_agent(self, agents_to_add):
         """
         adds new agent(s) to an already existing list of agents
-        
+
         Parameters
         ----------
         agents_to_add : Any
@@ -522,11 +525,11 @@ class Board:
     def remove_agents(self, agent):
         """
         removes deceased agent from agents_list
-        
+
         Parameters
         ----------
         agent : Any
-        
+
         Returns
         -------
         None
@@ -574,12 +577,12 @@ class Game:
     \n
     board : Board
         instance of the Board class
-    
+
     Parameters
     ----------
     **kwargs : dict
         unpack dict of keyword arguments passed to board
-    
+
     Methods
     -------
     run():
@@ -605,7 +608,8 @@ class Game:
         self.worlds = worlds
         self.data_list = []
         # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
-        # is useful when we want to use constants but also want to adjust them when calling the method
+        # is useful when we want to use constants but also want to adjust them 
+        # when calling the method
         self.board = Board(**kwargs)
 
     def run(self):
@@ -638,7 +642,7 @@ class Game:
 
             for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
-                
+
                 # ending the simulation in case there are no agents left
                 if len(self.board.agents_list) == 0:
                     print("--------------------------")
@@ -668,7 +672,8 @@ class Game:
 
             # If saving is on:
             # creates dict 'game_data' to store the data for the current game-world
-            # then collects agent-data from the board and stores in 'game_data' under the key 'agent_data'
+            # then collects agent-data from the board and stores in 'game_data'
+            # under the key 'agent_data'
             if self.saving is True:
                 game_data['agent_data'] = self.collect_agent_data(self.board)
                 self.data_list.append(game_data)
@@ -698,8 +703,8 @@ class Game:
                 'sickness_counter': agent.sickness_counter,
                 'covered_distance': agent.covered_distance,
                 'expelled': agent.expelled,
-                'parent_A': agent.parent_A,
-                'parent_B': agent.parent_B
+                'parent_a': agent.parent_a,
+                'parent_b': agent.parent_b
             })
         return agent_data
 
@@ -724,16 +729,17 @@ class Game:
             world_num = world_data['world']
             filename = f'results_worlds/world_{world_num}_data.csv'
 
-            with open(filename, 'w', newline='') as file:
+            with open(filename, 'w', newline='', encoding="utf-8") as file:
                 writer = csv.writer(file)
                 writer.writerow(['agent_number', 'reproduction_counter', 'consume_counter',
-                                 'sickness_counter', 'covered_distance', 'expelled', 'parent_A', 'parent_B'])
+                                 'sickness_counter', 'covered_distance', 'expelled',
+                                 'parent_a', 'parent_b'])
 
                 for agent_data in world_data['agent_data']:
                     writer.writerow([agent_data['agent_number'], agent_data['reproduction_counter'],
                                      agent_data['consume_counter'], agent_data['sickness_counter'],
                                      agent_data['covered_distance'], agent_data['expelled'],
-                                     agent_data['parent_A'], agent_data['parent_B']])
+                                     agent_data['parent_a'], agent_data['parent_b']])
 
             print(f"Data was saved: for world {world_num} in {filename}")
 
@@ -742,45 +748,45 @@ class Game:
         visualizes state of simulation for each round\n
         visualizes distribution of food and agents for each round\n
         this is achieved by overlaying two heatmaps that visualize the density
-        
+
         Parameters
         ----------
         food : Any
             not currently used in method
-        
+
         Returns
         -------
         None
         """
-        #5 seconds pause between each time visualizing 
+        #5 seconds pause between each time visualizing
         #time.sleep(2)
-        
+
         plt.rcParams["figure.figsize"] = [7.50, 3.50]
         plt.rcParams["figure.autolayout"] = True
-        
+
         dx, dy = 0.05, 0.05
         x = np.arange(-3.0, 3.0, dx)
         y = np.arange(-3.0, 3.0, dy)
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
-        
+
         fig = plt.figure(frameon=False)
 
 
 
         data1 = self.board.food
         plot1 = plt.imshow(data1, cmap="YlGn", interpolation='nearest', extent=extent)
-        
+
         data2 = self.board.world
         plot2 = plt.imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
-        
-        
+
+
         # set imshow outline to white
         for spine in plot2.axes.spines.values():
             spine.set_edgecolor("white")
-            
+
         cb2 = plt.colorbar(plot2)
         cb1 = plt.colorbar(plot1)
-        
+
         # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
@@ -788,38 +794,37 @@ class Game:
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
-        
-        # set colorbar edgecolor 
+
+        # set colorbar edgecolor
         cb2.outline.set_edgecolor("white")
         cb1.outline.set_edgecolor("white")
-        
+
         # set colorbar ticklabels
         plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="white")
         plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="white")
 
-        
+
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
-        
+
         #showing food array to check visualization (optional)
         #print(self.board.food)
         #showing world array to check visualization (optional)
         #print(self.board.world)
-        
+
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        
+
         #checking if there is food left in the world
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :
             print('still some food left')
         else:
-            print("no food left")       
-    
-    
-# Counter einfügen wie oft sich ein Agents fortgepflanzt hat 
+            print("no food left")
+
+
+# Counter einfügen wie oft sich ein Agents fortgepflanzt hat
 # Stammesangehörigkeit ausbessern: Aktuell Tupel für Stamm des Kindes
-            
 
 if __name__ == "__main__":
     start = time.time()
