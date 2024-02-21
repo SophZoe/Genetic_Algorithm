@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import time
 import random
 from matplotlib.pyplot import imshow
-import matplotlib.cm as cm
+import matplotlib
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 import os
@@ -14,13 +14,15 @@ import os
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 50
-WIDTH = 100
-HEIGHT = 100
+WIDTH = 10
+HEIGHT = 10
 NUMBER_AGENTS = 10
-ROUNDS = 10
-FOOD_PERCENTAGE_BEGINNING = 0
+ROUNDS = 1
+FOOD_PERCENTAGE_BEGINNING = 1
 ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
+
+VISUALIZE_POISON = True # other option is False
 
 
 # Global counter for the numbering of living beings
@@ -544,8 +546,14 @@ class Board:
         for _ in range(amount_fields):
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
             food_key = random.choice(FOOD_KEYS)
-            self.food[x][y] = food_key
-            food_placed_this_round += 1
+            if VISUALIZE_POISON == True:
+                if FOOD[food_key]["disease_risk"] == 0:
+                    self.food[x][y] = 1
+                if FOOD[food_key]["disease_risk"] > 0:
+                    self.food[x][y] = 2
+            else:
+                self.food[x][y] = food_key
+                food_placed_this_round += 1
 
         print(f"Food placed this round: {food_placed_this_round}")
         self.food_placement_counter += 1
@@ -840,9 +848,9 @@ class Game:
         
         
         
-        #------changing colormaps so first value is lpotted white--------
+        #------changing colormaps so first value is plotted white--------
         # Get the 'YlGn' colormap
-        ylgn_cmap = cm.get_cmap('YlGn')
+        ylgn_cmap = matplotlib.colormaps.get_cmap('YlGn')
         
         # Get the colormap values3
         ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
@@ -854,7 +862,7 @@ class Game:
         modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
         
         #get YlOrRd colormap
-        YlOrRd_cmap= cm.get_cmap('YlOrRd')
+        YlOrRd_cmap= matplotlib.colormaps.get_cmap('YlOrRd')
         
         # Get the colormap values
         YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
@@ -866,13 +874,21 @@ class Game:
         modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
         
         
-    
+        #color for visualization mode- intelligence
+        colors_poison = ['white', 'darkgreen', 'lime']
+
+        # Erstelle eine Liste von Farbwerten für die Colormap
+        cmap_poison = ListedColormap(colors_poison)
     
         data1 = self.board.food
-        plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
+        
+        if VISUALIZE_POISON == True:
+            plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
+        else:
+            plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
         
         data2 = self.board.world
-        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .7, interpolation='bilinear', extent=extent)
+        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .65, interpolation='hanning', extent=extent)
         
         
         # set imshow outline to white
@@ -885,7 +901,11 @@ class Game:
         # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
-        cb1.set_label('food ID', color="white")
+        if VISUALIZE_POISON == True:
+            cb1.set_label('no food          non-poisonous          poisonous', color="white")
+            cb1.set_ticks([])
+        else:
+            cb1.set_label('food ID', color="white")
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
