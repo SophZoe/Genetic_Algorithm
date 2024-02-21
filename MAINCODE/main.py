@@ -13,9 +13,9 @@ import os
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
-START_ENERGY = 10
-WIDTH = 10
-HEIGHT = 10
+START_ENERGY = 50
+WIDTH = 100
+HEIGHT = 100
 NUMBER_AGENTS = 10
 ROUNDS = 100
 FOOD_PERCENTAGE_BEGINNING = 0.1
@@ -245,8 +245,6 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
-        print(f"Agent {self.number} bewegt sich.")
-        self.energy -= ENERGYCOSTS_MOVEMENT
         if self.consumption_time > 0:
             self.consumption_time -= 1  # Decrement the consumption timer
             # If consumption has just finished, add the energy from the last consumed food
@@ -259,18 +257,35 @@ class Agent:
                 if self.sick is True:
                     self.check_for_sickness()
 
-                elif self.flee_counter > 0:   # flight-mode
-                    self.flee_counter -= 1
+                    if self.flee_counter > 0:   # flight-mode
+                        self.flee_counter -= 1
 
-                    # random move: -1 or 1, multiplied with condition
-                    dx = random.choice([-1, 1]) * self.genetic['Kondition']
-                    dy = random.choice([-1, 1]) * self.genetic['Kondition']
-                    new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-                    new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
-                    self.position = (new_x, new_y)
+                        # random move: -1 or 1, multiplied with condition
+                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                        self.position = (new_x, new_y)
+                        self.energy -= (ENERGYCOSTS_MOVEMENT*2)
 
+                    else:
+                        self.search_food(self.board)
+                        self.energy -= (ENERGYCOSTS_MOVEMENT*2)
                 else:
-                    self.search_food(self.board)
+                    if self.flee_counter > 0:   # flight-mode
+                        self.flee_counter -= 1
+
+                        # random move: -1 or 1, multiplied with condition
+                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
+                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
+                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+                        self.position = (new_x, new_y)
+                        self.energy -= ENERGYCOSTS_MOVEMENT
+
+                    else:
+                        self.search_food(self.board)
+                        self.energy -= ENERGYCOSTS_MOVEMENT
             else:
                 return "deceased"
 
@@ -488,7 +503,7 @@ class Board:
         self.additional_food_percentage = additional_food_percentage
         self.sickness_duration = sickness_duration
         self.food_placement_counter = 0
-        self.remove_agents_counter = 0
+        self.removed_agents_counter = 0
 
         self.agents_list = []
         self.food = np.zeros((width, height))
@@ -507,7 +522,6 @@ class Board:
         None
         """
         self.agents_list.append(agents_to_add)
-        print(f"Agent {agents_to_add.number} hinzugefügt.")
 
     def place_food(self, prozent):
 
@@ -549,8 +563,7 @@ class Board:
         None
         """
         self.agents_list.remove(agent)
-        self.remove_agents_counter += 1
-        print(f"Agent {agent.number} entfernt.")
+        self.removed_agents_counter += 1
         
 
     def place_agents(self):
@@ -625,6 +638,7 @@ class Game:
         self.worlds = worlds
         self.data_list = []
         self.board = Board(**kwargs)
+        self.removed_agents = 0
 
     # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
 
@@ -675,6 +689,7 @@ class Game:
                     if result == "deceased":
                         self.board.remove_agents(agent)
                         round_deceased_agents += 1
+                        self.removed_agents += 1
 
                     else:
                         for partner in self.board.agents_list:
@@ -703,8 +718,8 @@ class Game:
             self.save_data()
         
         print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
-        print(f"{self.board.remove_agents_counter} agents perished during the simulation.")
-        print(f"Total deceased agents in world {world + 1}: {deceased_agents_counter}")
+        print(f"{self.removed_agents} agents perished during the simulation.")
+        print(f"Total deceased agents in world {world+ 1}: {deceased_agents_counter}")
 
 
     def collect_agent_data(self, board):  # new method to collect agent-data
@@ -720,7 +735,6 @@ class Game:
         list() of agent_data
         """
 
-        print("Sammeln von Agentendaten gestartet.")
 
         agent_data = []
 
@@ -745,7 +759,6 @@ class Game:
                 }
             })
 
-        print(f"Gesammelte Agentendaten: {agent_data}")
         return agent_data
 
 
@@ -763,19 +776,18 @@ class Game:
         -------
         None
         """
-    
-        csv_index = 0
         if not os.path.exists('results_worlds'):
             os.makedirs('results_worlds')
 
         for world_data in self.data_list:
-            print(f"Speichere Daten für Welt {world_data['world']}.")
-            print(f"Zu speichernde Daten: {world_data['agent_data']}")
+            #print(f"Saving data for world {world_data['world']}.")
             world_num = world_data['world']
-            filename = f'results_worlds/world_{world_num}_data.csv'
+            filename = os.path.join('results_worlds', f'0__World({world_num}).csv')
+            csv_index = 0
+
             while os.path.exists(filename):
                 csv_index += 1
-                filename = os.path.join('results_worlds', f'{csv_index}_world_{world_num}_data.csv')
+                filename = os.path.join('results_worlds/', f'{csv_index}___World({world_num}).csv')
 
             with open(filename, 'w', newline='') as file:
                 fieldnames = ['agent_number', 'reproduction_counter', 'consume_counter',
@@ -794,7 +806,7 @@ class Game:
                     del flat_agent_data['genes']
                     writer.writerow(flat_agent_data)
 
-            print(f"Data was saved: for world {world_num} in {filename}")
+            #print(f"Data was saved: for world {world_num} in {filename}")
 
     def visualize_board(self, food):
         """
@@ -914,4 +926,4 @@ if __name__ == "__main__":
     #game = Game()
     game.run()
     script_time = np.round(time.time() - start, 2)
-    print(script_time)
+    print(f"Script time: {script_time}s")
