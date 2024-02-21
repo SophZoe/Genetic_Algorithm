@@ -68,9 +68,9 @@ SICKNESS_DURATION = ROUNDS: Sets the length of the immobilisation of the agents 
 There have been a dictionary with 7 types of food created. Those foods are differentiated according to the 3 parameters, which are:
 - **"Energy"** : The energy score that every agent wins after consuming a specific food type. Attention: the energy is not credited to agents right after they reach the same board field where the food lies but only after the "consumption_time" has been calculated based on the "Metabolism" rate.
 -  **"consumption time"** is calculated by dividing the food's base "consumption time" by the agent's "Metabolism" value and has been introdused to gather information to what extent biologically determined attributes can benefit or impair the agents chances of survival. 
-- "disease_risk": first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 5 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round. 
+- "disease_risk": first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 5 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round.
+- 
   <img width="448" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
-
 
 ## Genes that determines the agents behaviour
 "Condition": Ranges from 1 to 3. Given the same energy level an agent with the "Condition" gene expressed wto the maximum of  3 points can move a further distance across the board than an agent with the "Condition" = 1 or 2. 
@@ -96,6 +96,9 @@ The code consists of several classes that model the agents, the game board and t
 **- Agent**
 The Agent class represents the living being in the ecosystem with the following properties and methods:
 
+![agent_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/7f7f6d4f-31ad-4958-87bd-0b36e8933b3a)
+
+
 **- __init__():** Initializes a new agent with a unique number, starting energy, random position and empty genetic profile.
 - **genedistribution():** Assigns genetic properties from the GENPOOL to the agent.
 **- consuming_food():** This method is a simulation of how an agent consumes food and the consequences of that action, including the time it takes to consume the food, the energy gained, and the potential risk of disease that may come with the food. It also shows that the agent's genetic attributes play a significant role in these interactions, affecting both the efficiency of food consumption ("Metabolism") and the agent's susceptibility to disease ("Resistance").
@@ -109,6 +112,9 @@ The Agent class represents the living being in the ecosystem with the following 
 **- Board**
 The board class manages the simulated world in which the agents live:
 
+![board_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/6d4652aa-29b3-4023-a475-144f2b5e6fce)
+
+
 **- __init__():** Initializes the game board, a list for agents and a Zero-NumPy array for food distribution.
 **- add_agent():** Adds a new agent to the world.
 **- place_food():** Places food on the board based on a specified percentage of spaces
@@ -117,6 +123,9 @@ The board class manages the simulated world in which the agents live:
 
 **- Game**
 The Game class controls the simulation process:
+
+![game_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/f88e8eda-6a71-441c-b39b-46686ad67342)
+
 ** - __init__():** Initializes the game on the game board and adds agents and food.
 ** - run():** Runs the specified number of simulation rounds in which agents move randomly. Coordinates reproduction and the search for food as well as placing additional food after every 10th round of the simulation.
 ** - save_data():** Saves the simulation data in a CSV file.
@@ -125,7 +134,12 @@ The Game class controls the simulation process:
 ** - visualize_board():** Visualizes the world and the distribution of agents and food.
 The method uses the Matplotlib library to visualize the state of a board in a simulation game, which consists of agents and food distributed on a grid (100x100). Defines a grid using NumPy's arange function. Includes the Agent counter display and checks if there is any food left on the board and how many agents are still living.
 
+The old version (only 1 type of food and 1 type of agents)
 <img width="437" alt="Round 1 " src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/b7f4cf52-23f0-4009-8aad-7c1f6e202304">
+
+In the later version we introduced the aggrssive agents (plotted in red and the intelligent agents plotted in blue as well as the normal food plotted in brown and the poisonous food plotted in dark green.
+
+<img width="707" alt="food and agents" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/5931e43b-f83f-40a4-a9c3-cd97ef486399">
 
 
 ## Customization and possible feature extension**
