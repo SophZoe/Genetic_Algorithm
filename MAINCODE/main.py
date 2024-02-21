@@ -1,14 +1,11 @@
-
-#""" main.py but with world-comparison """
 import random
-
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
 import time
 import random
 from matplotlib.pyplot import imshow
-from matplotlib import colormaps as cm
+import matplotlib.cm as cm
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 import os
@@ -20,7 +17,7 @@ START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
 NUMBER_AGENTS = 10
-ROUNDS = 20
+ROUNDS = 100
 FOOD_PERCENTAGE_BEGINNING = 0.1
 ADDITIONAL_FOOD_PERCENTAGE = 0
 SICKNESS_DURATION = ROUNDS // 10
@@ -30,13 +27,13 @@ SICKNESS_DURATION = ROUNDS // 10
 agents_counter = NUMBER_AGENTS
 
 FOOD = {
-    "1": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
-    "2": {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
-    "3": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
-    "5": {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
-    "4": {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
-    "6": {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
-    "7": {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}
+    1.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
+    2.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
+    3.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
+    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
+    5.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
+    6.0: {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
+    7.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}
 }
 FOOD_KEYS = list(FOOD.keys())
 
@@ -145,7 +142,7 @@ class Agent:
         from both parents, some selected at random (tribe, intelligence), others calculated
     """
 
-    def __init__(self, number, sick=0):
+    def __init__(self, number, board, sick=0):
         """
         Initializes all necessary attributes for the agent object
         
@@ -161,6 +158,7 @@ class Agent:
         None
         """
         global agents_counter
+        self.board = board
         self.sickness_counter = 0
         self.number = number
         self.energy = START_ENERGY
@@ -202,25 +200,24 @@ class Agent:
             else:
                 self.genetic[gen] = random.randint(*bereich)
 
-    def consuming_food(self, food_dict):
+    def consuming_food(self, food_key):
         """
         adjusting health and status values of an agent based on food properties, \n 
         which are predetermined through the food_dict and the agents unique genedistribution
 
         Parameters
         ----------
-        food_dict : dict
-            global dictionary with all food attributes listed
+        food_key : key
+            a key used as reference for food
         
         Returns
         -------
         None
         """
-        food = food_dict
-        self.consumption_time = food_dict["consumption_time"] // max(1, self.genetic['Metabolism'])
-        self.last_consumed_food_energy = food_dict["Energy"]
-        risk = food["disease_risk"]
-        if self.genetic["Intelligent"] is False:
+        self.consumption_time = FOOD[food_key]["consumption_time"] // self.genetic['Metabolism']
+        self.last_consumed_food_energy = FOOD[food_key]["Energy"]
+        risk = FOOD[food_key]["disease_risk"]
+        if self.genetic["Intelligent"] is False:  
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
                 self.sick = True
                 self.sickness_duration = SICKNESS_DURATION
@@ -260,24 +257,18 @@ class Agent:
                 if self.sick is True:
                     self.check_for_sickness()
 
-                    if self.flee_counter > 0:   # flight-mode
-                        self.flee_counter -= 1
+                elif self.flee_counter > 0:   # flight-mode
+                    self.flee_counter -= 1
 
-                        # random move: -1 or 1, multiplied with condition
-                        dx = random.choice([-1, 1]) * self.genetic['Kondition']
-                        dy = random.choice([-1, 1]) * self.genetic['Kondition']
-                        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-                        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
-                        self.position = (new_x, new_y)
-                else:
                     # random move: -1 or 1, multiplied with condition
                     dx = random.choice([-1, 1]) * self.genetic['Kondition']
                     dy = random.choice([-1, 1]) * self.genetic['Kondition']
-
                     new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
                     new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
                     self.position = (new_x, new_y)
-                    self.covered_distance += 1
+
+                else:
+                    self.search_food(self.board)
             else:
                 return "deceased"
 
@@ -300,8 +291,8 @@ class Agent:
             for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
                 
-                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] is not None:
-                    food_dict = board.food[x][y]
+                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] != 0:
+                    food_key = board.food[x][y]
                     # check if aggressive agents are nearby
                     aggressive_agents_nearby = self.check_for_aggressive_agents(board, x, y)
 
@@ -313,13 +304,13 @@ class Agent:
                             self.expelled += 1
                             return None # go to next available food source
 
-                    if self.genetic["Intelligent"] is True and food_dict["disease_risk"] == 0:
-                        self.consuming_food(food_dict)
-                        board.food[x][y] = None
+                    if self.genetic["Intelligent"] is True and FOOD[food_key]["disease_risk"] == 0:
+                        self.consuming_food(food_key)
+                        board.food[x][y] = 0
                         return (x, y)
                     else:
-                        self.consuming_food(food_dict)
-                        board.food[x][y] = None
+                        self.consuming_food(food_key)
+                        board.food[x][y] = 0
                         return (x, y)
         return None
 
@@ -387,7 +378,7 @@ class Agent:
             success_rate = 1 if self.genetic["Tribe"] == partner.genetic["Tribe"] else 0.3
             if random.random() < success_rate:
                 agents_counter += 1
-                kind = Agent(agents_counter)
+                kind = Agent(agents_counter, self.board)
                 kind.genedistribution_thru_heredity(self, partner)
                 self.energy -= ENERGYCOSTS_REPRODUCTION
                 self.reproduction_counter += 1
@@ -653,7 +644,7 @@ class Game:
             # this now is configured for each world:
             # board = Board(WIDTH, HEIGHT)
             for i in range(1, NUMBER_AGENTS + 1):
-                self.board.add_agent(Agent(i))
+                self.board.add_agent(Agent(i, self.board))
 
             self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
@@ -828,7 +819,7 @@ class Game:
         # Get the 'YlGn' colormap
         ylgn_cmap = cm.get_cmap('YlGn')
         
-        # Get the colormap values
+        # Get the colormap values3
         ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
         
         # Set the color at the beginning (where the value is 0) to white
