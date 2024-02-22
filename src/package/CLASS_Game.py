@@ -133,7 +133,6 @@ class Game:
             # creates dict 'game_data' to store the data for the current game-world
             # then collects agent-data from the board and stores in 'game_data' under the key 'agent_data'
             if self.saving is True:
-                pass
                 game_data['agent_data'] = self.collect_agent_data(self.board)
                 self.data_list.append(game_data)
             
@@ -144,8 +143,7 @@ class Game:
             
         #PROBLEM---- this still necessary?
         if self.saving:
-            pass
-            #self.save_data()
+            self.save_data()
         print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
         print(f"{self.removed_agents} agents perished during the simulation.")
         print(f"Total deceased agents in world {world+ 1}: {deceased_agents_counter}")
@@ -209,10 +207,9 @@ class Game:
             os.makedirs('results_worlds')
 
         for world_data in self.data_list:
-            #print(f"Saving data for world {world_data['world']}.")
             world_num = world_data['world']
-            filename = os.path.join('results_worlds', f'0__World({world_num}).csv')
             csv_index = 0
+            filename = os.path.join('results_worlds', f'{csv_index}___World({world_num}).csv')
 
             while os.path.exists(filename):
                 csv_index += 1
@@ -235,7 +232,9 @@ class Game:
                     del flat_agent_data['genes']
                     writer.writerow(flat_agent_data)
 
-            #print(f"Data was saved: for world {world_num} in {filename}")
+            print(f"Data was saved: for world {world_num} in {filename}")
+        return world_data
+
 
     def visualize_board(self):
         """
@@ -351,325 +350,3 @@ class Game:
             print('still some food left')
         else:
             print("no food left")           
-
-    """
-    class to run the simulation allowing it to be modelled across multiple "worlds"\n
-    visualizing the simulation and data collection for every round
-
-    Attributes
-    ----------
-    saving : bool
-        determines, if data for simulation is saved, default set to False
-    \n
-    worlds : int
-        number of seperate simulated "worlds", default set to 1
-    \n
-    data_list : list
-        list to store data for each simulated world
-    \n
-    board : Board
-        instance of the Board class
-    
-    Parameters
-    ----------
-    **kwargs : dict
-        unpack dict of keyword arguments passed to board
-    
-    Methods
-    -------
-    run():
-        runs the simulation, iterating through number of worlds,\n
-        each with a predefined number of rounds\n
-        updates states of agents and food, optionally collects data for simulation\n
-        ends simulation if no agents left or max number of rounds is reached
-    \n
-    collect_agent_data(board):
-        collect and return data for each agent in agents_list
-    \n
-    save_data():
-        saves collected data into seperate .csv files\n
-        creates directory for collected data if none exists
-    \n
-    visualize_board(food):
-        visualizes state of simulation for each round\n
-        visualizes distribution of food and agents for each round
-    """
-
-    def __init__(self, saving=False, worlds=1, **kwargs):
-        self.saving = saving
-        self.worlds = worlds
-        self.ROUNDS = main.ROUNDS
-        self.data_list = []
-        self.board = Board(**kwargs)
-        self.removed_agents = 0
-
-    # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
-
-    def run(self):
-        """
-        runs the simulation, iterating through number of worlds,\n
-        each with a predefined number of rounds\n
-        updates states of agents and food, optionally collects data for simulation\n
-        ends simulation if no agents left or max number of rounds is reached
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-        """
-        for world in range(self.worlds):  # iterate over the specified number of worlds
-            print(f"----------World {world + 1}------------")
-            agents_counter = main.NUMBER_AGENTS  # separate counter for each world
-            deceased_agents_counter = 0
-            game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
-
-            # this now is configured for each world:
-            # board = Board(WIDTH, HEIGHT)
-            for i in range(1, main.NUMBER_AGENTS + 1):
-                self.board.add_agent(Agent(i, self.board))
-
-            self.board.place_food(main.FOOD_PERCENTAGE_BEGINNING)
-            self.board.place_agents()
-            
-            for round in range(main.ROUNDS):
-                print(f"------------Round {round + 1}------------")
-                round_deceased_agents = 0
-                
-                # ending the simulation in case there are no agents left
-                if len(self.board.agents_list) == 0:
-                    print("--------------------------")
-                    print("\nall agents deceased\n")
-                    print("--------------------------")
-                    break
-
-                for agent in self.board.agents_list[:]:
-                    # moves the agents
-                    result = agent.move(self.board)
-
-                    if result == "deceased":
-                        self.board.remove_agents(agent)
-                        round_deceased_agents += 1
-                        self.removed_agents += 1
-
-                    else:
-                        for partner in self.board.agents_list:
-                            if agent != partner:
-                                agent.reproduce(partner, self.board)
-                deceased_agents_counter += round_deceased_agents
-                print(f"Agents deceased this round: {round_deceased_agents}")
-                self.board.place_food(main.ADDITIONAL_FOOD_PERCENTAGE)
-                self.board.place_agents()
-                self.visualize_board()
-                """if round % 10 == 0:
-                    self.visualize_board()"""
-
-            self.board.place_agents()
-
-            # If saving is on:
-            # creates dict 'game_data' to store the data for the current game-world
-            # then collects agent-data from the board and stores in 'game_data' under the key 'agent_data'
-            if self.saving is True:
-                pass
-                game_data['agent_data'] = self.collect_agent_data(self.board)
-                self.data_list.append(game_data)
-
-        #PROBLEM---- this still necessary?
-        if self.saving:
-            pass
-            #self.save_data()
-        print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
-        print(f"{self.removed_agents} agents perished during the simulation.")
-        print(f"Total deceased agents in world {world+ 1}: {deceased_agents_counter}")
-
-
-    def collect_agent_data(self, board):  # new method to collect agent-data
-        """
-        collect and return data for each agent in agents_list
-
-        Parameters
-        ----------
-        board : Any
-
-        Returns
-        -------
-        list() of agent_data
-        """
-
-
-        agent_data = []
-
-        for agent in board.agents_list:
-            agent_data.append({
-                'agent_number': agent.number,
-                'reproduction_counter': agent.reproduction_counter,
-                'consume_counter': agent.consume_counter,
-                'sickness_counter': agent.sickness_counter,
-                'covered_distance': agent.covered_distance,
-                'expelled': agent.expelled,
-                'parent_A': agent.parent_A,
-                'parent_B': agent.parent_B,
-                'genes': {
-                    'Kondition': agent.genetic['Kondition'],
-                    'Visibilityrange': agent.genetic['Visibilityrange'],
-                    'Tribe': agent.genetic['Tribe'],
-                    'Resistance': agent.genetic['Resistance'],
-                    'Metabolism': agent.genetic['Metabolism'],
-                    'Intelligent': agent.genetic['Intelligent'],
-                    'Aggressive': agent.genetic['Aggressive']
-                }
-            })
-
-        return agent_data
-
-
-
-    def save_data(self, world_data):  # new: a separate CSV file is created for each world
-        """
-        saves collected data into seperate .csv files\n
-        creates directory for collected data if none exists
-
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
-        """
-        if not os.path.exists('results_worlds'):
-            os.makedirs('results_worlds')
-
-        for world_data in self.data_list:
-            #print(f"Saving data for world {world_data['world']}.")
-            world_num = world_data['world']
-            filename = os.path.join('results_worlds', f'0__World({world_num}).csv')
-            csv_index = 0
-
-            while os.path.exists(filename):
-                csv_index += 1
-                filename = os.path.join('results_worlds/', f'{csv_index}___World({world_num}).csv')
-
-            with open(filename, 'w', newline='') as file:
-                fieldnames = ['agent_number', 'reproduction_counter', 'consume_counter',
-                               'sickness_counter', 'covered_distance', 'expelled', 'parent_A', 'parent_B']
-                
-                # add "fieldnames" for the Genes-dictionary keys
-                fieldnames.extend(['Kondition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism', 'Intelligent', 'Aggressive'])
-
-                writer = csv.DictWriter(file, fieldnames=fieldnames)
-                writer.writeheader()
-
-                for agent_data in world_data['agent_data']:
-                    # flatten the 'genes' dictionary into separate columns
-                    flat_agent_data = {**agent_data, **agent_data['genes']}
-
-                    del flat_agent_data['genes']
-                    writer.writerow(flat_agent_data)
-
-            #print(f"Data was saved: for world {world_num} in {filename}")
-
-    def visualize_board(self):
-        """
-        visualizes state of simulation for each round\n
-        visualizes distribution of food and agents for each round\n
-        this is achieved by overlaying two heatmaps that visualize the density
-        
-        Parameters
-        ----------
-        food : Any
-            not currently used in method
-        
-        Returns
-        -------
-        None
-        """
-        #5 seconds pause between each time visualizing 
-        #time.sleep(2)
-        
-        plt.rcParams["figure.figsize"] = [7.50, 4.50]
-        plt.rcParams["figure.autolayout"] = True
-        
-        dx, dy = 0.05, 0.05
-        x = np.arange(-3.0, 3.0, dx)
-        y = np.arange(-3.0, 3.0, dy)
-        extent = np.min(x), np.max(x), np.min(y), np.max(y)
-        
-        fig = plt.figure(frameon=False)
-        
-        
-        
-        #------changing colormaps so first value is lpotted white--------
-        # Get the 'YlGn' colormap
-        ylgn_cmap = cm.get_cmap('YlGn')
-        
-        # Get the colormap values3
-        ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
-        
-        # Set the color at the beginning (where the value is 0) to white
-        ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
-        
-        # Create a new colormap with modified colors
-        modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
-        
-        #get YlOrRd colormap
-        YlOrRd_cmap= cm.get_cmap('YlOrRd')
-        
-        # Get the colormap values
-        YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
-        
-        # Set the color at the beginning (where the value is 0) to white
-        YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
-        
-        # Create a new colormap with modified colors
-        modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
-        
-        
-    
-    
-        data1 = self.board.food
-        plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
-        
-        data2 = self.board.world
-        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .7, interpolation='bilinear', extent=extent)
-        
-        
-        # set imshow outline to white
-        for spine in plot2.axes.spines.values():
-            spine.set_edgecolor("white")
-            
-        cb2 = plt.colorbar(plot2)
-        cb1 = plt.colorbar(plot1)
-        
-        # COLORBAR
-        # set colorbar label plus label color for agents
-        cb2.set_label('amount of agents', color="white")
-        cb1.set_label('food ID', color="white")
-        # set colorbar tick color
-        cb2.ax.yaxis.set_tick_params(color="white")
-        cb1.ax.yaxis.set_tick_params(color="white")
-        
-        # set colorbar edgecolor 
-        cb2.outline.set_edgecolor("white")
-        cb1.outline.set_edgecolor("white")
-        
-        # set colorbar ticklabels
-        plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="white")
-        plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="white")
-    
-        
-        plt.title("Distribution of food and agents in the world",color = "white")
-        plt.show()
-        
-        
-        #showing number of angents still living
-        print(f"number of agents: {len(self.board.agents_list)}")
-        
-        #checking if there is food left in the world
-        #if not agents will probably die in a couple of rounds
-        if self.board.food.any() >=1 :
-            print('still some food left')
-        else:
-            print("no food left")

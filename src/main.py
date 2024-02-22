@@ -1,4 +1,3 @@
-""" main.py to experiment with """
 import numpy as np
 import time
 
@@ -9,7 +8,7 @@ START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
 NUMBER_AGENTS = 10
-ROUNDS = 35
+ROUNDS = 10
 FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
@@ -35,7 +34,7 @@ GENPOOL = {
     "Genes": {
         "Kondition": (1, 3),
         "Visibilityrange": (1, 3),
-        "Tribe": (1, 3), #what use? 
+        "Tribe": (1, 3),
         "Resistance": (1, 3),
         "Metabolism": (1, 3),
         "Intelligent": [True, False],
@@ -49,8 +48,7 @@ if __name__ == "__main__":
 
     from package.CLASS_Game import Game     #importing here to avoid circular method-calling
     start = time.time()
-    game = Game(saving=True, worlds=2, ROUNDS=10)
-    #game = Game()
+    game = Game(saving=True, worlds=1, ROUNDS=5)
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(f"Script time: {script_time}s")
