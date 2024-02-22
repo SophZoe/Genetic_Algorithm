@@ -1,6 +1,7 @@
 import numpy as np
 import time
 
+
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
@@ -44,11 +45,33 @@ GENPOOL = {
 
 # --------------------- MAIN ---------------------
 
+
+def main():
+    from package.CLASS_Game import Game
+    from package.CLASS_gui import GUI
+    from package.CLASS_Board import Board
+    start = time.time()
+    game = Game(saving=True, worlds=1, ROUNDS=5)
+    gui = GUI(game.board)
+    script_time = np.round(time.time() - start, 2)
+    print(f"Script time: {script_time}s")
+    while True:
+        # Run game loop
+        game.run()
+
+        # Run GUI loop
+        gui.run_gui()
+
 if __name__ == "__main__":
+    main()
+
+"""if __name__ == "__main__":
 
     from package.CLASS_Game import Game     #importing here to avoid circular method-calling
     start = time.time()
-    game = Game(saving=True, worlds=1, ROUNDS=5)
-    game.run()
+    #game = Game(saving=True, worlds=1, ROUNDS=5)
+    #game.run()
+    app = paramAd(paramAd.initial_parameters, paramAd.run_simulation)
+    app.mainloop()
     script_time = np.round(time.time() - start, 2)
-    print(f"Script time: {script_time}s")
+    print(f"Script time: {script_time}s")"""

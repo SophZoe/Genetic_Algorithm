@@ -10,6 +10,7 @@ import matplotlib.cm as cm
 from matplotlib.pyplot import imshow
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
+from package.CLASS_gui import GUI
 
 class Game:
     """
@@ -61,6 +62,7 @@ class Game:
         self.data_list = []
         self.board = Board(**kwargs)
         self.removed_agents = 0
+        self.gui = GUI(board=self.board)
 
     # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
 
@@ -145,7 +147,7 @@ class Game:
         if self.saving:
             self.save_data()
         print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
-        print(f"{self.removed_agents} agents perished during the simulation.")
+        #print(f"{self.removed_agents} agents perished during the simulation.")
         print(f"Total deceased agents in world {world+ 1}: {deceased_agents_counter}")
 
 

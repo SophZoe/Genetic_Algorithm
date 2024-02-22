@@ -1,3 +1,4 @@
+"""CLASS Agent"""
 import random
 import main
 import numpy as np
@@ -101,7 +102,7 @@ class Agent:
         from both parents, some selected at random (tribe, intelligence), others calculated
     """
 
-    def __init__(self, number, board, sick=0):
+    def __init__(self, number, board):
         """
         Initializes all necessary attributes for the agent object
         
