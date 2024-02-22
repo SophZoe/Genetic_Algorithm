@@ -1,4 +1,40 @@
-"""CLASS Game"""
+"""
+Genetic_Algorithm - class_game.py
+
+This module contains the game class, where all neccessary parameters\n
+for the game are initialized which are needed to run the\n
+simulation. The option to save and visualize the simulation\n
+are also run from here.
+
+External Dependencies
+---------------------
+os
+    interaction with operating system
+    file path management
+csv
+    writing .csv files
+    allowing collected data export
+numpy
+    numerical operations
+    data management
+matplotlip
+    plot and visualize gamestates in the simulation
+
+Internal Dependencies
+---------------------
+class_board
+    accesses class_board.py
+class_agent
+    accesses class_agent.py
+
+Authors
+-------
+    - [@julietteyek] (https://github.com/julietteyek)
+    - [@Jxshyz] (https://github.com/Jxshyz)
+    - [@Markomrnkvc] (https://github.com/Markomrnkvc)
+    - [@SophZoe] (https://github.com/SophZoe)
+    - [@Salt-is-leaving] (https://github.com/Salt-is-leaving)
+"""
 import os
 import csv
 import numpy as np

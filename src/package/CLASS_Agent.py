@@ -13,7 +13,7 @@ numpy
     numerical operations
     data management
 
-    Authors
+Authors
 -------
     - [@julietteyek] (https://github.com/julietteyek)
     - [@Jxshyz] (https://github.com/Jxshyz)
