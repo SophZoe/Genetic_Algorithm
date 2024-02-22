@@ -37,7 +37,7 @@ cd /Genetic_Algorithm/src/
 ```
 . 3. **Run Locally**
 
-Open the src.py in any IDE of your choice.
+Open the py-files from the Folder src in any IDE of your choice.
 
 For the processes that run with JS NODE: 
 
