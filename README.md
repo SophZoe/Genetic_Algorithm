@@ -67,7 +67,7 @@ A dictionary of 7 types of food has been created. These foods are differentiated
 - **"Energy"** : The energy score that every agent wins after consuming a specific food type. Attention: the energy is not credited to agents right after they reach the same board field where the food lies but only after the "consumption_time" has been calculated based on the "Metabolism" rate.
 -  **"consumption time"** is calculated by dividing the food's base "consumption time" by the agent's "Metabolism" value and has been introdused to gather information to what extent biologically determined attributes can benefit or impair the agents chances of survival. 
 - "disease_risk": first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 5 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round. 
-  <img width="448" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
+  <img width="848" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
 
 
 ## Genes that determines the agents behaviour
@@ -76,11 +76,10 @@ A dictionary of 7 types of food has been created. These foods are differentiated
 - **"Tribe"**: This gene categorizes agents into 3 different groups called "Tribes". During the reproduction process, the compatibility of two agents for successful reproduction is influenced by whether they share the same "Tribe" gene value. This simulates a form of social behavior or mating preference, where agents are more inclined to reproduce with those from the same Tribe. When two agents attempt to reproduce, their "Tribe" genes are compared. If the agents belong to the same tribe, the likelihood of successful reproduction is 100% (success_rate = 1). If they belong to different tribes, the success rate drops significantly to 30% (success_rate = 0.3). This mechanism encourages genetic diversity within the population while still allowing for some level of inter-tribal reproduction. Upon successful reproduction, the offspring inherits the "Tribe" gene from one of its parents, chosen at random. 
 - **"Resistance"**: Determines how susceptible to the poisonous food an agent is. The higher the score, the lower "sickness_risk" calculated for a specific agent. The agents with a dominant 
 - **"Metabolism"**: Determines how fast one agent can digest the consumed food.
-
-The initial distribution of genes (genedistribution method) links "Intelligence to "Aggression", such that if an agent is intelligent _(self.genetic["Intelligent"] == True)_, it is not aggressive _(self.genetic["Aggressive"] = False)_. This setup implies that intelligence in agents is associated with non-aggressive behavior, indicating a strategic approach to survival that avoids unnecessary risks.
 - **"Intelligent"**: Makes agents be able to detect poisonous food  and thus avoid consuming it, as well as to avoid direct interaction with agents with the "Agressive" gene. 
 - **"Aggressive"**: Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to get immobilized for a round after consuming the poisonous food. 
 
+The initial distribution of genes (genedistribution method) links "Intelligence to "Aggression", such that if an agent is intelligent _(self.genetic["Intelligent"] == True)_, it is not aggressive _(self.genetic["Aggressive"] = False)_. This setup implies that intelligence in agents is associated with non-aggressive behavior, indicating a strategic approach to survival that avoids unnecessary risks.
 <img width="251" alt="genpool" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/e2cc09b0-62c3-4e54-a7dc-0c00fd518dfa">
 
 ## Code Structure
