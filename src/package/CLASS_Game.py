@@ -1,9 +1,6 @@
 """CLASS Game"""
 import os
 import csv
-import main
-from package.CLASS_Board import Board
-from package.CLASS_Agent import Agent
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -11,6 +8,9 @@ from matplotlib.pyplot import imshow
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 from package.CLASS_gui import GUI
+from package.CLASS_Board import Board
+from package.CLASS_Agent import Agent
+from main import *
 
 class Game:
     """
@@ -30,12 +30,12 @@ class Game:
     \n
     board : Board
         instance of the Board class
-    
+
     Parameters
     ----------
     **kwargs : dict
         unpack dict of keyword arguments passed to board
-    
+
     Methods
     -------
     run():
@@ -83,7 +83,7 @@ class Game:
         """
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"\n\n----------World {world + 1}------------\n\n")
-            agents_counter = main.NUMBER_AGENTS  # separate counter for each world
+            AGENTS_COUNTER = main.NUMBER_AGENTS  # separate counter for each world
             deceased_agents_counter = 0
             game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
 
@@ -94,12 +94,12 @@ class Game:
 
             self.board.place_food(main.FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
-            
+
             for round in range(main.ROUNDS):
                 print(f"------------Round {round + 1}------------")
                 self.visualize_board()
                 round_deceased_agents = 0
-                
+
                 # ending the simulation in case there are no agents left
                 if len(self.board.agents_list) == 0:
                     print("--------------------------")
@@ -125,7 +125,7 @@ class Game:
                 print(f"Agents deceased this round: {round_deceased_agents}")
                 self.board.place_food(main.ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
-                
+
                 """if round % 10 == 0:
                     self.visualize_board()"""
 
@@ -133,16 +133,17 @@ class Game:
 
             # If saving is on:
             # creates dict 'game_data' to store the data for the current game-world
-            # then collects agent-data from the board and stores in 'game_data' under the key 'agent_data'
+            # then collects agent-data from the board and stores in 'game_data'
+            # under the key 'agent_data'
             if self.saving is True:
                 game_data['agent_data'] = self.collect_agent_data(self.board)
                 self.data_list.append(game_data)
-            
+
             #resetting so the following worlds (if multiple in one simulation) start from scratch
             self.board.agents_list = []
             self.board.food = np.zeros_like(self.board.food)
             self.board.world = np.zeros_like(self.board.world)
-            
+
         #PROBLEM---- this still necessary?
         if self.saving:
             self.save_data()
@@ -217,12 +218,14 @@ class Game:
                 csv_index += 1
                 filename = os.path.join('results_worlds/', f'{csv_index}___World({world_num}).csv')
 
-            with open(filename, 'w', newline='') as file:
+            with open(filename, 'w', newline='', encoding="utf-8") as file:
                 fieldnames = ['agent_number', 'reproduction_counter', 'consume_counter',
-                               'sickness_counter', 'covered_distance', 'expelled', 'parent_A', 'parent_B']
-                
+                               'sickness_counter', 'covered_distance', 'expelled',
+                               'parent_A', 'parent_B']
+
                 # add "fieldnames" for the Genes-dictionary keys
-                fieldnames.extend(['Kondition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism', 'Intelligent', 'Aggressive'])
+                fieldnames.extend(['Kondition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism',
+                                   'Intelligent', 'Aggressive'])
 
                 writer = csv.DictWriter(file, fieldnames=fieldnames)
                 writer.writeheader()
@@ -243,81 +246,82 @@ class Game:
         visualizes state of simulation for each round\n
         visualizes distribution of food and agents for each round\n
         this is achieved by overlaying two heatmaps that visualize the density
-        
+
         Parameters
         ----------
         food : Any
             not currently used in method
-        
+
         Returns
         -------
         None
         """
-        #5 seconds pause between each time visualizing 
+        #5 seconds pause between each time visualizing
         #time.sleep(2)
-        
+
         plt.rcParams["figure.figsize"] = [7.50, 4.50]
         plt.rcParams["figure.autolayout"] = True
-        
+
         dx, dy = 0.05, 0.05
         x = np.arange(-3.0, 3.0, dx)
         y = np.arange(-3.0, 3.0, dy)
         extent = np.min(x), np.max(x), np.min(y), np.max(y)
-        
+
         fig = plt.figure(frameon=False)
-        
-        
-        
+
+
+
         #------changing colormaps so first value is plotted white--------
         # Get the 'YlGn' colormap
         ylgn_cmap = cm.get_cmap('YlGn')
-        
+
         # Get the colormap values3
         ylgn_colors = ylgn_cmap(np.linspace(0, 1, 256))
-        
+
         # Set the color at the beginning (where the value is 0) to white
         ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
-        
+
         # Create a new colormap with modified colors
         modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
-        
+
         #get YlOrRd colormap
         YlOrRd_cmap= cm.get_cmap('YlOrRd')
-        
+
         # Get the colormap values
         YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
-        
+
         # Set the color at the beginning (where the value is 0) to white
         YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
-        
+
         # Create a new colormap with modified colors
         modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
-        
-        
+
+
         #color for visualization mode- intelligence
         colors_poison = ['white', 'darkgreen', 'lime']
 
         # Erstelle eine Liste von Farbwerten für die Colormap
         cmap_poison = ListedColormap(colors_poison)
-    
+
         data1 = self.board.food
-        
+
         if main.VISUALIZE_POISON == True:
             plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
         else:
             plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
-        
+
         data2 = self.board.world
-        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .65, interpolation='hanning', extent=extent)
-        
-        
+        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .65,
+                       interpolation='hanning', extent=extent)
+
+
         # set imshow outline to white
         for spine in plot2.axes.spines.values():
             spine.set_edgecolor("white")
-            
+
         cb2 = plt.colorbar(plot2)
         cb1 = plt.colorbar(plot1)
-        
+
         # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
@@ -329,20 +333,20 @@ class Game:
         # set colorbar tick color
         cb2.ax.yaxis.set_tick_params(color="white")
         cb1.ax.yaxis.set_tick_params(color="white")
-        
-        # set colorbar edgecolor 
+
+        # set colorbar edgecolor
         cb2.outline.set_edgecolor("white")
         cb1.outline.set_edgecolor("white")
-        
+
         # set colorbar ticklabels
         plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="white")
         plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="white")
-    
-        
+
+
         plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
-        
-        
+
+
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
         print(self.board.food)
@@ -351,4 +355,4 @@ class Game:
         if self.board.food.any() >=1 :
             print('still some food left')
         else:
-            print("no food left")           
+            print("no food left")

@@ -1,7 +1,9 @@
 """CLASS Board"""
-import main
-import numpy as np
 import random
+import numpy as np
+import main
+
+
 
 class Board:
     """
@@ -14,7 +16,7 @@ class Board:
     \n
     height : int
         height of the board (cells along the y axis)
-    \n    
+    \n
     energy_costs_movement : int
         minimum amount of energy needed by the agent to move
     \n
@@ -38,7 +40,7 @@ class Board:
     \n
     sickness_duration : int
         number of rounds agent remains sick if inflicted with sickness
-    
+
     Methods
     -------
     add_agent(agents_to_add):
@@ -55,12 +57,15 @@ class Board:
         removes deceased agent from agents_list
     """
 
-    def __init__(self, width=main.WIDTH, height=main.HEIGHT, energy_costs_movement=main.ENERGYCOSTS_MOVEMENT,
-                 energy_costs_reproduction=main.ENERGYCOSTS_REPRODUCTION, start_energy=main.START_ENERGY,
+    def __init__(self, width=main.WIDTH, height=main.HEIGHT,
+                 energy_costs_movement=main.ENERGYCOSTS_MOVEMENT,
+                 energy_costs_reproduction=main.ENERGYCOSTS_REPRODUCTION,
+                 start_energy=main.START_ENERGY,
                  number_agents=main.NUMBER_AGENTS, rounds=main.ROUNDS,
                  food_percentage_beginning=main.FOOD_PERCENTAGE_BEGINNING,
                  additional_food_percentage=main.ADDITIONAL_FOOD_PERCENTAGE,
-                 sickness_duration=main.SICKNESS_DURATION, **kwargs):    # makes sure you can adjust individual parameters
+                 sickness_duration=main.SICKNESS_DURATION, **kwargs):
+                # makes sure you can adjust individual parameters
         self.width = width
         self.height = height
         self.energy_costs_movement = energy_costs_movement
@@ -81,7 +86,7 @@ class Board:
     def add_agent(self, agents_to_add):
         """
         adds new agent(s) to an already existing list of agents
-        
+
         Parameters
         ----------
         agents_to_add : Any
@@ -93,9 +98,6 @@ class Board:
         self.agents_list.append(agents_to_add)
 
     def place_food(self, prozent):
-
-        food_placed_this_round = 0
-
         """
         initially places random food randomly on the board and adds food each round\n
         according to additional_food_percentage
@@ -108,6 +110,8 @@ class Board:
         -------
         None
         """
+
+        food_placed_this_round = 0
 
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
@@ -128,18 +132,18 @@ class Board:
     def remove_agents(self, agent):
         """
         removes deceased agent from agents_list
-        
+
         Parameters
         ----------
         agent : Any
-        
+
         Returns
         -------
         None
         """
         self.agents_list.remove(agent)
         self.removed_agents_counter += 1
-        
+
 
     def place_agents(self):
         """

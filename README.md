@@ -36,7 +36,26 @@ cd /Genetic_Algorithm/MAINCODE
 ```
 3. **Run Locally**
 
-Open the main.py in any IDE of your choice.
+Open the py-files from the Folder src in any IDE of your choice.
+
+4. **To set up the JS Node:**
+steps:
+- uses: actions/checkout@v4
+- uses: actions/setup-node@v4
+  with:
+    node-version: 20
+- run: npm ci
+- run: npm test
+
+## Contributing to the Project „Genetic Algorithms Simulation based on the NumPy-Arrays“. 
+
+To contribute to the project, follow these steps:
+
+1. Fork this repository.
+2. Create a branch: git checkout -b <branch_name>.
+3. Make your changes and commit them: git commit -m '<commit_message>'
+4. Push to the original branch: git push origin <Project_Name>/<location>
+5. Create the pull request.
 
 ## Game Concept
 This simulation game reproduces the behavior of agents (living beings) in a virtual world. Each agent has energy, genetic inheritance features, can move, consumes food, which increases their energy score, and reproduce. The world is organized as a two-dimensional field (default 100x100) on which food is randomly placed. The simulation runs through several round in which agents act until they either die or the maximum number of rounds is reached. Reproduction works as follows:
@@ -65,46 +84,72 @@ The simulation uses a set of constants to define the behavior and environment of
 ## Types of food
 A dictionary of 7 types of food has been created. These foods are differentiated according to 3 parameters, namely:
 - **"Energy"** : The energy score that every agent wins after consuming a specific food type. Attention: the energy is not credited to agents right after they reach the same board field where the food lies but only after the "consumption_time" has been calculated based on the "Metabolism" rate.
--  **"consumption time"** is calculated by dividing the food's base "consumption time" by the agent's "Metabolism" value and has been introdused to gather information to what extent biologically determined attributes can benefit or impair the agents chances of survival. 
-- "disease_risk": first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 5 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round. 
+-  **"consumption time": ** is calculated by dividing the food's base "consumption time" by the agent's "Metabolism" value and has been introdused to gather information to what extent biologically determined attributes can benefit or impair the agents chances of survival. 
+- **"disease_risk":** first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 4 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round.
+
+  
   <img width="448" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
 
 
 ## Genes that determines the agents behaviour
-- **"Condition"**: Ranges from 1 to 3. Given the same energy level an agent with the "Condition" gene expressed wto the maximum of  3 points can move a further distance across the board than an agent with the "Condition" = 1 or 2. 
-"Visibilityrange": Represents an agent's ability to detect other objects and food on the board. The higher the "Visibilityrange" gene expression, the futher one can see around his position on the board. 
-- **"Tribe"**: This gene categorizes agents into 3 different groups called "Tribes". During the reproduction process, the compatibility of two agents for successful reproduction is influenced by whether they share the same "Tribe" gene value. This simulates a form of social behavior or mating preference, where agents are more inclined to reproduce with those from the same Tribe. When two agents attempt to reproduce, their "Tribe" genes are compared. If the agents belong to the same tribe, the likelihood of successful reproduction is 100% (success_rate = 1). If they belong to different tribes, the success rate drops significantly to 30% (success_rate = 0.3). This mechanism encourages genetic diversity within the population while still allowing for some level of inter-tribal reproduction. Upon successful reproduction, the offspring inherits the "Tribe" gene from one of its parents, chosen at random. 
-- **"Resistance"**: Determines how susceptible to the poisonous food an agent is. The higher the score, the lower "sickness_risk" calculated for a specific agent. The agents with a dominant 
-- **"Metabolism"**: Determines how fast one agent can digest the consumed food.
-- **"Intelligent"**: Makes agents be able to detect poisonous food  and thus avoid consuming it, as well as to avoid direct interaction with agents with the "Agressive" gene. 
-- **"Aggressive"**: Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to get immobilized for a round after consuming the poisonous food. 
+** - "Condition"**: Ranges from 1 to 3. Given the same energy level an agent with the "Condition" gene expressed wto the maximum of  3 points can move a further distance across the board than an agent with the "Condition" = 1 or 2.
+  
+** -  "Visibilityrange": ** Represents an agent's ability to detect other objects and food on the board. The higher the "Visibilityrange" gene expression, the futher one can see around his position on the board.
+
+** - "Tribe"**: This gene categorizes agents into 3 different groups called "Tribes". During the reproduction process, the compatibility of two agents for successful reproduction is influenced by whether they share the same "Tribe" gene value. This simulates a form of social behavior or mating preference, where agents are more inclined to reproduce with those from the same Tribe. When two agents attempt to reproduce, their "Tribe" genes are compared. If the agents belong to the same tribe, the likelihood of successful reproduction is 100% (success_rate = 1). If they belong to different tribes, the success rate drops significantly to 30% (success_rate = 0.3). This mechanism encourages genetic diversity within the population while still allowing for some level of inter-tribal reproduction. Upon successful reproduction, the offspring inherits the "Tribe" gene from one of its parents, chosen at random.
+  
+** - "Resistance"**: Determines how susceptible to the poisonous food an agent is. The higher the score, the lower "sickness_risk" calculated for a specific agent.
+  
+** - "Metabolism"**: Determines how fast one agent can digest the consumed food.
+  
+** - "Intelligent"**: Makes agents be able to detect poisonous food  and thus avoid consuming it, as well as to avoid direct interaction with agents with the "Agressive" gene.
+  
+** - "Aggressive"**: Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to get immobilized for a round after consuming the poisonous food. 
 
 The initial distribution of genes (genedistribution method) links "Intelligence to "Aggression", such that if an agent is intelligent _(self.genetic["Intelligent"] == True)_, it is not aggressive _(self.genetic["Aggressive"] = False)_. This setup implies that intelligence in agents is associated with non-aggressive behavior, indicating a strategic approach to survival that avoids unnecessary risks.
 <img width="350" alt="genpool" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/e2cc09b0-62c3-4e54-a7dc-0c00fd518dfa">
 
 ## Code Structure
 The code consists of several classes that model the agents, the game board and the game itself. The most important classes are:
+
+
+![Agent_Board_Game_Connections](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/6c5e5e01-06d8-41eb-94cc-6d530e7e61ea)
+
+
 - **Agent**: Represents a single agent with the properties energy, genetic traits and position. Methods of this class allow the agent to move, consume food and reproduce.
 - **Board**: Manages the game board, including the position of food and agents. It allows the addition of food and the removal of agents.
 - **Game**: Coordinates the simulation process, including initializing the game board, adding agents and conducting rounds.
 
-## Important methods of each class and their functions**
+## Important methods of each class and their functions
 
-**- Agent**
+## Agent
 The Agent class represents the living being in the ecosystem with the following properties and methods:
+
+![agent_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/82a19209-5c34-4d70-93eb-f428650ed68f)
+
 
 **- __init__():** Initializes a new agent with a unique number, starting energy, random position and empty genetic profile.
 - **genedistribution():** Assigns genetic properties from the GENPOOL to the agent.
+- 
 **- consuming_food():** This method is a simulation of how an agent consumes food and the consequences of that action, including the time it takes to consume the food, the energy gained, and the potential risk of disease that may come with the food. It also shows that the agent's genetic attributes play a significant role in these interactions, affecting both the efficiency of food consumption ("Metabolism") and the agent's susceptibility to disease ("Resistance").
+  
 **- move():** Moves the agent and consumes energy, updates the position of the agent and regulates the logic of the flight mode in the agents that stumble upon their agressive counterparts. 
+
 **- search_food():** Searches for food near the agent. If food is within reach, the agent consumes it. Apart from that the search_food method includes logic where an agent checks for aggressive agents nearby before consuming food. If an aggressive agent is detected, a non-aggressive, intelligent agent may stop eating and move away to avoid conflict (self.move_away_from_aggressive(board, aggressive_agents_nearby)). This behavior suggests that intelligence equips agents with the foresight to avoid potentially dangerous situations, prioritizing safety.
+
 **- check_for_aggressive_agents():** Activates the mechanism of detecting the aggressive agents by all the agents with (self.genetic["Aggressive"] = False).
+
 **- move_away_from_aggressive():** Initiates the flight response where a non-aggressive agent, upon encountering aggressive agents, prioritizes its safety over continuing to consume food. By resetting the consumption_time to 0, the agent effectively stops eating and prepares to move away, with the flee_counter indicating how long this fleeing behavior will last.
+
 **- reproduce():** Enables reproduction between two agents if they are on the same field and have enough energy.
+
 **- genedistribution_throgh_heredity():** Determines the genetic traits of a newborn agent based on the parents' genes.
 
-**- Board**
+## Board
 The board class manages the simulated world in which the agents live:
+
+![board_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/ed68a6a3-b456-4960-864d-63bc1b21bdde)
+
 
 **- __init__():** Initializes the game board, a list for agents and a Zero-NumPy array for food distribution.
 **- add_agent():** Adds a new agent to the world.
@@ -112,14 +157,20 @@ The board class manages the simulated world in which the agents live:
 **- place_agents():** Places agents on the game board for the further visualization.
 **- remove_agents():** Removes an agent from the game board.
 
-**- Game**
+## Game
 The Game class controls the simulation process:
-** - __init__():** Initializes the game on the game board and adds agents and food.
-** - run():** Runs the specified number of simulation rounds in which agents move randomly. Coordinates reproduction and the search for food as well as placing additional food after every 10th round of the simulation.
-** - save_data():** Saves the simulation data in a CSV file.
 
-**- Visualization**
-** - visualize_board():** Visualizes the world and the distribution of agents and food.
+![game_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/71601498-b782-4e6c-a448-e83d6ac96f33)
+
+**- __init__():** Initializes the game on the game board and adds agents and food.
+
+**- run():** Runs the specified number of simulation rounds in which agents move randomly. Coordinates reproduction and the search for food as well as placing additional food after every 10th round of the simulation.
+
+**- save_data():** Saves the simulation data in a CSV file.
+
+## Visualization
+
+**- visualize_board():** Visualizes the world and the distribution of agents and food.
 The method uses the Matplotlib library to visualize the state of a board in a simulation game, which consists of agents and food distributed on a grid (100x100). Defines a grid using NumPy's arange function. Includes the Agent counter display and checks if there is any food left on the board and how many agents are still living.
 
 ![viz](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/798120e3-18ce-438f-9e1a-940da51d2b1e)
