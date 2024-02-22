@@ -205,7 +205,6 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
-        print("Agent is attempting to move")
         if self.consumption_time > 0:
             self.consumption_time -= 1  # Decrement the consumption timer
             # If consumption has just finished, add the energy from the last consumed food
@@ -249,7 +248,6 @@ class Agent:
                         self.energy -= main.ENERGYCOSTS_MOVEMENT
             else:
                 return "deceased"
-        print("Agent moved successfully")
 
 
     def search_food(self, board):
