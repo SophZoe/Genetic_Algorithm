@@ -67,7 +67,7 @@ A dictionary of 7 types of food has been created. These foods are differentiated
 - **"Energy"** : The energy score that every agent wins after consuming a specific food type. Attention: the energy is not credited to agents right after they reach the same board field where the food lies but only after the "consumption_time" has been calculated based on the "Metabolism" rate.
 -  **"consumption time"** is calculated by dividing the food's base "consumption time" by the agent's "Metabolism" value and has been introdused to gather information to what extent biologically determined attributes can benefit or impair the agents chances of survival. 
 - "disease_risk": first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 5 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round. 
-  <img width="848" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
+  <img width="448" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
 
 
 ## Genes that determines the agents behaviour
@@ -80,7 +80,7 @@ A dictionary of 7 types of food has been created. These foods are differentiated
 - **"Aggressive"**: Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to get immobilized for a round after consuming the poisonous food. 
 
 The initial distribution of genes (genedistribution method) links "Intelligence to "Aggression", such that if an agent is intelligent _(self.genetic["Intelligent"] == True)_, it is not aggressive _(self.genetic["Aggressive"] = False)_. This setup implies that intelligence in agents is associated with non-aggressive behavior, indicating a strategic approach to survival that avoids unnecessary risks.
-<img width="251" alt="genpool" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/e2cc09b0-62c3-4e54-a7dc-0c00fd518dfa">
+<img width="450" alt="genpool" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/e2cc09b0-62c3-4e54-a7dc-0c00fd518dfa">
 
 ## Code Structure
 The code consists of several classes that model the agents, the game board and the game itself. The most important classes are:
