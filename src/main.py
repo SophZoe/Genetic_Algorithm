@@ -1,5 +1,31 @@
-import numpy as np
+"""
+Genetic Algorithm - main.py
+
+This module contains set constants and dictionaries\n
+which are used by other modules to execute the\n
+simulation correctly.\n
+Game loop is started from here.
+
+External Dependencies
+--------------------
+numpy
+    numerical operations
+    data management
+time
+    tracks execution time
+
+Authors
+-------
+    - [@julietteyek] (https://github.com/julietteyek)
+    - [@Jxshyz] (https://github.com/Jxshyz)
+    - [@Markomrnkvc] (https://github.com/Markomrnkvc)
+    - [@SophZoe] (https://github.com/SophZoe)
+    - [@Salt-is-leaving] (https://github.com/Salt-is-leaving)
+
+"""
 import time
+import numpy as np
+
 
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
@@ -46,7 +72,7 @@ GENPOOL = {
 
 if __name__ == "__main__":
 
-    from package.CLASS_Game import Game     #importing here to avoid circular method-calling
+    from package.class_game import Game     #importing here to avoid circular method-calling
     start = time.time()
     game = Game(saving=True, worlds=1, ROUNDS=5)
     game.run()
