@@ -160,6 +160,3 @@ class Board:
         for agent in self.agents_list:
             x, y = agent.position
             self.world[x][y] += 1
-
-    def remove_agents(self, agent):
-        self.agents_list.remove(agent)

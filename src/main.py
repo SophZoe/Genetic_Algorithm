@@ -8,13 +8,13 @@ ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
 WIDTH = 10
 HEIGHT = 10
-NUMBER_AGENTS = 10
-ROUNDS = 10
-FOOD_PERCENTAGE_BEGINNING = 0
+NUMBER_AGENTS = 20
+ROUNDS = 20
+FOOD_PERCENTAGE_BEGINNING = 3
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
 
-VISUALIZE_POISON = True # other option is False
+VISUALIZE_POISON = True #other option is False
 
 
 # Global counter for the numbering of living beings EDIT: moved to CLASS_Agent.py
@@ -52,15 +52,9 @@ def main():
     from package.CLASS_Board import Board
     start = time.time()
     game = Game(saving=True, worlds=1, ROUNDS=5)
-    gui = GUI(game.board)
+    game.run()
     script_time = np.round(time.time() - start, 2)
     print(f"Script time: {script_time}s")
-    while True:
-        # Run game loop
-        game.run()
-
-        # Run GUI loop
-        gui.run_gui()
 
 if __name__ == "__main__":
     main()
