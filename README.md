@@ -15,15 +15,12 @@ https://moodle.hs-duesseldorf.de/pluginfile.php/461132/mod_resource/content/0/Pr
 - Python 3.3 and below
 - NumPy Module
 - Matplotlib Library (for plotting the rounds)
-- Numba Library (optional for performance optimization)
 
 ## Installation
 
 Make sure that Python and the required libraries are installed on your system. You can install them using the pip:
-pip install random
 pip install numpy
 pip install matplotlib
-pip install numba
 
 To work with this repository follow these steps: 
 
@@ -32,17 +29,17 @@ To work with this repository follow these steps:
 ```bash
 git clone https://github.com/SophZoe/Genetic_Algorithm
 ```
-. 2. **Navigate to the Project directory on your Terminal or CMD**
+2. **Navigate to the Project directory on your Terminal or CMD**
 
 ```bash
 cd /Genetic_Algorithm/MAINCODE
 ```
-. 3. **Run Locally**
+3. **Run Locally**
 
 Open the main.py in any IDE of your choice.
 
 ## Game Concept
-This simulation game reproduces the behavior of agents (living beings) in a virtual world. Each agent has energy, genetic inheritance features, can move, consumes food, which increases their energy score, and reproduce. The world is organized as a two-dimensional field (default 100x100) on which food is randomly placed. The simulation runs through several rounds (up to 100) in which agents act until they either die or the maximum number of rounds is reached. Reproduction works as follows:
+This simulation game reproduces the behavior of agents (living beings) in a virtual world. Each agent has energy, genetic inheritance features, can move, consumes food, which increases their energy score, and reproduce. The world is organized as a two-dimensional field (default 100x100) on which food is randomly placed. The simulation runs through several round in which agents act until they either die or the maximum number of rounds is reached. Reproduction works as follows:
 firstly the  energy costs will be accounted, secondly the success rate based on strain affiliation is to be added, and the transfer (inheritance) of genetic traits from parents to offspring takes place, resulting in a diverse and dynamic population of agents over time.
 
 **Starting the simulation**
@@ -54,19 +51,19 @@ At the end of the simulation, the execution time is displayed in seconds. If sav
 ## Global variables and Settings
 The simulation uses a set of constants to define the behavior and environment of the agents:
 
-ENERGYCOSTS_MOVEMENT: the energy cost of moving an agent.
-ENERGYCOSTS_REPRODUCTION: The energy costs for reproduction.
-START_ENERGY: The starting energy of an agent.
-WIDTH, HEIGHT: The dimensions of the board.
-NUMBER_AGENTS: The initial number of agents.
-ROUNDS: The number of simulation rounds.
-ENERGY_FOOD: The amount of energy provided by the food consumed.
-FOOD_PERCENTAGE_BEGINNING: Percentage of randomly placed food at the beginning of the simulation. 
-ADDITIONAL_FOOD_PERCENTAGE: The amount of additional food (in percentage) that is added in each new round.
-SICKNESS_DURATION = ROUNDS: Sets the length of the immobilisation of the agents after they have eaten the poisonous food.
+- ENERGYCOSTS_MOVEMENT: the energy cost of moving an agent.
+- ENERGYCOSTS_REPRODUCTION: The energy costs for reproduction.
+- START_ENERGY: The starting energy of an agent.
+- WIDTH, HEIGHT: The dimensions of the board.
+- NUMBER_AGENTS: The initial number of agents.
+- ROUNDS: The number of simulation rounds.
+- ENERGY_FOOD: The amount of energy provided by the food consumed.
+- FOOD_PERCENTAGE_BEGINNING: Percentage of randomly placed food at the beginning of the simulation. 
+- ADDITIONAL_FOOD_PERCENTAGE: The amount of additional food (in percentage) that is added in each new round.
+- SICKNESS_DURATION = ROUNDS: Sets the length of the immobilisation of the agents after they have eaten the poisonous food.
 
 ## Types of food
-There have been a dictionary with 7 types of food created. Those foods are differentiated according to the 3 parameters, which are:
+A dictionary of 7 types of food has been created. These foods are differentiated according to 3 parameters, namely:
 - **"Energy"** : The energy score that every agent wins after consuming a specific food type. Attention: the energy is not credited to agents right after they reach the same board field where the food lies but only after the "consumption_time" has been calculated based on the "Metabolism" rate.
 -  **"consumption time"** is calculated by dividing the food's base "consumption time" by the agent's "Metabolism" value and has been introdused to gather information to what extent biologically determined attributes can benefit or impair the agents chances of survival. 
 - "disease_risk": first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 5 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round. 
