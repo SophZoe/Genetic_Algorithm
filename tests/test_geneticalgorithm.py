@@ -1,5 +1,8 @@
 import pytest
-from src import Agent, Board, Game, GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCTION, ROUNDS, FOOD_PERCENTAGE_BEGINNING
+from src.package.CLASS_Agent import Agent
+from src.package.CLASS_Game import Game
+from src.package.CLASS_Board import Board
+from src.main import GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCTION, ROUNDS, FOOD_PERCENTAGE_BEGINNING
 import os
 
 # ----------------------   AGENT  ----------------------
