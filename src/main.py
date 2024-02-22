@@ -15,7 +15,6 @@ SICKNESS_DURATION = ROUNDS // 10
 
 VISUALIZE_POISON = True # other option is False
 
-
 # Global counter for the numbering of living beings EDIT: moved to CLASS_Agent.py
 # agents_counter = NUMBER_AGENTS
 

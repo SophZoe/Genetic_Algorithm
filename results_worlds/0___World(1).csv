@@ -1,1 +1,5 @@
 agent_number,reproduction_counter,consume_counter,sickness_counter,covered_distance,expelled,parent_A,parent_B,Kondition,Visibilityrange,Tribe,Resistance,Metabolism,Intelligent,Aggressive
+11,0,0,0,0,0,1,4,1,0,2,0,1,False,True
+12,0,0,0,0,0,4,1,1,0,2,0,0,True,False
+14,0,0,0,0,0,10,13,0,0,3,0,0,False,True
+15,0,0,0,0,0,13,10,0,0,1,0,0,True,False

@@ -101,7 +101,7 @@ class Agent:
         from both parents, some selected at random (tribe, intelligence), others calculated
     """
 
-    def __init__(self, number, board, sick=0):
+    def __init__(self, number, board):
         """
         Initializes all necessary attributes for the agent object
         
@@ -204,7 +204,14 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
-        if self.consumption_time > 0:
+        aggressive_agents_nearby = self.check_for_aggressive_agents(board)
+
+        if aggressive_agents_nearby:
+            self.consumption_time = 0
+            self.move_away_from_aggressive()
+            self.expelled += 1
+
+        elif self.consumption_time > 0:
             self.consumption_time -= 1  # Decrement the consumption timer
             # If consumption has just finished, add the energy from the last consumed food
             if self.consumption_time == 0:
@@ -295,7 +302,7 @@ class Agent:
 
         return closest_food
 
-    def check_for_aggressive_agents(self, board, x, y):
+    def check_for_aggressive_agents(self, board):
         """
         ability of an agent to check for agressive agents within a specified search radius \n
         any agent recognized as aggressive is appended to a list \n
@@ -304,24 +311,26 @@ class Agent:
         Parameters
         ----------
         board : Any
-        x : int
-        y : int
 
         Returns
         -------
         list() of aggressive agents
 
         """
-        aggressive_agents = []
-        search_radius = 2
-        for agent in board.agents_list:
-            if agent is not self and agent.genetic["Aggressive"]:
-                distance = max(abs(agent.position[0] - x), abs(agent.position[1] - y))
-                if distance <= search_radius:
-                    aggressive_agents.append(agent)
-        return aggressive_agents
+        aggressive_agents_nearby = []
+        search_radius = 2  # Definiert den Suchradius
 
-    def move_away_from_aggressive(self, board, aggressive_agents):
+        # Durchläuft alle Agenten im Board, um aggressive Agenten zu finden
+        for agent in self.board.agents_list:
+            if agent is not self and agent.genetic["Aggressive"]:
+                # Berechnet die Distanz zwischen dem aktuellen Agenten und anderen Agenten
+                distance = max(abs(agent.position[0] - self.position[0]), abs(agent.position[1] - self.position[1]))
+                if distance <= search_radius:
+                    aggressive_agents_nearby.append(agent)
+
+        return aggressive_agents_nearby
+
+    def move_away_from_aggressive(self):
         """
         agent will move away from aggressive agents, if any were found \n
         food consumption is stopped while the agent moves away
