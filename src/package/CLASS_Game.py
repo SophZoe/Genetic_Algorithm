@@ -317,19 +317,19 @@ class Game:
         ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
 
         # Create a new colormap with modified colors
-        modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
+        modified_ylgn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
 
         #get YlOrRd colormap
-        YlOrRd_cmap= cm.get_cmap('YlOrRd')
+        ylorrd_cmap= cm.get_cmap('YlOrRd')
 
         # Get the colormap values
-        YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
+        ylorrd_colors = ylorrd_cmap(np.linspace(0, 1, 256))
 
         # Set the color at the beginning (where the value is 0) to white
-        YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        ylorrd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
 
         # Create a new colormap with modified colors
-        modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
+        modified_ylorrd = LinearSegmentedColormap.from_list('YlOrRd_modified', ylorrd_colors)
 
 
         #color for visualization mode- intelligence
@@ -343,10 +343,10 @@ class Game:
         if main.VISUALIZE_POISON == True:
             plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
         else:
-            plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
+            plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)
 
         data2 = self.board.world
-        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .65,
+        plot2 = imshow(data2, cmap= modified_ylorrd, alpha = .65,
                        interpolation='hanning', extent=extent)
 
 
