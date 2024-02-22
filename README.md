@@ -92,6 +92,7 @@ A dictionary of 7 types of food has been created. These foods are differentiated
 
 
 ## Genes that determines the agents behaviour
+
 - **"Condition":** Ranges from 1 to 3. Given the same energy level an agent with the "Condition" gene expressed wto the maximum of  3 points can move a further distance across the board than an agent with the "Condition" = 1 or 2.
   
 -  **"Visibilityrange":** Represents an agent's ability to detect other objects and food on the board. The higher the "Visibilityrange" gene expression, the futher one can see around his position on the board.
@@ -101,11 +102,14 @@ A dictionary of 7 types of food has been created. These foods are differentiated
 -  **"Resistance":** Determines how susceptible to the poisonous food an agent is. The higher the score, the lower "sickness_risk" calculated for a specific agent.
   
 -  **"Metabolism":** Determines how fast one agent can digest the consumed food.
+  
 - **"Intelligent":** Makes agents be able to detect poisonous food  and thus avoid consuming it, as well as to avoid direct interaction with agents with the "Agressive" gene.
   
  - **"Aggressive":** Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to get immobilized for a round after consuming the poisonous food. 
 
 The initial distribution of genes (genedistribution method) links "Intelligence to "Aggression", such that if an agent is intelligent _(self.genetic["Intelligent"] == True)_, it is not aggressive _(self.genetic["Aggressive"] = False)_. This setup implies that intelligence in agents is associated with non-aggressive behavior, indicating a strategic approach to survival that avoids unnecessary risks.
+
+
 <img width="350" alt="genpool" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/e2cc09b0-62c3-4e54-a7dc-0c00fd518dfa">
 
 ## Code Structure
@@ -123,6 +127,7 @@ The code consists of several classes that model the agents, the game board and t
 
 ## Agent
 The Agent class represents the living being in the ecosystem with the following properties and methods:
+
 
 ![agent_methods_connection_diagram](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/82a19209-5c34-4d70-93eb-f428650ed68f)
 
