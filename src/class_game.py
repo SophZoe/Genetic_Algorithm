@@ -44,8 +44,8 @@ from matplotlib.pyplot import imshow
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 #from package.CLASS_gui import GUI
-from class_board import Board
-from class_agent import Agent
+from src.class_board import Board
+from src.class_agent import Agent
 import main
 
 class Game:
