@@ -143,7 +143,12 @@ class Board:
         """
         self.agents_list.remove(agent)
         self.removed_agents_counter += 1
-
+        
+    def get_food_at_position(self, position):
+        x, y = position
+        if self.food[x, y] != 0:  # Nimmt an, dass 0 bedeutet, dass kein Essen vorhanden ist
+            return self.food[x, y]  # Gibt den Schlüssel des Essens zurück
+        return None  # Kein Essen an dieser Position
 
     def place_agents(self):
         """
