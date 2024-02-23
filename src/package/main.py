@@ -32,11 +32,11 @@ import numpy as np
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
-WIDTH = 10
-HEIGHT = 10
-NUMBER_AGENTS = 20
+WIDTH = 100
+HEIGHT = 100
+NUMBER_AGENTS = 30
 ROUNDS = 20
-FOOD_PERCENTAGE_BEGINNING = 0
+FOOD_PERCENTAGE_BEGINNING = 5
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
 
@@ -59,7 +59,7 @@ FOOD_KEYS = list(FOOD.keys())
 
 GENPOOL = {
     "Genes": {
-        "Kondition": (1, 3),
+        "Condition": (1, 3),
         "Visibilityrange": (1, 3),
         "Tribe": (1, 3),
         "Resistance": (1, 3),
