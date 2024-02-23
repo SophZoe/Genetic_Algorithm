@@ -76,6 +76,9 @@ class Board:
         initially places random food randomly on the board and adds food each round\n
         according to additional_food_percentage
     \n
+    get_food_at_position(position):
+        checks, if food is at position
+    \n
     remove_agent(agent):
         removes deceased agent from agents_list
     """
@@ -168,6 +171,17 @@ class Board:
         self.removed_agents_counter += 1
         
     def get_food_at_position(self, position):
+        """
+        checks, if food is at position
+        
+        Parameters
+        ----------
+        position : int
+        
+        Returns
+        -------
+        ndarray[Any, dtype] | None
+        """
         x, y = position
         if self.food[x, y] != 0:  # Nimmt an, dass 0 bedeutet, dass kein Essen vorhanden ist
             return self.food[x, y]  # Gibt den Schlüssel des Essens zurück

@@ -72,6 +72,9 @@ GENPOOL = {
 # --------------------- MAIN ---------------------
 
 def main():
+    """
+    main
+    """
     from class_game import Game     #importing here to avoid circular method-calling
     start = time.time()
     game = Game(saving=True, worlds=1, ROUNDS=5)

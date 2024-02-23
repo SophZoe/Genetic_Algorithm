@@ -101,6 +101,12 @@ class Agent:
         defines how the agent moves on the board considering the state it is in
         (linking the movement with it's energy, sickness and fleeing behaviour)
     \n
+    move_towards(food_position):
+        agent moves towards food_position to consume it
+    \n
+    random_move():
+        agent moves randomly
+    \n
     search_food(board):
         finding food is defined through the agents gene 'visibility_range', if food is found it
         will be consumed, considering the agents unique genedistributions and intelligence
@@ -249,61 +255,83 @@ class Agent:
             self.move_away_from_aggressive()
             self.expelled += 1
         elif self.consumption_time > 0:
-            # Der Agent konsumiert gerade Nahrung
+            # agent is consuming food
             self.consumption_time -= 1
             if self.consumption_time == 0:
                 self.energy += self.last_consumed_food_energy
                 self.consume_counter += 1
                 self.last_consumed_food_energy = 0
         elif self.sick is True:
-            self.check_for_sickness()  
+            self.check_for_sickness()
         else:
-            # Der Agent sucht nach Essen, wenn er nicht flieht oder Nahrung konsumiert
+            # agent is looking for food, if its not fleeing or consuming
             closest_food = self.search_food(board)
             if closest_food is not None:
-                # Bewege den Agenten in Richtung des nächsten Essens
+                # move agent towards closest_food
                 self.move_towards(closest_food)
             else:
-                # Zufällige Bewegung, wenn kein Essen gefunden wird
+                # random move if there was no food to be found
                 self.random_move()
 
-            # Reduziert die Energie nach der Bewegung
+            # reduces energy after next move
             self.energy -= main.ENERGYCOSTS_MOVEMENT if not self.sick else main.ENERGYCOSTS_MOVEMENT * 2
             if self.energy <= 0:
                 return "deceased"
 
     def move_towards(self, food_position):
-        # Kondition des Agenten
+        """
+        agent moves towards food_position to consume it
+
+        Parameters
+        ----------
+        food_position : int
+
+        Returns
+        -------
+        None
+        """
+        # kondition of agent
         kondition = self.genetic['Kondition']
 
-        # Zielposition des Essens
+        # target position food
         food_x, food_y = food_position
 
-        # Berechne den effektiven Bewegungsschritt unter Berücksichtigung der Kondition
+        # calculate effective movement regarding agent kondition
         step_x = min(abs(food_x - self.position[0]), kondition) * (1 if food_x > self.position[0] else -1)
         step_y = min(abs(food_y - self.position[1]), kondition) * (1 if food_y > self.position[1] else -1)
 
-        # Aktualisiere die Position des Agenten
+        # update agent position
         new_x = self.position[0] + step_x
         new_y = self.position[1] + step_y
 
-        # Stelle sicher, dass die neue Position innerhalb der Grenzen liegt
+        # check if new position is valid
         new_x = max(0, min(main.WIDTH - 1, new_x))
         new_y = max(0, min(main.HEIGHT - 1, new_y))
 
-        # Prüfe, ob auf der neuen Position Essen vorhanden ist
+        # check if there is food at new position
         food_key = self.board.get_food_at_position((new_x, new_y))
         if food_key:
-            # Konsumiere das Essen und aktualisiere die Energie des Agenten
+            # consume food and update agent
             self.consuming_food(food_key)
-            # Entferne das Essen vom Board
+            # remove consumed food from board
             self.board.food[new_x, new_y] = 0
 
-        # Aktualisiere die Position des Agenten
+        # update agent position
         self.position = (new_x, new_y)
 
     def random_move(self):
-        # Führt eine zufällige Bewegung durch
+        """
+        agent moves randomly
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        # agent makes a random move
         dx = random.choice([-1, 0, 1])
         dy = random.choice([-1, 0, 1])
         new_x = max(0, min(main.WIDTH - 1, self.position[0] + dx))

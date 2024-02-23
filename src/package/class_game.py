@@ -212,8 +212,8 @@ class Game:
                 'sickness_counter': agent.sickness_counter,
                 'covered_distance': agent.covered_distance,
                 'expelled': agent.expelled,
-                'parent_A': agent.parent_A,
-                'parent_B': agent.parent_B,
+                'parent_A': agent.parent_a,
+                'parent_B': agent.parent_b,
                 'genes': {
                     'Kondition': agent.genetic['Kondition'],
                     'Visibilityrange': agent.genetic['Visibilityrange'],
@@ -341,7 +341,7 @@ class Game:
 
         data1 = self.board.food
 
-        if main.VISUALIZE_POISON == True:
+        if main.VISUALIZE_POISON is True:
             plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
         else:
             plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)
