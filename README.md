@@ -137,8 +137,14 @@ The Agent class represents the living being in the ecosystem with the following 
   
 - **consuming_food():** This method is a simulation of how an agent consumes food and the consequences of that action, including the time it takes to consume the food, the energy gained, and the potential risk of disease that may come with the food. It also shows that the agent's genetic attributes play a significant role in these interactions, affecting both the efficiency of food consumption ("Metabolism") and the agent's susceptibility to disease ("Resistance").
   
--  **move():** Moves the agent and consumes energy, updates the position of the agent and regulates the logic of the flight mode in the agents that stumble upon their agressive counterparts. 
+- **check_for_sickness(self):** Checks if and how long the agent is sick, if False agents go back to previous condition.
 
+- **move():** Moves the agent and consumes energy, updates the position of the agent and regulates the logic of the flight mode in the agents that stumble upon their agressive counterparts.
+  
+-  **move_towards():** Checks the position of agents, then checks the position of food, calculates the most efficient move copnsidering the given condition of the agent, updates the position of the agent, then checks if there is any food on the new position. If so, the food is consumed by the agent and his energy status is updated, the consumed food is removed from ther board, afterwards the position of the agents is updated again.
+  
+-  **random_move():** Moves an agent randomly between three positions -1, 0 and 1. 
+  
 -  **search_food():** Searches for food near the agent. If food is within reach, the agent consumes it. Apart from that the search_food method includes logic where an agent checks for aggressive agents nearby before consuming food. If an aggressive agent is detected, a non-aggressive, intelligent agent may stop eating and move away to avoid conflict (self.move_away_from_aggressive(board, aggressive_agents_nearby)). This behavior suggests that intelligence equips agents with the foresight to avoid potentially dangerous situations, prioritizing safety.
 
 - **check_for_aggressive_agents():** Activates the mechanism of detecting the aggressive agents by all the agents with (self.genetic["Aggressive"] = False).
@@ -147,7 +153,7 @@ The Agent class represents the living being in the ecosystem with the following 
 
 - **reproduce():** Enables reproduction between two agents if they are on the same field and have enough energy.
 
-- **genedistribution_throgh_heredity():** Determines the genetic traits of a newborn agent based on the parents' genes.
+- **genedistribution_through_heredity():** Determines the genetic traits of a newborn agent based on the parents' genes.
 
 ## Board
 The board class manages the simulated world in which the agents live:
@@ -160,6 +166,7 @@ The board class manages the simulated world in which the agents live:
 -  **place_food():** Places food on the board based on a specified percentage of spaces
 -  **place_agents():** Places agents on the game board for the further visualization.
 -  **remove_agents():** Removes an agent from the game board.
+-  **place_agents(self):** Every agent in agent_list is placed on the board based on its position clears the board every round and then replaces the updated agents using the agents in agents_list.
 
 ## Game
 The Game class controls the simulation process:
@@ -171,6 +178,8 @@ The Game class controls the simulation process:
 -  **run():** Runs the specified number of simulation rounds in which agents move randomly. Coordinates reproduction and the search for food as well as placing additional food after every 10th round of the simulation.
 
 -  **save_data():** Saves the simulation data in a CSV file.
+  
+-  **collect_agent_data():** New method to collect agent-data and return data for each agent in agents_list.
 
 ## Visualization
 
@@ -181,7 +190,9 @@ The method uses the Matplotlib library to visualize the state of a board in a si
 
 
 ## Customization and possible feature extension**
-The structure of the code can be extended and changed dynamically. In particular, the initially defined constants can be adapted according to the conditions of a new world. Possible adaptations include
+
+The structure of the code can be extended and changed dynamically. In particular, the initially defined constants can be adapted according to the conditions of a new world. Possible adaptations include:
+
 - Changing the energy costs for movement and reproduction,
 - Agent behavior (possibly introducing agents that behave aggressively towards other agents, dynamics of the simulation (the game board could be scaled to speed up the execution time for the rounds),
 - the introduction of new genetic traits,
