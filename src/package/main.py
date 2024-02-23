@@ -59,7 +59,7 @@ FOOD_KEYS = list(FOOD.keys())
 
 GENPOOL = {
     "Genes": {
-        "Kondition": (1, 3),
+        "Condition": (1, 3),
         "Visibilityrange": (1, 3),
         "Tribe": (1, 3),
         "Resistance": (1, 3),
@@ -72,6 +72,9 @@ GENPOOL = {
 # --------------------- MAIN ---------------------
 
 def main():
+    """
+    main
+    """
     from class_game import Game     #importing here to avoid circular method-calling
     start = time.time()
     game = Game(saving=True, worlds=1, ROUNDS=5)
