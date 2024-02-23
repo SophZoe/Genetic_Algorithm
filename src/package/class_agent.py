@@ -161,7 +161,7 @@ class Agent:
         self.sick = False
         self.sickness_duration = 0
         self.flee_counter = 0
-        self.previous_kondition = None
+        self.previous_condition = None
         self.parent_a = None
         self.parent_b = None
         self.consumption_time = 0
@@ -214,8 +214,8 @@ class Agent:
                 self.sick = True
                 self.sickness_duration = main.SICKNESS_DURATION
                 self.sickness_counter += 1
-                self.previous_kondition = self.genetic['Kondition']
-                self.genetic["Kondition"] = 0
+                self.previous_condition = self.genetic['condition']
+                self.genetic["condition"] = 0
 
     def check_for_sickness(self):
         """
@@ -233,7 +233,7 @@ class Agent:
             self.sickness_duration -= 1
             if self.sickness_duration <= 0:
                 self.sick = False
-                self.genetic["Kondition"] = self.previous_kondition
+                self.genetic["condition"] = self.previous_condition
 
     def move(self, board):
         """
@@ -290,15 +290,15 @@ class Agent:
         -------
         None
         """
-        # kondition of agent
-        kondition = self.genetic['Kondition']
+        # condition of agent
+        condition = self.genetic['condition']
 
         # target position food
         food_x, food_y = food_position
 
-        # calculate effective movement regarding agent kondition
-        step_x = min(abs(food_x - self.position[0]), kondition) * (1 if food_x > self.position[0] else -1)
-        step_y = min(abs(food_y - self.position[1]), kondition) * (1 if food_y > self.position[1] else -1)
+        # calculate effective movement regarding agent condition
+        step_x = min(abs(food_x - self.position[0]), condition) * (1 if food_x > self.position[0] else -1)
+        step_y = min(abs(food_y - self.position[1]), condition) * (1 if food_y > self.position[1] else -1)
 
         # update agent position
         new_x = self.position[0] + step_x

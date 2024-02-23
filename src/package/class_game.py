@@ -215,7 +215,7 @@ class Game:
                 'parent_A': agent.parent_a,
                 'parent_B': agent.parent_b,
                 'genes': {
-                    'Kondition': agent.genetic['Kondition'],
+                    'Condition': agent.genetic['Condition'],
                     'Visibilityrange': agent.genetic['Visibilityrange'],
                     'Tribe': agent.genetic['Tribe'],
                     'Resistance': agent.genetic['Resistance'],
@@ -260,7 +260,7 @@ class Game:
                                'parent_A', 'parent_B']
 
                 # add "fieldnames" for the Genes-dictionary keys
-                fieldnames.extend(['Kondition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism',
+                fieldnames.extend(['Condition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism',
                                    'Intelligent', 'Aggressive'])
 
                 writer = csv.DictWriter(file, fieldnames=fieldnames)
