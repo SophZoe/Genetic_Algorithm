@@ -36,7 +36,7 @@ WIDTH = 10
 HEIGHT = 10
 NUMBER_AGENTS = 20
 ROUNDS = 20
-FOOD_PERCENTAGE_BEGINNING = 3
+FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
 
@@ -72,7 +72,7 @@ GENPOOL = {
 # --------------------- MAIN ---------------------
 
 def main():
-    from package.class_game import Game     #importing here to avoid circular method-calling
+    from class_game import Game     #importing here to avoid circular method-calling
     start = time.time()
     game = Game(saving=True, worlds=1, ROUNDS=5)
     game.run()

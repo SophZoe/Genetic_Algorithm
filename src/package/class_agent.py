@@ -229,7 +229,7 @@ class Agent:
                 self.sick = False
                 self.genetic["Kondition"] = self.previous_kondition
 
-    def move(self):
+    def move(self, board):
         """
         defines how the agent moves on the board considering the state it is in
 
