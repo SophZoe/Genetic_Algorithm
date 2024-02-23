@@ -43,10 +43,10 @@ import matplotlib.cm as cm
 from matplotlib.pyplot import imshow
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
-from package.CLASS_gui import GUI
-from package.CLASS_Board import Board
-from package.CLASS_Agent import Agent
-from main import *
+#from package.CLASS_gui import GUI
+from class_board import Board
+from class_agent import Agent
+import main
 
 class Game:
     """
@@ -98,7 +98,7 @@ class Game:
         self.data_list = []
         self.board = Board(**kwargs)
         self.removed_agents = 0
-        self.gui = GUI(board=self.board)
+        #self.gui = GUI(board=self.board)
 
     # used "kwargs" to unpack the dict of keyword arguments and pass them to Board
 
