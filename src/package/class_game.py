@@ -273,7 +273,7 @@ class Game:
                     del flat_agent_data['genes']
                     writer.writerow(flat_agent_data)
 
-            print(f"Data was saved: for world {world_num} in {filename}")
+            #print(f"Data was saved: for world {world_num} in {filename}")
         return world_data
 
 
