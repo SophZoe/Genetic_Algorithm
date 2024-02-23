@@ -308,6 +308,8 @@ class Agent:
         new_x = max(0, min(main.WIDTH - 1, new_x))
         new_y = max(0, min(main.HEIGHT - 1, new_y))
 
+        self.covered_distance += abs((step_x + step_y) // 2)
+
         # check if there is food at new position
         food_key = self.board.get_food_at_position((new_x, new_y))
         if food_key:
@@ -337,6 +339,7 @@ class Agent:
         new_x = max(0, min(main.WIDTH - 1, self.position[0] + dx))
         new_y = max(0, min(main.HEIGHT - 1, self.position[1] + dy))
         self.position = (new_x, new_y)
+        self.covered_distance += abs(1 * self.genetic["Condition"])
 
     def search_food(self, board):
         """
