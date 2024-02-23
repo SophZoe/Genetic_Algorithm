@@ -7,6 +7,9 @@ import os
 
 # ----------------------   AGENT  ----------------------
 def test_agent_initialization():
+    mock_board_width = 10
+    mock_board_height = 10
+    mock_board = Board(mock_board_width, mock_board_height)
     agent = Agent(1)
     assert agent.number == 1
     assert agent.energy == START_ENERGY
