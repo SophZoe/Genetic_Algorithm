@@ -119,7 +119,7 @@ class Game:
         """
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"\n\n----------World {world + 1}------------\n\n")
-            AGENTS_COUNTER = main.NUMBER_AGENTS  # separate counter for each world
+            #AGENTS_COUNTER = main.NUMBER_AGENTS  # separate counter for each world
             deceased_agents_counter = 0
             game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
 
@@ -180,7 +180,6 @@ class Game:
             self.board.food = np.zeros_like(self.board.food)
             self.board.world = np.zeros_like(self.board.world)
 
-        #PROBLEM---- this still necessary?
         if self.saving:
             self.save_data()
         print(f"Food was placed {self.board.food_placement_counter} times during the simulation.")
@@ -212,8 +211,8 @@ class Game:
                 'sickness_counter': agent.sickness_counter,
                 'covered_distance': agent.covered_distance,
                 'expelled': agent.expelled,
-                'parent_A': agent.parent_A,
-                'parent_B': agent.parent_B,
+                'parent_A': agent.parent_a,
+                'parent_B': agent.parent_b,
                 'genes': {
                     'Kondition': agent.genetic['Kondition'],
                     'Visibilityrange': agent.genetic['Visibilityrange'],
@@ -273,7 +272,7 @@ class Game:
                     del flat_agent_data['genes']
                     writer.writerow(flat_agent_data)
 
-            #print(f"Data was saved: for world {world_num} in {filename}")
+            print(f"Data was saved: for world {world_num} in {filename}")
         return world_data
 
 

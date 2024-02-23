@@ -32,15 +32,15 @@ import numpy as np
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 10
-WIDTH = 10
-HEIGHT = 10
+WIDTH = 70
+HEIGHT = 70
 NUMBER_AGENTS = 20
-ROUNDS = 20
+ROUNDS = 7
 FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
 
-VISUALIZE_POISON = True #other option is False
+VISUALIZE_POISON = True # set False to see Food-IDs
 
 
 # Global counter for the numbering of living beings EDIT: moved to CLASS_Agent.py
@@ -81,6 +81,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+    #from class_gui import Simulator
+    #Simulator.run_gui()
 
 """if __name__ == "__main__":
 

@@ -246,25 +246,32 @@ class Agent:
 
         if aggressive_agents_nearby:
             self.consumption_time = 0
+            #print("Agent moved away from aggressive")
             self.move_away_from_aggressive()
             self.expelled += 1
         elif self.consumption_time > 0:
             # Der Agent konsumiert gerade Nahrung
             self.consumption_time -= 1
+            print("Agent konsumierte")
             if self.consumption_time == 0:
+                print("Agent konsumierte 2.schleife")
                 self.energy += self.last_consumed_food_energy
                 self.consume_counter += 1
                 self.last_consumed_food_energy = 0
         elif self.sick is True:
+            #print("Agent checkt sickness:")
             self.check_for_sickness()  
         else:
             # Der Agent sucht nach Essen, wenn er nicht flieht oder Nahrung konsumiert
+            #print("Agent searche jetzt food:")
             closest_food = self.search_food(board)
             if closest_food is not None:
                 # Bewege den Agenten in Richtung des nächsten Essens
+                #print("Agent bewegt sich richtung closest food")
                 self.move_towards(closest_food)
             else:
                 # Zufällige Bewegung, wenn kein Essen gefunden wird
+                #print("Agent macht random move")
                 self.random_move()
 
             # Reduziert die Energie nach der Bewegung
@@ -369,7 +376,6 @@ class Agent:
         Returns
         -------
         list() of aggressive agents
-
         """
         aggressive_agents_nearby = []
         search_radius = 2  # Definiert den Suchradius

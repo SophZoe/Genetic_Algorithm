@@ -145,6 +145,7 @@ class Board:
                     self.food[x][y] = 1
                 if main.FOOD[food_key]["disease_risk"] > 0:
                     self.food[x][y] = 2
+                food_placed_this_round += 1
             else:
                 self.food[x][y] = food_key
                 food_placed_this_round += 1
