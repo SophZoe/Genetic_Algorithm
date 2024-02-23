@@ -23,7 +23,7 @@ Authors
 """
 import random
 import numpy as np
-import main
+from src.main import *
 
 
 #from CLASS_Board import Board
