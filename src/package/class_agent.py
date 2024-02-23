@@ -1,4 +1,6 @@
-
+<<<<<<< HEAD
+"""CLASS Agent"""
+=======
 """
 Genetic Algorithm - agent.py
 
@@ -14,7 +16,7 @@ numpy
     numerical operations
     data management
 
-Authors
+    Authors
 -------
     - [@julietteyek] (https://github.com/julietteyek)
     - [@Jxshyz] (https://github.com/Jxshyz)
@@ -22,6 +24,7 @@ Authors
     - [@SophZoe] (https://github.com/SophZoe)
     - [@Salt-is-leaving] (https://github.com/Salt-is-leaving)
 """
+>>>>>>> main
 import random
 import numpy as np
 import main

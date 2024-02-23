@@ -1,40 +1,4 @@
-"""
-Genetic_Algorithm - class_game.py
-
-This module contains the game class, where all neccessary parameters\n
-for the game are initialized which are needed to run the\n
-simulation. The option to save and visualize the simulation\n
-are also run from here.
-
-External Dependencies
----------------------
-os
-    interaction with operating system
-    file path management
-csv
-    writing .csv files
-    allowing collected data export
-numpy
-    numerical operations
-    data management
-matplotlip
-    plot and visualize gamestates in the simulation
-
-Internal Dependencies
----------------------
-class_board
-    accesses class_board.py
-class_agent
-    accesses class_agent.py
-
-Authors
--------
-    - [@julietteyek] (https://github.com/julietteyek)
-    - [@Jxshyz] (https://github.com/Jxshyz)
-    - [@Markomrnkvc] (https://github.com/Markomrnkvc)
-    - [@SophZoe] (https://github.com/SophZoe)
-    - [@Salt-is-leaving] (https://github.com/Salt-is-leaving)
-"""
+"""CLASS Game"""
 import os
 import csv
 import numpy as np
@@ -318,19 +282,19 @@ class Game:
         ylgn_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
 
         # Create a new colormap with modified colors
-        modified_ylgn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
+        modified_YlGn = LinearSegmentedColormap.from_list('YlGn_modified', ylgn_colors)
 
         #get YlOrRd colormap
-        ylorrd_cmap= cm.get_cmap('YlOrRd')
+        YlOrRd_cmap= cm.get_cmap('YlOrRd')
 
         # Get the colormap values
-        ylorrd_colors = ylorrd_cmap(np.linspace(0, 1, 256))
+        YlOrRd_colors = YlOrRd_cmap(np.linspace(0, 1, 256))
 
         # Set the color at the beginning (where the value is 0) to white
-        ylorrd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
+        YlOrRd_colors[0] = [1, 1, 1, 1]  # [R, G, B, Alpha]
 
         # Create a new colormap with modified colors
-        modified_ylorrd = LinearSegmentedColormap.from_list('YlOrRd_modified', ylorrd_colors)
+        modified_YlOrRd = LinearSegmentedColormap.from_list('YlOrRd_modified', YlOrRd_colors)
 
 
         #color for visualization mode- intelligence
@@ -344,10 +308,10 @@ class Game:
         if main.VISUALIZE_POISON == True:
             plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
         else:
-            plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)
+            plot1 = imshow(data1, cmap= modified_YlGn, interpolation='nearest', extent=extent)
 
         data2 = self.board.world
-        plot2 = imshow(data2, cmap= modified_ylorrd, alpha = .65,
+        plot2 = imshow(data2, cmap= modified_YlOrRd, alpha = .65,
                        interpolation='hanning', extent=extent)
 
 

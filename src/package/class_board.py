@@ -1,27 +1,4 @@
-"""
-Genetic Algorithm - class_board.py
-
-This module contains the board class, where all neccessary\n
-attributes for the board are initialized and where agents&food\n
-get placed or removed.
-
-External Dependencies
----------------------
-random
-    random operations
-numpy
-    numerical operations
-    data management
-
-Authors
--------
-    - [@julietteyek] (https://github.com/julietteyek)
-    - [@Jxshyz] (https://github.com/Jxshyz)
-    - [@Markomrnkvc] (https://github.com/Markomrnkvc)
-    - [@SophZoe] (https://github.com/SophZoe)
-    - [@Salt-is-leaving] (https://github.com/Salt-is-leaving)
-
-"""
+"""CLASS Board"""
 import random
 import numpy as np
 import main
