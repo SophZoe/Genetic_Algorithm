@@ -23,14 +23,14 @@ Authors
 """
 import random
 import numpy as np
-import main
+from src.main import *
 
 
 #from CLASS_Board import Board
 #from CLASS_Game import Game
 
 # Global counter for the numbering of living beings
-AGENTS_COUNTER = main.NUMBER_AGENTS
+AGENTS_COUNTER = NUMBER_AGENTS
 
 class Agent:
     """
@@ -152,10 +152,10 @@ class Agent:
         self.board = board
         self.sickness_counter = 0
         self.number = number
-        self.energy = main.START_ENERGY
+        self.energy = START_ENERGY
         self.genetic = {}
         self.genedistribution()
-        self.position = (random.randint(0, main.WIDTH - 1), random.randint(0, main.HEIGHT - 1))
+        self.position = (random.randint(0, WIDTH - 1), random.randint(0, HEIGHT - 1))
         self.reproduction_counter = 0
         self.consume_counter = 0
         self.sick = False
@@ -182,7 +182,7 @@ class Agent:
         -------
         None
         """
-        for gen, area in main.GENPOOL["Genes"].items():
+        for gen, area in GENPOOL["Genes"].items():
             if isinstance(area[0], bool):
                 self.genetic[gen] = random.choice(area)
                 if self.genetic["Intelligent"] == True:
@@ -206,13 +206,13 @@ class Agent:
         -------
         None
         """
-        self.consumption_time = main.FOOD[food_key]["consumption_time"] // max(1, self.genetic['Metabolism'])
-        self.last_consumed_food_energy = main.FOOD[food_key]["Energy"]
-        risk = main.FOOD[food_key]["disease_risk"]
+        self.consumption_time = FOOD[food_key]["consumption_time"] // max(1, self.genetic['Metabolism'])
+        self.last_consumed_food_energy = FOOD[food_key]["Energy"]
+        risk = FOOD[food_key]["disease_risk"]
         if self.genetic["Intelligent"] is False:
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
                 self.sick = True
-                self.sickness_duration = main.SICKNESS_DURATION
+                self.sickness_duration = SICKNESS_DURATION
                 self.sickness_counter += 1
                 self.previous_condition = self.genetic['Condition']
                 self.genetic["Condition"] = 0
@@ -274,7 +274,7 @@ class Agent:
                 self.random_move()
 
             # reduces energy after next move
-            self.energy -= main.ENERGYCOSTS_MOVEMENT if not self.sick else main.ENERGYCOSTS_MOVEMENT * 2
+            self.energy -= ENERGYCOSTS_MOVEMENT if not self.sick else ENERGYCOSTS_MOVEMENT * 2
             if self.energy <= 0:
                 return "deceased"
 
@@ -305,8 +305,8 @@ class Agent:
         new_y = self.position[1] + step_y
 
         # check if new position is valid
-        new_x = max(0, min(main.WIDTH - 1, new_x))
-        new_y = max(0, min(main.HEIGHT - 1, new_y))
+        new_x = max(0, min(WIDTH - 1, new_x))
+        new_y = max(0, min(HEIGHT - 1, new_y))
 
         self.covered_distance += abs((step_x + step_y) // 2)
 
@@ -336,8 +336,8 @@ class Agent:
         # agent makes a random move
         dx = random.choice([-1, 0, 1])
         dy = random.choice([-1, 0, 1])
-        new_x = max(0, min(main.WIDTH - 1, self.position[0] + dx))
-        new_y = max(0, min(main.HEIGHT - 1, self.position[1] + dy))
+        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
         self.position = (new_x, new_y)
         self.covered_distance += abs(1 * self.genetic["Condition"])
 
@@ -370,7 +370,7 @@ class Agent:
         for dy in range(-visibilityrange, visibilityrange + 1):
             for dx in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
-                if 0 <= x < main.WIDTH and 0 <= y < main.HEIGHT and board.food[x][y] != 0:
+                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] != 0:
                     food_mask[dy + visibilityrange, dx + visibilityrange] = True
 
         # apply the food mask to the distances, set all others to infinity
@@ -455,7 +455,7 @@ class Agent:
                 AGENTS_COUNTER += 1
                 child = Agent(AGENTS_COUNTER, self.board)
                 child.genedistribution_through_heredity(self, partner)
-                self.energy -= main.ENERGYCOSTS_REPRODUCTION
+                self.energy -= ENERGYCOSTS_REPRODUCTION
                 self.reproduction_counter += 1
                 partner.reproduction_counter += 1
                 board.add_agent(child)
@@ -475,7 +475,7 @@ class Agent:
         -------
         None
         """
-        for gen in main.GENPOOL["Genes"]:
+        for gen in GENPOOL["Genes"]:
             if gen == "Tribe":
                 self.genetic[gen] = random.choice([parent1.genetic[gen], parent2.genetic[gen]])
                 self.parent_a = parent1.number
