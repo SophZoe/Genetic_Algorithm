@@ -24,7 +24,7 @@ Authors
 """
 import random
 import numpy as np
-import src.main
+from src.main import *
 
 
 
