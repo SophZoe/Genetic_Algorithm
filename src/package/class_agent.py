@@ -13,7 +13,7 @@ numpy
     numerical operations
     data management
 
-    Authors
+Authors
 -------
     - [@julietteyek] (https://github.com/julietteyek)
     - [@Jxshyz] (https://github.com/Jxshyz)
@@ -21,7 +21,6 @@ numpy
     - [@SophZoe] (https://github.com/SophZoe)
     - [@Salt-is-leaving] (https://github.com/Salt-is-leaving)
 """
-
 import random
 import numpy as np
 import main
@@ -230,7 +229,6 @@ class Agent:
                 self.sick = False
                 self.genetic["Kondition"] = self.previous_kondition
 
-<<<<<<< HEAD:src/package/class_agent.py
     def move(self):
         """
         defines how the agent moves on the board considering the state it is in
@@ -244,10 +242,6 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
-=======
-    def move(self, board):
-        # Prüft, ob aggressive Agenten in der Nähe sind
->>>>>>> 4efc18c26514af6897bf2ed7bd3556531436a902:src/package/CLASS_Agent.py
         aggressive_agents_nearby = self.check_for_aggressive_agents(board)
 
         if aggressive_agents_nearby:
@@ -258,18 +252,11 @@ class Agent:
             # Der Agent konsumiert gerade Nahrung
             self.consumption_time -= 1
             if self.consumption_time == 0:
-<<<<<<< HEAD:src/package/class_agent.py
-                self.energy += self.last_consumed_food_energy   # Add the stored energy
-                self.consume_counter += 1   # Increment the consume counter
-                self.last_consumed_food_energy = 0
-                # Reset the stored energy to 0 for the next consumption
-=======
                 self.energy += self.last_consumed_food_energy
                 self.consume_counter += 1
                 self.last_consumed_food_energy = 0
         elif self.sick is True:
             self.check_for_sickness()  
->>>>>>> 4efc18c26514af6897bf2ed7bd3556531436a902:src/package/CLASS_Agent.py
         else:
             # Der Agent sucht nach Essen, wenn er nicht flieht oder Nahrung konsumiert
             closest_food = self.search_food(board)
