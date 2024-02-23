@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-"""CLASS Agent"""
-=======
+
 """
 Genetic Algorithm - agent.py
 
@@ -24,7 +22,6 @@ Authors
     - [@SophZoe] (https://github.com/SophZoe)
     - [@Salt-is-leaving] (https://github.com/Salt-is-leaving)
 """
->>>>>>> main
 import random
 import numpy as np
 import main
