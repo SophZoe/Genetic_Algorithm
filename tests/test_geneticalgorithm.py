@@ -2,7 +2,7 @@ import pytest
 from src.package.class_agent import Agent
 from src.package.class_game import Game
 from src.package.class_board import Board
-from main.py import GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCTION, ROUNDS, FOOD_PERCENTAGE_BEGINNING
+from src.main import GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCTION, ROUNDS, FOOD_PERCENTAGE_BEGINNING
 import os
 
 # ----------------------   AGENT  ----------------------
