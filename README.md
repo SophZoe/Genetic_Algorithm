@@ -137,7 +137,7 @@ The Agent class represents the living being in the ecosystem with the following 
   
 - **consuming_food():** This method is a simulation of how an agent consumes food and the consequences of that action, including the time it takes to consume the food, the energy gained, and the potential risk of disease that may come with the food. It also shows that the agent's genetic attributes play a significant role in these interactions, affecting both the efficiency of food consumption ("Metabolism") and the agent's susceptibility to disease ("Resistance").
   
-- **check_for_sickness(self):** Checks if and how long the agent is sick, if False agents go back to previous condition.
+- **check_for_sickness():** Checks if and how long the agent is sick, if False agents go back to previous condition.
 
 - **move():** Moves the agent and consumes energy, updates the position of the agent and regulates the logic of the flight mode in the agents that stumble upon their agressive counterparts.
   
@@ -189,7 +189,7 @@ The method uses the Matplotlib library to visualize the state of a board in a si
 ![viz](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/798120e3-18ce-438f-9e1a-940da51d2b1e)
 
 
-## Customization and possible feature extension**
+## Customization and possible feature extension
 
 The structure of the code can be extended and changed dynamically. In particular, the initially defined constants can be adapted according to the conditions of a new world. Possible adaptations include:
 
@@ -203,7 +203,7 @@ The option to save the simulation results in a CSV file enables the subsequent a
 
 <img width="795" alt="csv_results" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/2f7e30c6-552a-433e-9c48-14bc286a4670">
 
-## Tests and measures for the Continuous Integration of the code**
+## Tests and measures for the Continuous Integration of the code
   
 **General instructions for running the tests:**
 
