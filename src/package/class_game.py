@@ -360,26 +360,26 @@ class Game:
 
         # COLORBAR
         # set colorbar label plus label color for agents
-        cb2.set_label('amount of agents', color="black")
+        cb2.set_label('amount of agents', color="white")
         if main.VISUALIZE_POISON == True:
-            cb1.set_label('no food          non-poisonous          poisonous', color="black")
+            cb1.set_label('no food          non-poisonous          poisonous', color="white")
             cb1.set_ticks([])
         else:
-            cb1.set_label('food ID', color="black")
+            cb1.set_label('food ID', color="white")
         # set colorbar tick color
-        cb2.ax.yaxis.set_tick_params(color="black")
-        cb1.ax.yaxis.set_tick_params(color="black")
+        cb2.ax.yaxis.set_tick_params(color="white")
+        cb1.ax.yaxis.set_tick_params(color="white")
 
         # set colorbar edgecolor
         cb2.outline.set_edgecolor("white")
         cb1.outline.set_edgecolor("white")
 
         # set colorbar ticklabels
-        plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="black")
-        plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="black")
+        plt.setp(plt.getp(cb2.ax.axes, 'yticklabels'), color="white")
+        plt.setp(plt.getp(cb1.ax.axes, 'yticklabels'), color="white")
 
 
-        plt.title("Distribution of food and agents in the world",color = "black")
+        plt.title("Distribution of food and agents in the world",color = "white")
         plt.show()
 
 
