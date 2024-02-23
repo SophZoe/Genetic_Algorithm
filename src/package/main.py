@@ -59,7 +59,7 @@ FOOD_KEYS = list(FOOD.keys())
 
 GENPOOL = {
     "Genes": {
-        "Kondition": (1, 3),
+        "Condition": (1, 3),
         "Visibilityrange": (1, 3),
         "Tribe": (1, 3),
         "Resistance": (1, 3),

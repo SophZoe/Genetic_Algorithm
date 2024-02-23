@@ -214,8 +214,8 @@ class Agent:
                 self.sick = True
                 self.sickness_duration = main.SICKNESS_DURATION
                 self.sickness_counter += 1
-                self.previous_condition = self.genetic['condition']
-                self.genetic["condition"] = 0
+                self.previous_condition = self.genetic['Condition']
+                self.genetic["Condition"] = 0
 
     def check_for_sickness(self):
         """
@@ -233,7 +233,7 @@ class Agent:
             self.sickness_duration -= 1
             if self.sickness_duration <= 0:
                 self.sick = False
-                self.genetic["condition"] = self.previous_condition
+                self.genetic["Condition"] = self.previous_condition
 
     def move(self, board):
         """
@@ -291,7 +291,7 @@ class Agent:
         None
         """
         # condition of agent
-        condition = self.genetic['condition']
+        condition = self.genetic['Condition']
 
         # target position food
         food_x, food_y = food_position
