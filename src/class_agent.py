@@ -26,6 +26,7 @@ import numpy as np
 from src.main import *
 
 
+
 #from CLASS_Board import Board
 #from CLASS_Game import Game
 
@@ -403,7 +404,7 @@ class Agent:
 
         """
         aggressive_agents_nearby = []
-        search_radius = 2  # Definiert den Suchradius
+        search_radius = 2               #
 
         # Durchläuft alle Agenten im Board, um aggressive Agenten zu finden
         for agent in self.board.agents_list:
@@ -429,7 +430,7 @@ class Agent:
         -------
         None
         """
-        self.flee_counter = 5
+        self.flee_counter = 5           #
         self.consumption_time = 0
 
     def reproduce(self, partner, board):
