@@ -23,7 +23,8 @@ Authors
 """
 import random
 import numpy as np
-from src.main import *
+#from src.main import *
+from main import *
 
 
 
@@ -58,8 +59,8 @@ class Agent:
     expelled : int
         number of times agent has been expelled, starts at 0
     \n
-    flee_counter : int
-        checks if agent is in flight mode, starts at 0
+    flight_mode : int
+        checks if agent is in flight mode, is set to 5
     \n
     consume_counter : int
         number of times agent has consumed food, starts at 0
@@ -161,7 +162,7 @@ class Agent:
         self.consume_counter = 0
         self.sick = False
         self.sickness_duration = 0
-        self.flee_counter = 0
+        self.flight_mode = 0
         self.previous_condition = None
         self.parent_a = None
         self.parent_b = None
@@ -249,12 +250,17 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
-        aggressive_agents_nearby = self.check_for_aggressive_agents(board)
-
-        if aggressive_agents_nearby:
-            self.consumption_time = 0
-            self.move_away_from_aggressive()
-            self.expelled += 1
+        if self.genetic["Intelligent"] is True:
+            aggressive_agents_nearby = self.check_for_aggressive_agents(board)
+            if aggressive_agents_nearby:
+                self.consumption_time = 0
+                self.move_away_from_aggressive()
+                self.expelled += 1
+                self.random_move()
+                self.flight_mode -= 1
+        elif self.flight_mode > 0:
+            self.flight_mode -= 1
+            self.random_move()
         elif self.consumption_time > 0:
             # agent is consuming food
             self.consumption_time -= 1
@@ -404,10 +410,10 @@ class Agent:
 
         """
         aggressive_agents_nearby = []
-        search_radius = 2               #
+        search_radius = VIGILANT_RADIUS
 
         # Durchläuft alle Agenten im Board, um aggressive Agenten zu finden
-        for agent in self.board.agents_list:
+        for agent in self.board.agents_list: ###
             if agent is not self and agent.genetic["Aggressive"]:
                 # Berechnet die Distanz zwischen dem aktuellen Agenten und anderen Agenten
                 distance = max(abs(agent.position[0] - self.position[0]), abs(agent.position[1] - self.position[1]))
@@ -430,7 +436,7 @@ class Agent:
         -------
         None
         """
-        self.flee_counter = 5           #
+        self.flight_mode = FLIGHT_MODE
         self.consumption_time = 0
 
     def reproduce(self, partner, board):
@@ -450,7 +456,7 @@ class Agent:
         None
         """
         global AGENTS_COUNTER
-        if self.energy > main.ENERGYCOSTS_REPRODUCTION and self.position == partner.position:
+        if self.energy > ENERGYCOSTS_REPRODUCTION and self.position == partner.position:
             success_rate = 1 if self.genetic["Tribe"] == partner.genetic["Tribe"] else 0.3
             if random.random() < success_rate:
                 AGENTS_COUNTER += 1

@@ -44,9 +44,12 @@ from matplotlib.pyplot import imshow
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 #from package.CLASS_gui import GUI
-from src.class_board import Board
-from src.class_agent import Agent
-from src.main import *
+#from src.class_board import Board
+from class_board import Board
+#from src.class_agent import Agent
+from class_agent import Agent
+#from src.main import *
+from main import *
 
 class Game:
     """
@@ -131,7 +134,7 @@ class Game:
             self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
 
-            for round in range(main.ROUNDS):
+            for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
                 self.visualize_board()
                 round_deceased_agents = 0
@@ -341,7 +344,7 @@ class Game:
 
         data1 = self.board.food
 
-        if main.VISUALIZE_POISON is True:
+        if VISUALIZE_POISON is True:
             plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
         else:
             plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)
