@@ -35,12 +35,21 @@ START_ENERGY = 25
 WIDTH = 50
 HEIGHT = 50
 NUMBER_AGENTS = 20
-ROUNDS = 20
+ROUNDS = 50
 FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
+FLIGHT_MODE = 3
+VIGILANT_RADIUS = 2
 
-VISUALIZE_POISON = True #other option is False
+VISUALIZE_POISON = True
+
+"""
+Weitere Konstanen: in Class Agent
+flee_counter    Z. 413
+search_radius   Z. 439
+
+"""
 
 
 # Global counter for the numbering of living beings EDIT: moved to CLASS_Agent.py

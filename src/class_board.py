@@ -24,7 +24,8 @@ Authors
 """
 import random
 import numpy as np
-import main
+#from src.main import *
+from main import *
 
 
 
@@ -83,14 +84,14 @@ class Board:
         removes deceased agent from agents_list
     """
 
-    def __init__(self, width=main.WIDTH, height=main.HEIGHT,
-                 energy_costs_movement=main.ENERGYCOSTS_MOVEMENT,
-                 energy_costs_reproduction=main.ENERGYCOSTS_REPRODUCTION,
-                 start_energy=main.START_ENERGY,
-                 number_agents=main.NUMBER_AGENTS, rounds=main.ROUNDS,
-                 food_percentage_beginning=main.FOOD_PERCENTAGE_BEGINNING,
-                 additional_food_percentage=main.ADDITIONAL_FOOD_PERCENTAGE,
-                 sickness_duration=main.SICKNESS_DURATION, **kwargs):
+    def __init__(self, width=WIDTH, height=HEIGHT,
+                 energy_costs_movement=ENERGYCOSTS_MOVEMENT,
+                 energy_costs_reproduction=ENERGYCOSTS_REPRODUCTION,
+                 start_energy=START_ENERGY,
+                 number_agents=NUMBER_AGENTS, rounds=ROUNDS,
+                 food_percentage_beginning=FOOD_PERCENTAGE_BEGINNING,
+                 additional_food_percentage=ADDITIONAL_FOOD_PERCENTAGE,
+                 sickness_duration=SICKNESS_DURATION, **kwargs):
                 # makes sure you can adjust individual parameters
         self.width = width
         self.height = height
@@ -142,11 +143,11 @@ class Board:
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
-            food_key = random.choice(main.FOOD_KEYS)
-            if main.VISUALIZE_POISON == True:
-                if main.FOOD[food_key]["disease_risk"] == 0:
+            food_key = random.choice(FOOD_KEYS)
+            if VISUALIZE_POISON == True:
+                if FOOD[food_key]["disease_risk"] == 0:
                     self.food[x][y] = 1
-                if main.FOOD[food_key]["disease_risk"] > 0:
+                if FOOD[food_key]["disease_risk"] > 0:
                     self.food[x][y] = 2
             else:
                 self.food[x][y] = food_key
