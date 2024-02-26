@@ -23,7 +23,9 @@ Authors
 """
 import random
 import numpy as np
+#from main import *
 from main import *
+
 
 
 
@@ -235,6 +237,7 @@ class Agent:
             if self.sickness_duration <= 0:
                 self.sick = False
                 self.genetic["Condition"] = self.previous_condition
+                self.random_move()
 
     def move(self, board):
         """
@@ -249,35 +252,34 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
-        if self.genetic["Intelligent"] is True:
-            aggressive_agents_nearby = self.check_for_aggressive_agents(board)
-            if aggressive_agents_nearby:
-                self.consumption_time = 0
-                self.move_away_from_aggressive()
-                self.expelled += 1
-                self.random_move()
-                self.flight_mode -= 1
-        elif self.flight_mode > 0:
-            self.flight_mode -= 1
+        if self.genetic["Intelligent"] is True and self.check_for_aggressive_agents():
+            print("VOR AGGRESSIVEM AGENTEN FLÜCHTEN")
+            self.consumption_time = 0
+            self.expelled += 1
             self.random_move()
         elif self.consumption_time > 0:
             # agent is consuming food
             self.consumption_time -= 1
+            print ("NAHRUNGSMITTEl KONSUMIEREN")
             if self.consumption_time == 0:
                 self.energy += self.last_consumed_food_energy
                 self.consume_counter += 1
                 self.last_consumed_food_energy = 0
+                print("ERFOLGREICH KONSUMIERT")
         elif self.sick is True:
             self.check_for_sickness()
+            print("KRANKES LEBEWESEN REGENERIERT (SICK = TRUE)")
         else:
             # agent is looking for food, if its not fleeing or consuming
             closest_food = self.search_food(board)
             if closest_food is not None:
                 # move agent towards closest_food
                 self.move_towards(closest_food)
+                print("moving for food")
             else:
                 # random move if there was no food to be found
                 self.random_move()
+                print("no food found")
 
             # reduces energy after next move
             self.energy -= ENERGYCOSTS_MOVEMENT if not self.sick else ENERGYCOSTS_MOVEMENT * 2
@@ -393,50 +395,22 @@ class Agent:
 
         return closest_food
 
-    def check_for_aggressive_agents(self, board):
-        """
-        ability of an agent to check for agressive agents within a specified search radius \n
-        any agent recognized as aggressive is appended to a list \n
-        is called in the search_food method
-
-        Parameters
-        ----------
-        board : Any
-
-        Returns
-        -------
-        list() of aggressive agents
-
-        """
-        aggressive_agents_nearby = []
+    def check_for_aggressive_agents(self):
         search_radius = VIGILANT_RADIUS
+        print("initiiere suche nach Aggressoren")
+        min_x = max(0, self.position[0] - search_radius)
+        max_x = min(self.board.width - 1, self.position[0] + search_radius)
+        min_y = max(0, self.position[1] - search_radius)
+        max_y = min(self.board.height - 1, self.position[1] + search_radius)
 
-        # Durchläuft alle Agenten im Board, um aggressive Agenten zu finden
-        for agent in self.board.agents_list: ###
-            if agent is not self and agent.genetic["Aggressive"]:
-                # Berechnet die Distanz zwischen dem aktuellen Agenten und anderen Agenten
-                distance = max(abs(agent.position[0] - self.position[0]), abs(agent.position[1] - self.position[1]))
-                if distance <= search_radius:
-                    aggressive_agents_nearby.append(agent)
+        print("starte kritischen for loop")
+        for agent in self.board.agents_list:
+            if agent != self and agent.genetic["Aggressive"]:
+                if min_x <= agent.position[0] <= max_x and min_y <= agent.position[1] <= max_y:
+                    print("Aggressiver Agent erkannt, checke ob in der nähe")
+                    return True  
 
-        return aggressive_agents_nearby
-
-    def move_away_from_aggressive(self):
-        """
-        agent will move away from aggressive agents, if any were found \n
-        food consumption is stopped while the agent moves away
-
-        Parameters
-        ----------
-        board : Any
-        aggressive_agents : list
-
-        Returns
-        -------
-        None
-        """
-        self.flight_mode = FLIGHT_MODE
-        self.consumption_time = 0
+        return False 
 
     def reproduce(self, partner, board):
         """
