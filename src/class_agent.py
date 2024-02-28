@@ -305,16 +305,24 @@ class Agent:
         new_x = self.position[0] + step_x
         new_y = self.position[1] + step_y
 
+        # Stellt sicher, dass die neue Position innerhalb der Grenzen des Spielfelds liegt
         new_x = max(0, min(WIDTH - 1, new_x))
         new_y = max(0, min(HEIGHT - 1, new_y))
 
-        self.covered_distance += abs(step_x + step_y)
-
-        if self.board.food[new_x, new_y] == food_key:  # Überprüft, ob das Nahrungsmittel an der neuen Position dem gesuchten Schlüssel entspricht
+        # Überprüft, ob das Zielnahrungsmittel an der neuen Position vorhanden ist
+        if self.board.food[new_x, new_y] == food_key:
             self.consuming_food(food_key)
             self.board.food[new_x, new_y] = 0  # Entfernt das konsumierte Nahrungsmittel vom Board
+        else:
+            # Korrigiert die Position, falls das Nahrungsmittel nicht mehr vorhanden ist
+            closest_food, _ = self.search_food(self.board)
+            if closest_food:
+                self.position = closest_food
+            else:
+                self.random_move()  # Führt eine zufällige Bewegung durch, wenn keine Nahrung gefunden wurde
 
-        self.position = (new_x, new_y)
+        self.covered_distance += abs(step_x + step_y)
+        self.position = (new_x, new_y)  # Aktualisiert die Position des Agenten
 
     def random_move(self):
         """
@@ -354,30 +362,23 @@ class Agent:
         -------
         tuple [int, int] coordinates of the (consumed) food | None
         """
+        closest_food = 0
+        food_key = 0
         visibilityrange = self.genetic["Visibilityrange"]
-        y_range, x_range = np.ogrid[-visibilityrange:visibilityrange+1, -visibilityrange:visibilityrange+1]
-        distances = np.sqrt(x_range**2 + y_range**2)
-        food_mask = np.zeros_like(distances, dtype=bool)
-
-        closest_food_key = None  # Neu hinzugefügt, um den Schlüssel des nächsten Nahrungsmittels zu speichern
-
-        for dy in range(-visibilityrange, visibilityrange + 1):
-            for dx in range(-visibilityrange, visibilityrange + 1):
+        for dx in range(-visibilityrange, visibilityrange + 1):
+            for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
-                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] != 0:
-                    food_mask[dy + visibilityrange, dx + visibilityrange] = True
-                    closest_food_key = board.food[x][y]  # Schlüssel des gefundenen Nahrungsmittels speichern
+                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y]:
+                    closest_food = x, y
+                    food_key = board.food[x][y]
+                    board.food[x][y] = 0
+                    self.energy += FOOD[food_key]["Energy"]
+                    print(f"key is {food_key}")
+                    print(f"closest food coordinates are {closest_food}")
 
-        distances = np.where(food_mask, distances, np.inf)
-        min_distance_idx = np.argmin(distances)
-        if distances.flat[min_distance_idx] == np.inf:
-            return None, None  # Kein Nahrungsmittel gefunden
-
-        dy, dx = np.unravel_index(min_distance_idx, distances.shape)
-        closest_food = (dx - visibilityrange, dy - visibilityrange)
-
-        return closest_food, closest_food_key  # Gibt sowohl die Position als auch den Schlüssel des nächsten Nahrungsmittels zurück
-
+                    return closest_food, food_key
+                
+        return None, None
 
 
     def check_for_aggressive_agents(self):

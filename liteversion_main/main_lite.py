@@ -72,14 +72,23 @@ class Agent:
             return "deceased"
 
     def search_food(self, board):
+        closest_food = None
+        food_key = 0
         visibilityrange = self.genetic["Visibilityrange"]
         for dx in range(-visibilityrange, visibilityrange + 1):
             for dy in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y]:
+                    closest_food = x, y
+                    food_key = board.food[x][y]
                     board.food[x][y] = 0
                     self.energy += ENERGY_FOOD
-                    return (x, y)
+                    print(f"key is {food_key}")
+                    print(f"closest food coordinates are {closest_food}")
+
+                    return closest_food, food_key
+
+
         return None
 
 
@@ -134,7 +143,7 @@ class Board:
         #placing agents in array
         for agent in self.agents_list:
             x, y = agent.position
-            self.world[x][y] += 1
+            self.world[x][y] + 1
         
     def remove_agents(self, agent):
         #removing the agents in the list 'lebewesen'
