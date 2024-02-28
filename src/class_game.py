@@ -43,15 +43,10 @@ import matplotlib.cm as cm
 from matplotlib.pyplot import imshow
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
-#from package.CLASS_gui import GUI
-#from src.class_board import Board
 from class_board import Board
-#from src.class_agent import Agent
 from class_agent import Agent
-#from src.main import *
-from main import ENERGYCOSTS_MOVEMENT, ENERGYCOSTS_REPRODUCTION, START_ENERGY
-from main import WIDTH, HEIGHT, NUMBER_AGENTS, ROUNDS, FOOD_PERCENTAGE_BEGINNING,ADDITIONAL_FOOD_PERCENTAGE, SICKNESS_DURATION, VIGILANT_RADIUS
-import main
+from main import *
+
 class Game:
     """
     class to run the simulation allowing it to be modelled across multiple "worlds"\n
@@ -100,7 +95,7 @@ class Game:
         self.saving = saving
         self.worlds = worlds
         self.data_list = []
-        self.VISUALIZE_POISON = main.VISUALIZE_POISON
+        self.VISUALIZE_POISON = VISUALIZE_POISON
         self.board = Board(**kwargs)
         self.removed_agents = 0
         #self.gui = GUI(board=self.board)
@@ -122,7 +117,7 @@ class Game:
         -------
         None
         """
-        print(main.VISUALIZE_POISON)
+        print(VISUALIZE_POISON)
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"\n\n----------World {world + 1}------------\n\n")
             AGENTS_COUNTER = NUMBER_AGENTS  # separate counter for each world
@@ -139,7 +134,7 @@ class Game:
 
             for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
-                self.visualize_board(main.VISUALIZE_POISON)
+                self.visualize_board(VISUALIZE_POISON)
                 round_deceased_agents = 0
 
                 # ending the simulation in case there are no agents left
@@ -359,7 +354,7 @@ class Game:
             plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)
 
         data2 = self.board.world
-        if main.VISUALIZING_INTELLIGENCE == True:
+        if VISUALIZING_INTELLIGENCE == True:
             plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent)
         else:
             plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
@@ -377,7 +372,7 @@ class Game:
 
         # COLORBAR
         
-        if main.VISUALIZING_INTELLIGENCE == True:
+        if VISUALIZING_INTELLIGENCE == True:
             cb2.set_label('    no agents    intelligent agents  agressiv agents', color="white")
             cb2.set_ticks([])
         else:
