@@ -24,6 +24,7 @@ def test_agent_genedistribution():
         assert min_value <= agent.genetic[gene] <= max_value or isinstance(agent.genetic[gene], bool)
 
 #Tests for the method def consuming_food()
+@pytest.fixture
 def test_consuming_food_no_sickness(agent):
     food_key = 1.0  # Choosing a food item with 0 disease risk
     agent.consuming_food(food_key)
@@ -31,6 +32,7 @@ def test_consuming_food_no_sickness(agent):
     assert agent.last_consumed_food_energy == FOOD[food_key]['Energy']
     assert not agent.sick  # Agent should not become sick given the 0 disease risk
 
+@pytest.fixture
 def test_consuming_food_with_sickness(agent):
     # Directly manipulating the agent's resistance or condition to ensure sickness outcome
     agent.genetic['Resistance'] = 0  # Ensuring no resistance
@@ -60,18 +62,21 @@ def healthy_agent():
     agent.sick = False
     return agent
 
+@pytest.fixture
 def test_check_for_sickness_recovery(sick_agent):
     sick_agent.check_for_sickness()
     assert not sick_agent.sick, "Agent should recover from sickness"
     assert sick_agent.sickness_duration == 0, "Sickness duration should be 0 after recovery"
     assert sick_agent.genetic["Condition"] == sick_agent.previous_condition, "Agent should return to previous condition after recovery"
 
+@pytest.fixture
 def test_check_for_sickness_no_change(healthy_agent):
     initial_condition = healthy_agent.genetic["Condition"]
     healthy_agent.check_for_sickness()
     assert not healthy_agent.sick, "Healthy agent should remain not sick"
     assert healthy_agent.genetic["Condition"] == initial_condition, "Condition should not change for healthy agent"
 
+@pytest.fixture
 def test_sick_agent_stays_sick(sick_agent):
     # Adjusting the sickness duration to test decrement
     sick_agent.sickness_duration = 2
@@ -97,11 +102,13 @@ def moving_agent():
     agent.consume_counter = 0
     return agent
 
+@pytest.fixture
 def test_move_deceased_due_to_starvation(agent):
     agent.energy = 1  # Set energy to be depleted after one move
     status = agent.move(board) 
     assert status == "deceased", "Agent should be marked as deceased if energy depletes to 0"
 
+@pytest.fixture
 def test_move_with_intelligent_agent_avoiding_aggression(agent, mocker):
     agent.genetic["Intelligent"] = True
     mocker.patch.object(agent, 'check_for_aggressive_agents', return_value=True)
@@ -111,12 +118,14 @@ def test_move_with_intelligent_agent_avoiding_aggression(agent, mocker):
     assert agent.expelled == 1, "Expelled counter should increment when avoiding aggression"
     assert agent.flight_mode == 0, "Flight mode should be unchanged if not initially set"
 
+@pytest.fixture
 def test_move_in_flight_mode(agent, mocker):
     agent.flight_mode = 1
     mocker.patch.object(agent, 'random_move')
     agent.move(board)
     assert agent.flight_mode == 0, "Flight mode should decrement after moving"
 
+@pytest.fixture
 def test_move_while_consuming_food(agent):
     agent.consumption_time = 2
     agent.last_consumed_food_energy = 5
@@ -127,6 +136,7 @@ def test_move_while_consuming_food(agent):
         assert agent.consume_counter == 1, "Consume counter should increment after finishing food"
 
 #Tests for the method def search_for_food()
+@pytest.fixture
 def test_search_food_with_food_within_range(agent, board):
     
     # Setup a default agent for testing
@@ -140,11 +150,13 @@ def test_search_food_with_food_within_range(agent, board):
     closest_food = agent.search_food(board)
     assert closest_food == (1, 2), "The method should return the relative position of the closest food"
 
+@pytest.fixture
 def test_search_food_with_no_food_within_range(agent, board):
     # Ensure there's no food within the agent's visibility range
     closest_food = agent.search_food(board)
     assert closest_food is None, "The method should return None if no food is found within the visibility range"
 
+@pytest.fixture
 def test_search_food_with_food_outside_range(agent, board):
     # Place food outside the agent's visibility range
     board.food[60][60] = 1  # Adjust coordinates to be outside the agent's visibility range
@@ -255,11 +267,12 @@ def test_board_remove_agents():
 
 
 # ----------------------   GAME  ----------------------
+@pytest.fixture
 def test_game_initialization():
     # Create a game instance with saving disabled (saving=False) --> not implemented anymore
     # because: ""helps focus the test on the core initialization aspects"""
     # ""without worrying about the actual file writing""
-  
+ 
     game = Game()
     game.worlds = 1  # Simulate with only one world for simplicity
     assert game.board.width == WIDTH
