@@ -37,7 +37,7 @@ HEIGHT = 50
 NUMBER_AGENTS = 10
 ROUNDS = 50
 FOOD_PERCENTAGE_BEGINNING = 0
-ADDITIONAL_FOOD_PERCENTAGE = 0.01
+ADDITIONAL_FOOD_PERCENTAGE = 0.001
 SICKNESS_DURATION = ROUNDS // 10
 VIGILANT_RADIUS = 2
 
@@ -52,10 +52,10 @@ FOOD = {
     1.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
     2.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
     3.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
-    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
-    5.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
-    6.0: {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
-    7.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}
+    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 0},
+    5.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 15},
+    6.0: {'Energy': 10, 'consumption_time': 4, 'disease_risk': 20},
+    7.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 30}
 }
 FOOD_KEYS = list(FOOD.keys())
 
