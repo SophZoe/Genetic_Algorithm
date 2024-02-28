@@ -396,6 +396,17 @@ class Agent:
         return closest_food
 
     def check_for_aggressive_agents(self):
+        """
+        ability of an agent to check for agressive agents within a specified search radius \n
+        any agent recognized as aggressive is appended to a list \n
+        is called in the search_food method
+        Parameters
+        ----------
+        board : Any
+        Returns
+        -------
+        list() of aggressive agents
+        """
         search_radius = VIGILANT_RADIUS
         print("initiiere suche nach Aggressoren")
         min_x = max(0, self.position[0] - search_radius)
