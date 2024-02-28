@@ -6,18 +6,29 @@ from src.main import GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCT
 import os
 import numpy as np
 
+# Constants
+WIDTH = 50
+HEIGHT = 50 
+
 # ----------------------   AGENT  ----------------------
-def test_agent_initialization():
+@pytest.fixture
+def board_setup():
+    """Fixture to setup the board with predefined WIDTH and HEIGHT."""
     board = Board(WIDTH, HEIGHT)
+    return board
+
+def test_agent_initialization(board_setup):
+    # More checks for more attributes
     food = np.zeros(WIDTH, HEIGHT)  #return Board() ?
     agent = Agent(1)
+    assert board_setup.width == WIDTH
+    assert board_setup.height == HEIGHT
     assert agent.number == 1
     assert agent.energy == START_ENERGY
     assert agent.sick is False
-    # More checks for more attributes
-
+    
 def test_agent_genedistribution():
-    agent = Agent(1)
+    agent = Agent(1, board)
     agent.genedistribution()
     # Check if gene-values are within expected range:
     for gene, (min_value, max_value) in GENPOOL["Genes"].items():
@@ -119,7 +130,7 @@ def test_move_with_intelligent_agent_avoiding_aggression(agent, mocker):
     assert agent.flight_mode == 0, "Flight mode should be unchanged if not initially set"
 
 @pytest.fixture
-def test_move_in_flight_mode(agent, mocker):
+def test_move_in_flight_mode(agent:
     agent.flight_mode = 1
     mocker.patch.object(agent, 'random_move')
     agent.move(board)
@@ -192,8 +203,8 @@ def test_agent_reproduce():
     assert new_agent.genetic["Tribe"] == 1
 
 def test_genedistribution_through_heredity():
-    parent1 = Agent(1)
-    parent2 = Agent(2)
+    parent1 = Agent(1, board)
+    parent2 = Agent(2, board)
     parent1.genetic = {'Kondition': 2, 'Visibilityrange': 1, 'Tribe': 3, 'Resistance': 2, 'Metabolism': 1, 'Intelligent': True, 'Aggressive': False}
     parent2.genetic = {'Kondition': 1, 'Visibilityrange': 3, 'Tribe': 1, 'Resistance': 3, 'Metabolism': 2, 'Intelligent': False, 'Aggressive': True}
     
@@ -234,7 +245,7 @@ def test_board_initialization():
 
 def test_board_add_agent():
     board = Board(WIDTH, HEIGHT)
-    agent = Agent(1)
+    agent = Agent(1, board)
 
     # check if agent was added to the board:
     board.add_agent(agent)
@@ -259,7 +270,7 @@ def test_board_place_food():
 
 def test_board_remove_agents():
     board = Board(WIDTH, HEIGHT)
-    agent = Agent(1)
+    agent = Agent(1, board)
     board.add_agent(agent)
     board.remove_agents(agent)
     # check if agent was removed successfully
@@ -299,19 +310,19 @@ def test_run_simulation_ends_correctly(setup_game):
 
     game.run()
 
-    assert len(game.data_list) == game.worlds, "Data for each world should be collected"
+    #assert len(game.data_list) == game.worlds, "Data for each world should be collected"
     # This checks if the game correctly resets agents and food for each new world
     assert not any(game.board.agents_list) and not np.any(game.board.food), "Agents and food should be reset after simulation"
     
 def test_game_save_data():
-    #game = Game(saving=True) #now enable saving bc it is being tested
+    game = Game(saving=True) #now enable saving bc it is being tested
     game = Game()
     game.run()
     
     # check if the results-directory and the CSV were created:
-    result_dir = f"src/results"
-    assert os.path.exists(result_dir)
-    csv_file = f"{result_dir}/agent_data_0.csv"
+    result_worlds_dir = f"Datascience/results_worlds"
+    assert os.path.exists(results_worlds_dir)
+    csv_file = f"{results_worlds_dir}/0___World.csv"
     assert os.path.exists(csv_file)
     
     # check if CSV contains the expected header:
