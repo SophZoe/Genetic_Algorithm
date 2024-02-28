@@ -82,7 +82,7 @@ def test_sick_agent_stays_sick(sick_agent):
 #Tests for the method def move()
 def moving_agent():
     # Constanta for tests
-ENERGYCOSTS_MOVEMENT = 1  # Assuming an energy cost constant is defined somewhere
+    ENERGYCOSTS_MOVEMENT = 1  # Assuming an energy cost constant is defined somewhere
 
     # Setup a default agent for testing
     genetic = {'Intelligent': False, 'Metabolism': 1, 'Resistance': 1, 'Condition': 1}
