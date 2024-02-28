@@ -130,7 +130,7 @@ def test_move_with_intelligent_agent_avoiding_aggression(agent, mocker):
     assert agent.flight_mode == 0, "Flight mode should be unchanged if not initially set"
 
 @pytest.fixture
-def test_move_in_flight_mode(agent:
+def test_move_in_flight_mode(agent):
     agent.flight_mode = 1
     mocker.patch.object(agent, 'random_move')
     agent.move(board)
