@@ -32,24 +32,17 @@ import numpy as np
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 50
-WIDTH = 25
-HEIGHT = 25
-NUMBER_AGENTS = 5
+WIDTH = 50
+HEIGHT = 50
+NUMBER_AGENTS = 10
 ROUNDS = 50
 FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
-FLIGHT_MODE = 3
 VIGILANT_RADIUS = 2
 
 VISUALIZE_POISON = True
 
-"""
-Weitere Konstanen: in Class Agent
-flee_counter    Z. 413
-search_radius   Z. 439
-
-"""
 
 
 # Global counter for the numbering of living beings EDIT: moved to CLASS_Agent.py
