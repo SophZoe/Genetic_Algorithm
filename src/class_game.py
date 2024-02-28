@@ -340,10 +340,16 @@ class Game:
 
 
         #color for visualization mode- intelligence
-        colors_poison = ['white', 'darkgreen', 'lime']
-
-        # Erstelle eine Liste von Farbwerten für die Colormap
+        colors_poison = ['white', 'green', 'purple']
+        
+        # Colormap for visualizing poisoned food
         cmap_poison = ListedColormap(colors_poison)
+        
+        #color for visualizing intelligent and aggresiv agents
+        colors_intelligence = ['white', 'aqua', 'red']
+        
+        #colormap for visualizing intelligent and aggresiv agents
+        cmap_intelligence = ListedColormap(colors_intelligence)
 
         data1 = self.board.food
 
@@ -353,10 +359,15 @@ class Game:
             plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)
 
         data2 = self.board.world
-        plot2 = imshow(data2, cmap= modified_ylorrd, alpha = .65,
+        if main.VISUALIZING_INTELLIGENCE == True:
+            plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent)
+        else:
+            plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
+        
+        """plot2 = imshow(data2, cmap= modified_ylorrd, alpha = .65,
                        interpolation='hanning', extent=extent)
-
-
+        """
+        
         # set imshow outline to white
         for spine in plot2.axes.spines.values():
             spine.set_edgecolor("white")
@@ -365,8 +376,14 @@ class Game:
         cb1 = plt.colorbar(plot1)
 
         # COLORBAR
+        
+        if main.VISUALIZING_INTELLIGENCE == True:
+            cb2.set_label('    no agents    intelligent agents  agressiv agents', color="white")
+            cb2.set_ticks([])
+        else:
+            cb2.set_label('amount of agents', color="white")
+        
         # set colorbar label plus label color for agents
-        cb2.set_label('amount of agents', color="white")
         if VISUALIZE_POISON == True:
             cb1.set_label('no food          non-poisonous          poisonous', color="white")
             cb1.set_ticks([])
@@ -391,7 +408,7 @@ class Game:
 
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        print(self.board.food)
+        #print(self.board.food)
         #checking if there is food left in the world
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :

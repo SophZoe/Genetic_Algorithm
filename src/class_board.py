@@ -209,4 +209,10 @@ class Board:
 
         for agent in self.agents_list:
             x, y = agent.position
-            self.world[x][y] += 1
+            if main.VISUALIZING_INTELLIGENCE == True:
+                if agent.genetic['Intelligent'] == True:
+                    self.world[x][y] = 1
+                else :
+                    self.world[x][y] = 2
+            else:
+                self.world[x][y] += 1
