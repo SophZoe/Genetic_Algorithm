@@ -188,10 +188,11 @@ class Agent:
         for gen, area in GENPOOL["Genes"].items():
             if isinstance(area[0], bool):
                 self.genetic[gen] = random.choice(area)
-                if self.genetic["Intelligent"] == False:
-                    self.genetic["Aggressive"] = True
+                if self.genetic["Intelligent"] == True:
+                    self.genetic["Aggressive"] = False
                 else:
-                    self.genetic["Aggressive"] = True
+                    self.genetic["Intelligent"] == True
+                    self.genetic["Aggressive"] = False
             else:
                 self.genetic[gen] = random.randint(*area)
 
@@ -371,8 +372,6 @@ class Agent:
                     food_key = board.food[x][y]
                     board.food[x][y] = 0
                     self.energy += FOOD[food_key]["Energy"]
-                    print(f"key is {food_key}")
-                    print(f"closest food coordinates are {closest_food}")
 
                     return closest_food, food_key
                 

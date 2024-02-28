@@ -421,4 +421,3 @@ class Game:
         else:
             print("no food left")
         
-        print(self.board.world)

@@ -123,23 +123,22 @@ class Board:
         None
         """
         self.agents_list.append(agents_to_add)
-
     def place_food(self, prozent):
         """
         initially places random food randomly on the board and adds food each round\n
         according to additional_food_percentage
-
+ 
         Parameters
         ----------
         percent : float
-
+ 
         Returns
         -------
         None
         """
-
+ 
         food_placed_this_round = 0
-
+ 
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
@@ -152,9 +151,10 @@ class Board:
             else:
                 self.food[x][y] = food_key
                 food_placed_this_round += 1
-
+ 
         print(f"Food placed this round: {food_placed_this_round}")
         self.food_placement_counter += 1
+    
 
     def remove_agents(self, agent):
         """
