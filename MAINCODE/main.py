@@ -384,7 +384,7 @@ class Game:
 
         #------setting colormaps------
         #color for visualization mode- intelligence
-        colors_intelligence = ['beige', 'aqua', 'red']
+        colors_intelligence = ['white', 'aqua', 'red']
         
         # Erstelle eine Liste von Farbwerten für die Colormap
         cmap_intelligence = ListedColormap(colors_intelligence)
