@@ -12,10 +12,10 @@ HEIGHT = 50
 
 # ----------------------   AGENT  ----------------------
 @pytest.fixture
-def board_setup():
+def board():
     """Fixture to setup the board with predefined WIDTH and HEIGHT."""
     board = Board(WIDTH, HEIGHT)
-    return board
+    return Board(WIDTH, HEIGHT)
 
 def test_agent_initialization(board_setup):
     # More checks for more attributes
@@ -296,12 +296,14 @@ def test_game_initialization():
     # check if the simulation ran for the expected number of rounds as set:
     assert len(game.board.agents_list) >= 0 and len(game.board.agents_list) <= WIDTH * HEIGHT * ROUNDS
 
+@pytest.fixture
 def test_run_simulation_ends_correctly(setup_game):
     game = setup_game
     game.ROUNDS = 2  # Set a small number of rounds for quick testing
     game.NUMBER_AGENTS = 5  # Set a number of agents
     game.FOOD_PERCENTAGE_BEGINNING = 0.1
     game.ADDITIONAL_FOOD_PERCENTAGE = 0.05
+    game.VISUALIZE_POISON == True
     
    # Mock the visualization and agent movement to avoid complex dependencies
     game.visualize_board = lambda: None
