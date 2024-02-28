@@ -32,16 +32,16 @@ import numpy as np
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 50
-WIDTH = 10
-HEIGHT = 10
-NUMBER_AGENTS = 5
+WIDTH = 50
+HEIGHT = 50
+NUMBER_AGENTS = 10
 ROUNDS = 50
 FOOD_PERCENTAGE_BEGINNING = 0
-ADDITIONAL_FOOD_PERCENTAGE = 0.01
+ADDITIONAL_FOOD_PERCENTAGE = 0.001
 SICKNESS_DURATION = ROUNDS // 10
 VIGILANT_RADIUS = 2
 
-VISUALIZE_POISON = False
+VISUALIZE_POISON = True
 VISUALIZING_INTELLIGENCE = True
 
 
@@ -49,11 +49,11 @@ VISUALIZING_INTELLIGENCE = True
 # agents_counter = NUMBER_AGENTS
 
 FOOD = {
-    1.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
-    2.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
+    1.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 3},
+    2.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 2},
     3.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
-    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 3},
-    5.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 6},
+    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 6},
+    5.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
     6.0: {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
     7.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}
 }
@@ -79,7 +79,7 @@ def main():
     """
     from class_game import Game     #importing here to avoid circular method-calling
     start = time.time()
-    game = Game(saving=True, worlds=1, ROUNDS=1, VISUALIZE_POISON = VISUALIZE_POISON)
+    game = Game(saving=True, worlds=1, ROUNDS=5, VISUALIZING_INTELLIGENCE=VISUALIZING_INTELLIGENCE, VISUALIZE_POISON=VISUALIZE_POISON)
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(f"Script time: {script_time}s")

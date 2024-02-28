@@ -24,10 +24,8 @@ Authors
 """
 import random
 import numpy as np
-#from src.main import *
-from main import VISUALIZE_POISON, ENERGYCOSTS_MOVEMENT, ENERGYCOSTS_REPRODUCTION, START_ENERGY
-from main import WIDTH, HEIGHT, NUMBER_AGENTS, ROUNDS, FOOD_PERCENTAGE_BEGINNING,ADDITIONAL_FOOD_PERCENTAGE, SICKNESS_DURATION, VIGILANT_RADIUS
-import main
+from main import *
+
 
 
 
@@ -145,11 +143,11 @@ class Board:
         amount_fields = int(self.width * self.height * prozent)
         for _ in range(amount_fields):
             x, y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
-            food_key = random.choice(main.FOOD_KEYS)
+            food_key = random.choice(FOOD_KEYS)
             if VISUALIZE_POISON == True:
-                if main.FOOD[food_key]["disease_risk"] == 0:
+                if FOOD[food_key]["disease_risk"] == 0:
                     self.food[x][y] = 1
-                if main.FOOD[food_key]["disease_risk"] > 0:
+                if FOOD[food_key]["disease_risk"] > 0:
                     self.food[x][y] = 2
             else:
                 self.food[x][y] = food_key
@@ -209,7 +207,7 @@ class Board:
 
         for agent in self.agents_list:
             x, y = agent.position
-            if main.VISUALIZING_INTELLIGENCE == True:
+            if VISUALIZING_INTELLIGENCE == True:
                 if agent.genetic['Intelligent'] == True:
                     self.world[x][y] = 1
                 else :
