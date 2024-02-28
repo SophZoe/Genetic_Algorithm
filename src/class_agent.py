@@ -380,6 +380,17 @@ class Agent:
 
 
     def check_for_aggressive_agents(self):
+        """
+        ability of an agent to check for agressive agents within a specified search radius \n
+        any agent recognized as aggressive is appended to a list \n
+        is called in the search_food method
+        Parameters
+        ----------
+        board : Any
+        Returns
+        -------
+        list() of aggressive agents
+        """
         search_radius = VIGILANT_RADIUS
         min_x = max(0, self.position[0] - search_radius)
         max_x = min(self.board.width - 1, self.position[0] + search_radius)
