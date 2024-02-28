@@ -44,10 +44,14 @@ from matplotlib.pyplot import imshow
 from matplotlib.colors import ListedColormap
 from matplotlib.colors import LinearSegmentedColormap
 #from package.CLASS_gui import GUI
+#from src.class_board import Board
 from class_board import Board
+#from src.class_agent import Agent
 from class_agent import Agent
+#from src.main import *
+from main import ENERGYCOSTS_MOVEMENT, ENERGYCOSTS_REPRODUCTION, START_ENERGY
+from main import WIDTH, HEIGHT, NUMBER_AGENTS, ROUNDS, FOOD_PERCENTAGE_BEGINNING,ADDITIONAL_FOOD_PERCENTAGE, SICKNESS_DURATION, VIGILANT_RADIUS
 import main
-
 class Game:
     """
     class to run the simulation allowing it to be modelled across multiple "worlds"\n
@@ -92,10 +96,11 @@ class Game:
         visualizes distribution of food and agents for each round
     """
 
-    def __init__(self, saving=False, worlds=1, **kwargs):
+    def __init__(self, VISUALIZE_POISON , saving=False, worlds=1, **kwargs):
         self.saving = saving
         self.worlds = worlds
         self.data_list = []
+        self.VISUALIZE_POISON = main.VISUALIZE_POISON
         self.board = Board(**kwargs)
         self.removed_agents = 0
         #self.gui = GUI(board=self.board)
@@ -117,23 +122,24 @@ class Game:
         -------
         None
         """
+        print(main.VISUALIZE_POISON)
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"\n\n----------World {world + 1}------------\n\n")
-            AGENTS_COUNTER = main.NUMBER_AGENTS  # separate counter for each world
+            AGENTS_COUNTER = NUMBER_AGENTS  # separate counter for each world
             deceased_agents_counter = 0
             game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
 
             # this now is configured for each world:
             # board = Board(WIDTH, HEIGHT)
-            for i in range(1, main.NUMBER_AGENTS + 1):
+            for i in range(1, NUMBER_AGENTS + 1):
                 self.board.add_agent(Agent(i, self.board))
 
-            self.board.place_food(main.FOOD_PERCENTAGE_BEGINNING)
+            self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
 
             for round in range(main.ROUNDS):
                 print(f"------------Round {round + 1}------------")
-                self.visualize_board()
+                self.visualize_board(main.VISUALIZE_POISON)
                 round_deceased_agents = 0
 
                 # ending the simulation in case there are no agents left
@@ -159,7 +165,7 @@ class Game:
                                 agent.reproduce(partner, self.board)
                 deceased_agents_counter += round_deceased_agents
                 print(f"Agents deceased this round: {round_deceased_agents}")
-                self.board.place_food(main.ADDITIONAL_FOOD_PERCENTAGE)
+                self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
 
                 """if round % 10 == 0:
@@ -212,10 +218,10 @@ class Game:
                 'sickness_counter': agent.sickness_counter,
                 'covered_distance': agent.covered_distance,
                 'expelled': agent.expelled,
-                'parent_A': agent.parent_A,
-                'parent_B': agent.parent_B,
+                'parent_A': agent.parent_a,
+                'parent_B': agent.parent_b,
                 'genes': {
-                    'Kondition': agent.genetic['Kondition'],
+                    'Condition': agent.genetic['Condition'],
                     'Visibilityrange': agent.genetic['Visibilityrange'],
                     'Tribe': agent.genetic['Tribe'],
                     'Resistance': agent.genetic['Resistance'],
@@ -242,17 +248,17 @@ class Game:
         -------
         None
         """
-        if not os.path.exists('results_worlds'):
-            os.makedirs('results_worlds')
+        if not os.path.exists('Datascience/results_worlds'):
+            os.makedirs('Datascience/results_worlds')
 
         for world_data in self.data_list:
             world_num = world_data['world']
             csv_index = 0
-            filename = os.path.join('results_worlds', f'{csv_index}___World({world_num}).csv')
+            filename = os.path.join('Datascience/results_worlds', f'{csv_index}___World({world_num}).csv')
 
             while os.path.exists(filename):
                 csv_index += 1
-                filename = os.path.join('results_worlds/', f'{csv_index}___World({world_num}).csv')
+                filename = os.path.join('Datascience/results_worlds/', f'{csv_index}___World({world_num}).csv')
 
             with open(filename, 'w', newline='', encoding="utf-8") as file:
                 fieldnames = ['agent_number', 'reproduction_counter', 'consume_counter',
@@ -260,7 +266,7 @@ class Game:
                                'parent_A', 'parent_B']
 
                 # add "fieldnames" for the Genes-dictionary keys
-                fieldnames.extend(['Kondition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism',
+                fieldnames.extend(['Condition', 'Visibilityrange', 'Tribe', 'Resistance', 'Metabolism',
                                    'Intelligent', 'Aggressive'])
 
                 writer = csv.DictWriter(file, fieldnames=fieldnames)
@@ -277,7 +283,7 @@ class Game:
         return world_data
 
 
-    def visualize_board(self):
+    def visualize_board(self, VISUALIZE_POISON):
         """
         visualizes state of simulation for each round\n
         visualizes distribution of food and agents for each round\n
@@ -341,7 +347,7 @@ class Game:
 
         data1 = self.board.food
 
-        if main.VISUALIZE_POISON == True:
+        if VISUALIZE_POISON == True:
             plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
         else:
             plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)
@@ -361,7 +367,7 @@ class Game:
         # COLORBAR
         # set colorbar label plus label color for agents
         cb2.set_label('amount of agents', color="white")
-        if main.VISUALIZE_POISON == True:
+        if VISUALIZE_POISON == True:
             cb1.set_label('no food          non-poisonous          poisonous', color="white")
             cb1.set_ticks([])
         else:

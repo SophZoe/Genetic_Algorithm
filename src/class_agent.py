@@ -23,7 +23,11 @@ Authors
 """
 import random
 import numpy as np
+#from main import *
+from main import VISUALIZE_POISON, ENERGYCOSTS_MOVEMENT, ENERGYCOSTS_REPRODUCTION, START_ENERGY
+from main import WIDTH, HEIGHT, NUMBER_AGENTS, ROUNDS, FOOD_PERCENTAGE_BEGINNING,ADDITIONAL_FOOD_PERCENTAGE, SICKNESS_DURATION, VIGILANT_RADIUS
 import main
+
 
 
 #from CLASS_Board import Board
@@ -57,8 +61,8 @@ class Agent:
     expelled : int
         number of times agent has been expelled, starts at 0
     \n
-    flee_counter : int
-        checks if agent is in flight mode, starts at 0
+    flight_mode : int
+        checks if agent is in flight mode, is set to 5
     \n
     consume_counter : int
         number of times agent has consumed food, starts at 0
@@ -100,6 +104,12 @@ class Agent:
     move(board):
         defines how the agent moves on the board considering the state it is in
         (linking the movement with it's energy, sickness and fleeing behaviour)
+    \n
+    move_towards(food_position):
+        agent moves towards food_position to consume it
+    \n
+    random_move():
+        agent moves randomly
     \n
     search_food(board):
         finding food is defined through the agents gene 'visibility_range', if food is found it
@@ -146,22 +156,23 @@ class Agent:
         self.board = board
         self.sickness_counter = 0
         self.number = number
-        self.energy = main.START_ENERGY
+        self.energy = START_ENERGY
         self.genetic = {}
         self.genedistribution()
-        self.position = (random.randint(0, main.WIDTH - 1), random.randint(0, main.HEIGHT - 1))
+        self.position = (random.randint(0, WIDTH - 1), random.randint(0, HEIGHT - 1))
         self.reproduction_counter = 0
         self.consume_counter = 0
         self.sick = False
         self.sickness_duration = 0
-        self.flee_counter = 0
-        self.previous_kondition = None
+        self.flight_mode = 0
+        self.previous_condition = None
         self.parent_a = None
         self.parent_b = None
         self.consumption_time = 0
         self.covered_distance = 0
         self.expelled = 0
         self.last_consumed_food_energy = 0
+        self.gained_energy = 0
 
     def genedistribution(self):
         """
@@ -206,10 +217,8 @@ class Agent:
         if self.genetic["Intelligent"] is False:
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
                 self.sick = True
-                self.sickness_duration = main.SICKNESS_DURATION
+                self.sickness_duration = SICKNESS_DURATION
                 self.sickness_counter += 1
-                self.previous_kondition = self.genetic['Kondition']
-                self.genetic["Kondition"] = 0
 
     def check_for_sickness(self):
         """
@@ -225,9 +234,12 @@ class Agent:
         """
         if self.sick:
             self.sickness_duration -= 1
+            self.random_move()
+            print("#####Krankes Lebewesen regeneriert!")
             if self.sickness_duration <= 0:
                 self.sick = False
-                self.genetic["Kondition"] = self.previous_kondition
+                self.random_move()
+                print("Krankes Lebewesen ist nun wieder Gesund #####")
 
     def move(self, board):
         """
@@ -242,73 +254,91 @@ class Agent:
         -------
         Literal ["deceased"] if Agent died | None
         """
-        aggressive_agents_nearby = self.check_for_aggressive_agents(board)
-
-        if aggressive_agents_nearby:
+        if self.genetic["Intelligent"] is True and self.check_for_aggressive_agents():
             self.consumption_time = 0
-            self.move_away_from_aggressive()
             self.expelled += 1
+            self.random_move()
         elif self.consumption_time > 0:
-            # Der Agent konsumiert gerade Nahrung
+            # agent is consuming food
             self.consumption_time -= 1
             if self.consumption_time == 0:
                 self.energy += self.last_consumed_food_energy
+                self.gained_energy += self.last_consumed_food_energy
                 self.consume_counter += 1
                 self.last_consumed_food_energy = 0
         elif self.sick is True:
-            self.check_for_sickness()  
+            self.check_for_sickness()
         else:
-            # Der Agent sucht nach Essen, wenn er nicht flieht oder Nahrung konsumiert
-            closest_food = self.search_food(board)
-            if closest_food is not None:
-                # Bewege den Agenten in Richtung des nächsten Essens
-                self.move_towards(closest_food)
+            # agent is looking for food, if its not fleeing or consuming
+            closest_food, food_key = self.search_food(board)
+            if closest_food is not None and main.FOOD[food_key]["disease_risk"] == 0 and self.genetic["Intelligent"] is True:
+                # move agent towards closest_food
+                self.move_towards(closest_food, food_key)
+            elif closest_food is not None and self.genetic["Aggressive"] is True:
+                self.move_towards(closest_food, food_key)
             else:
-                # Zufällige Bewegung, wenn kein Essen gefunden wird
+                # random move if there was no food to be found
                 self.random_move()
 
-            # Reduziert die Energie nach der Bewegung
-            self.energy -= main.ENERGYCOSTS_MOVEMENT if not self.sick else main.ENERGYCOSTS_MOVEMENT * 2
+            # reduces energy after next move
             if self.energy <= 0:
                 return "deceased"
 
-    def move_towards(self, food_position):
-        # Kondition des Agenten
-        kondition = self.genetic['Kondition']
+    def move_towards(self, food_position, food_key):
+        """
+        agent moves towards food_position to consume it
 
-        # Zielposition des Essens
+        Parameters
+        ----------
+        food_position : int
+
+        Returns
+        -------
+        None
+        """
+        condition = self.genetic['Condition']
         food_x, food_y = food_position
 
-        # Berechne den effektiven Bewegungsschritt unter Berücksichtigung der Kondition
-        step_x = min(abs(food_x - self.position[0]), kondition) * (1 if food_x > self.position[0] else -1)
-        step_y = min(abs(food_y - self.position[1]), kondition) * (1 if food_y > self.position[1] else -1)
+        step_x = min(abs(food_x - self.position[0]), condition) * (1 if food_x > self.position[0] else -1)
+        step_y = min(abs(food_y - self.position[1]), condition) * (1 if food_y > self.position[1] else -1)
 
-        # Aktualisiere die Position des Agenten
         new_x = self.position[0] + step_x
         new_y = self.position[1] + step_y
 
-        # Stelle sicher, dass die neue Position innerhalb der Grenzen liegt
-        new_x = max(0, min(main.WIDTH - 1, new_x))
-        new_y = max(0, min(main.HEIGHT - 1, new_y))
+        new_x = max(0, min(WIDTH - 1, new_x))
+        new_y = max(0, min(HEIGHT - 1, new_y))
 
-        # Prüfe, ob auf der neuen Position Essen vorhanden ist
-        food_key = self.board.get_food_at_position((new_x, new_y))
-        if food_key:
-            # Konsumiere das Essen und aktualisiere die Energie des Agenten
+        self.covered_distance += abs(step_x + step_y)
+
+        if self.board.food[new_x, new_y] == food_key:  # Überprüft, ob das Nahrungsmittel an der neuen Position dem gesuchten Schlüssel entspricht
             self.consuming_food(food_key)
-            # Entferne das Essen vom Board
-            self.board.food[new_x, new_y] = 0
+            self.board.food[new_x, new_y] = 0  # Entfernt das konsumierte Nahrungsmittel vom Board
 
-        # Aktualisiere die Position des Agenten
         self.position = (new_x, new_y)
 
     def random_move(self):
-        # Führt eine zufällige Bewegung durch
+        """
+        agent moves randomly
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        None
+        """
+        # agent makes a random move
         dx = random.choice([-1, 0, 1])
         dy = random.choice([-1, 0, 1])
-        new_x = max(0, min(main.WIDTH - 1, self.position[0] + dx))
-        new_y = max(0, min(main.HEIGHT - 1, self.position[1] + dy))
+        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
+        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
         self.position = (new_x, new_y)
+        self.covered_distance += abs(1 * self.genetic["Condition"])
+        StepsTimesEnergycost = ENERGYCOSTS_MOVEMENT * abs(self.genetic["Condition"])
+        self.energy -= StepsTimesEnergycost if not self.sick else StepsTimesEnergycost * 2
+
+
 
     def search_food(self, board):
         """
@@ -325,81 +355,55 @@ class Agent:
         tuple [int, int] coordinates of the (consumed) food | None
         """
         visibilityrange = self.genetic["Visibilityrange"]
-
-        # create a grid over the fields in the visibility range
         y_range, x_range = np.ogrid[-visibilityrange:visibilityrange+1, -visibilityrange:visibilityrange+1]
-
-        # calculate the distance from each point in the grid to the current position of the agent
         distances = np.sqrt(x_range**2 + y_range**2)
-
-        # create a boolean grid that is True where food is present
         food_mask = np.zeros_like(distances, dtype=bool)
 
-        # check which points are within bounds and where there is food
+        closest_food_key = None  # Neu hinzugefügt, um den Schlüssel des nächsten Nahrungsmittels zu speichern
+
         for dy in range(-visibilityrange, visibilityrange + 1):
             for dx in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
-                if 0 <= x < main.WIDTH and 0 <= y < main.HEIGHT and board.food[x][y] != 0:
+                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] != 0:
                     food_mask[dy + visibilityrange, dx + visibilityrange] = True
+                    closest_food_key = board.food[x][y]  # Schlüssel des gefundenen Nahrungsmittels speichern
 
-        # apply the food mask to the distances, set all others to infinity
         distances = np.where(food_mask, distances, np.inf)
-
-        # find the position of the minimum distance
         min_distance_idx = np.argmin(distances)
         if distances.flat[min_distance_idx] == np.inf:
-            return None  # no food found
+            return None, None  # Kein Nahrungsmittel gefunden
 
-        # calculate the relative position of the nearest food source
         dy, dx = np.unravel_index(min_distance_idx, distances.shape)
         closest_food = (dx - visibilityrange, dy - visibilityrange)
 
-        return closest_food
+        return closest_food, closest_food_key  # Gibt sowohl die Position als auch den Schlüssel des nächsten Nahrungsmittels zurück
 
-    def check_for_aggressive_agents(self, board):
+
+
+    def check_for_aggressive_agents(self):
         """
         ability of an agent to check for agressive agents within a specified search radius \n
         any agent recognized as aggressive is appended to a list \n
         is called in the search_food method
-
         Parameters
         ----------
         board : Any
-
         Returns
         -------
         list() of aggressive agents
-
         """
-        aggressive_agents_nearby = []
-        search_radius = 2  # Definiert den Suchradius
+        search_radius = VIGILANT_RADIUS
+        min_x = max(0, self.position[0] - search_radius)
+        max_x = min(self.board.width - 1, self.position[0] + search_radius)
+        min_y = max(0, self.position[1] - search_radius)
+        max_y = min(self.board.height - 1, self.position[1] + search_radius)
 
-        # Durchläuft alle Agenten im Board, um aggressive Agenten zu finden
         for agent in self.board.agents_list:
-            if agent is not self and agent.genetic["Aggressive"]:
-                # Berechnet die Distanz zwischen dem aktuellen Agenten und anderen Agenten
-                distance = max(abs(agent.position[0] - self.position[0]), abs(agent.position[1] - self.position[1]))
-                if distance <= search_radius:
-                    aggressive_agents_nearby.append(agent)
+            if agent != self and agent.genetic["Aggressive"]:
+                if min_x <= agent.position[0] <= max_x and min_y <= agent.position[1] <= max_y:
+                    return True  
 
-        return aggressive_agents_nearby
-
-    def move_away_from_aggressive(self):
-        """
-        agent will move away from aggressive agents, if any were found \n
-        food consumption is stopped while the agent moves away
-
-        Parameters
-        ----------
-        board : Any
-        aggressive_agents : list
-
-        Returns
-        -------
-        None
-        """
-        self.flee_counter = 5
-        self.consumption_time = 0
+        return False 
 
     def reproduce(self, partner, board):
         """
@@ -418,13 +422,13 @@ class Agent:
         None
         """
         global AGENTS_COUNTER
-        if self.energy > main.ENERGYCOSTS_REPRODUCTION and self.position == partner.position:
+        if self.energy > ENERGYCOSTS_REPRODUCTION and self.position == partner.position:
             success_rate = 1 if self.genetic["Tribe"] == partner.genetic["Tribe"] else 0.3
             if random.random() < success_rate:
                 AGENTS_COUNTER += 1
                 child = Agent(AGENTS_COUNTER, self.board)
                 child.genedistribution_through_heredity(self, partner)
-                self.energy -= main.ENERGYCOSTS_REPRODUCTION
+                self.energy -= ENERGYCOSTS_REPRODUCTION
                 self.reproduction_counter += 1
                 partner.reproduction_counter += 1
                 board.add_agent(child)

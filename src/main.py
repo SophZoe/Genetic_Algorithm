@@ -31,16 +31,18 @@ import numpy as np
 # Constants
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
-START_ENERGY = 10
-WIDTH = 10
-HEIGHT = 10
-NUMBER_AGENTS = 20
-ROUNDS = 20
+START_ENERGY = 50
+WIDTH = 50
+HEIGHT = 50
+NUMBER_AGENTS = 50
+ROUNDS = 10
 FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
+VIGILANT_RADIUS = 2
 
-VISUALIZE_POISON = True #other option is False
+VISUALIZE_POISON = False
+
 
 
 # Global counter for the numbering of living beings EDIT: moved to CLASS_Agent.py
@@ -59,7 +61,7 @@ FOOD_KEYS = list(FOOD.keys())
 
 GENPOOL = {
     "Genes": {
-        "Kondition": (1, 3),
+        "Condition": (1, 3),
         "Visibilityrange": (1, 3),
         "Tribe": (1, 3),
         "Resistance": (1, 3),
@@ -72,9 +74,12 @@ GENPOOL = {
 # --------------------- MAIN ---------------------
 
 def main():
+    """
+    main
+    """
     from class_game import Game     #importing here to avoid circular method-calling
     start = time.time()
-    game = Game(saving=True, worlds=1, ROUNDS=5)
+    game = Game(saving=True, worlds=1, ROUNDS=1, VISUALIZE_POISON = VISUALIZE_POISON)
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(f"Script time: {script_time}s")

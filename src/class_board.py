@@ -24,6 +24,9 @@ Authors
 """
 import random
 import numpy as np
+#from src.main import *
+from main import VISUALIZE_POISON, ENERGYCOSTS_MOVEMENT, ENERGYCOSTS_REPRODUCTION, START_ENERGY
+from main import WIDTH, HEIGHT, NUMBER_AGENTS, ROUNDS, FOOD_PERCENTAGE_BEGINNING,ADDITIONAL_FOOD_PERCENTAGE, SICKNESS_DURATION, VIGILANT_RADIUS
 import main
 
 
@@ -75,6 +78,9 @@ class Board:
     place_food(prozent):
         initially places random food randomly on the board and adds food each round\n
         according to additional_food_percentage
+    \n
+    get_food_at_position(position):
+        checks, if food is at position
     \n
     remove_agent(agent):
         removes deceased agent from agents_list
@@ -168,9 +174,21 @@ class Board:
         self.removed_agents_counter += 1
         
     def get_food_at_position(self, position):
+        """
+        checks, if food is at position
+        
+        Parameters
+        ----------
+        position : int
+        
+        Returns
+        -------
+        ndarray[Any, dtype] | None
+        """
         x, y = position
         if self.food[x, y] != 0:  # Nimmt an, dass 0 bedeutet, dass kein Essen vorhanden ist
-            return self.food[x, y]  # Gibt den Schlüssel des Essens zurück
+            food_key = self.food[x, y]
+            return food_key  # Gibt den Schlüssel des Essens zurück
         return None  # Kein Essen an dieser Position
 
     def place_agents(self):
