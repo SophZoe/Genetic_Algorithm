@@ -245,17 +245,17 @@ class Game:
         -------
         None
         """
-        if not os.path.exists('results_worlds'):
-            os.makedirs('results_worlds')
+        if not os.path.exists('Datascience/results_worlds'):
+            os.makedirs('Datascience/results_worlds')
 
         for world_data in self.data_list:
             world_num = world_data['world']
             csv_index = 0
-            filename = os.path.join('results_worlds', f'{csv_index}___World({world_num}).csv')
+            filename = os.path.join('Datascience/results_worlds', f'{csv_index}___World({world_num}).csv')
 
             while os.path.exists(filename):
                 csv_index += 1
-                filename = os.path.join('results_worlds/', f'{csv_index}___World({world_num}).csv')
+                filename = os.path.join('Datascience/results_worlds/', f'{csv_index}___World({world_num}).csv')
 
             with open(filename, 'w', newline='', encoding="utf-8") as file:
                 fieldnames = ['agent_number', 'reproduction_counter', 'consume_counter',
