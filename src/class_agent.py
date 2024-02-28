@@ -191,8 +191,8 @@ class Agent:
                 if self.genetic["Intelligent"] == True:
                     self.genetic["Aggressive"] = False
                 else:
-                    self.genetic["Intelligent"] == True
-                    self.genetic["Aggressive"] = False
+                    self.genetic["Intelligent"] == False
+                    self.genetic["Aggressive"] = True
             else:
                 self.genetic[gen] = random.randint(*area)
 
