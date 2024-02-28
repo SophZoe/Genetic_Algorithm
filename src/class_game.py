@@ -122,19 +122,18 @@ class Game:
         -------
         None
         """
-        print(main.VISUALIZE_POISON)
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"\n\n----------World {world + 1}------------\n\n")
-            AGENTS_COUNTER = NUMBER_AGENTS  # separate counter for each world
+            AGENTS_COUNTER = main.NUMBER_AGENTS  # separate counter for each world
             deceased_agents_counter = 0
             game_data = {'world': world + 1, 'agent_data': []}  # store data for each world
 
             # this now is configured for each world:
             # board = Board(WIDTH, HEIGHT)
-            for i in range(1, NUMBER_AGENTS + 1):
+            for i in range(1, main.NUMBER_AGENTS + 1):
                 self.board.add_agent(Agent(i, self.board))
 
-            self.board.place_food(FOOD_PERCENTAGE_BEGINNING)
+            self.board.place_food(main.FOOD_PERCENTAGE_BEGINNING)
             self.board.place_agents()
 
             for round in range(main.ROUNDS):
@@ -165,7 +164,7 @@ class Game:
                                 agent.reproduce(partner, self.board)
                 deceased_agents_counter += round_deceased_agents
                 print(f"Agents deceased this round: {round_deceased_agents}")
-                self.board.place_food(ADDITIONAL_FOOD_PERCENTAGE)
+                self.board.place_food(main.ADDITIONAL_FOOD_PERCENTAGE)
                 self.board.place_agents()
 
                 """if round % 10 == 0:
@@ -340,7 +339,7 @@ class Game:
 
 
         #color for visualization mode- intelligence
-        colors_poison = ['white', 'darkgreen', 'lime']
+        colors_poison = ['white', 'green', 'purple']
 
         # Erstelle eine Liste von Farbwerten für die Colormap
         cmap_poison = ListedColormap(colors_poison)
@@ -391,7 +390,6 @@ class Game:
 
         #showing number of angents still living
         print(f"number of agents: {len(self.board.agents_list)}")
-        print(self.board.food)
         #checking if there is food left in the world
         #if not agents will probably die in a couple of rounds
         if self.board.food.any() >=1 :

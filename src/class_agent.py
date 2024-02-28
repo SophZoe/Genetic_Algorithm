@@ -156,10 +156,10 @@ class Agent:
         self.board = board
         self.sickness_counter = 0
         self.number = number
-        self.energy = START_ENERGY
+        self.energy = main.START_ENERGY
         self.genetic = {}
         self.genedistribution()
-        self.position = (random.randint(0, WIDTH - 1), random.randint(0, HEIGHT - 1))
+        self.position = (random.randint(0, main.WIDTH - 1), random.randint(0, main.HEIGHT - 1))
         self.reproduction_counter = 0
         self.consume_counter = 0
         self.sick = False
@@ -217,7 +217,7 @@ class Agent:
         if self.genetic["Intelligent"] is False:
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
                 self.sick = True
-                self.sickness_duration = SICKNESS_DURATION
+                self.sickness_duration = main.SICKNESS_DURATION
                 self.sickness_counter += 1
 
     def check_for_sickness(self):
@@ -305,8 +305,8 @@ class Agent:
         new_x = self.position[0] + step_x
         new_y = self.position[1] + step_y
 
-        new_x = max(0, min(WIDTH - 1, new_x))
-        new_y = max(0, min(HEIGHT - 1, new_y))
+        new_x = max(0, min(main.WIDTH - 1, new_x))
+        new_y = max(0, min(main.HEIGHT - 1, new_y))
 
         self.covered_distance += abs(step_x + step_y)
 
@@ -331,11 +331,11 @@ class Agent:
         # agent makes a random move
         dx = random.choice([-1, 0, 1])
         dy = random.choice([-1, 0, 1])
-        new_x = max(0, min(WIDTH - 1, self.position[0] + dx))
-        new_y = max(0, min(HEIGHT - 1, self.position[1] + dy))
+        new_x = max(0, min(main.WIDTH - 1, self.position[0] + dx))
+        new_y = max(0, min(main.HEIGHT - 1, self.position[1] + dy))
         self.position = (new_x, new_y)
         self.covered_distance += abs(1 * self.genetic["Condition"])
-        StepsTimesEnergycost = ENERGYCOSTS_MOVEMENT * abs(self.genetic["Condition"])
+        StepsTimesEnergycost = main.ENERGYCOSTS_MOVEMENT * abs(self.genetic["Condition"])
         self.energy -= StepsTimesEnergycost if not self.sick else StepsTimesEnergycost * 2
 
 
@@ -364,7 +364,7 @@ class Agent:
         for dy in range(-visibilityrange, visibilityrange + 1):
             for dx in range(-visibilityrange, visibilityrange + 1):
                 x, y = self.position[0] + dx, self.position[1] + dy
-                if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y] != 0:
+                if 0 <= x < main.WIDTH and 0 <= y < main.HEIGHT and board.food[x][y] != 0:
                     food_mask[dy + visibilityrange, dx + visibilityrange] = True
                     closest_food_key = board.food[x][y]  # Schlüssel des gefundenen Nahrungsmittels speichern
 
@@ -392,7 +392,7 @@ class Agent:
         -------
         list() of aggressive agents
         """
-        search_radius = VIGILANT_RADIUS
+        search_radius = main.VIGILANT_RADIUS
         min_x = max(0, self.position[0] - search_radius)
         max_x = min(self.board.width - 1, self.position[0] + search_radius)
         min_y = max(0, self.position[1] - search_radius)
@@ -422,13 +422,13 @@ class Agent:
         None
         """
         global AGENTS_COUNTER
-        if self.energy > ENERGYCOSTS_REPRODUCTION and self.position == partner.position:
+        if self.energy > main.ENERGYCOSTS_REPRODUCTION and self.position == partner.position:
             success_rate = 1 if self.genetic["Tribe"] == partner.genetic["Tribe"] else 0.3
             if random.random() < success_rate:
                 AGENTS_COUNTER += 1
                 child = Agent(AGENTS_COUNTER, self.board)
                 child.genedistribution_through_heredity(self, partner)
-                self.energy -= ENERGYCOSTS_REPRODUCTION
+                self.energy -= main.ENERGYCOSTS_REPRODUCTION
                 self.reproduction_counter += 1
                 partner.reproduction_counter += 1
                 board.add_agent(child)
