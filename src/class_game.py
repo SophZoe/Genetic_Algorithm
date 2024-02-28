@@ -49,8 +49,9 @@ from class_board import Board
 #from src.class_agent import Agent
 from class_agent import Agent
 #from src.main import *
-from main import *
-
+from main import ENERGYCOSTS_MOVEMENT, ENERGYCOSTS_REPRODUCTION, START_ENERGY
+from main import WIDTH, HEIGHT, NUMBER_AGENTS, ROUNDS, FOOD_PERCENTAGE_BEGINNING,ADDITIONAL_FOOD_PERCENTAGE, SICKNESS_DURATION, VIGILANT_RADIUS
+import main
 class Game:
     """
     class to run the simulation allowing it to be modelled across multiple "worlds"\n
@@ -95,10 +96,11 @@ class Game:
         visualizes distribution of food and agents for each round
     """
 
-    def __init__(self, saving=False, worlds=1, **kwargs):
+    def __init__(self, VISUALIZE_POISON , saving=False, worlds=1, **kwargs):
         self.saving = saving
         self.worlds = worlds
         self.data_list = []
+        self.VISUALIZE_POISON = main.VISUALIZE_POISON
         self.board = Board(**kwargs)
         self.removed_agents = 0
         #self.gui = GUI(board=self.board)
@@ -120,6 +122,7 @@ class Game:
         -------
         None
         """
+        print(main.VISUALIZE_POISON)
         for world in range(self.worlds):  # iterate over the specified number of worlds
             print(f"\n\n----------World {world + 1}------------\n\n")
             AGENTS_COUNTER = NUMBER_AGENTS  # separate counter for each world
@@ -136,7 +139,7 @@ class Game:
 
             for round in range(ROUNDS):
                 print(f"------------Round {round + 1}------------")
-                self.visualize_board()
+                self.visualize_board(main.VISUALIZE_POISON)
                 round_deceased_agents = 0
 
                 # ending the simulation in case there are no agents left
@@ -280,7 +283,7 @@ class Game:
         return world_data
 
 
-    def visualize_board(self):
+    def visualize_board(self, VISUALIZE_POISON):
         """
         visualizes state of simulation for each round\n
         visualizes distribution of food and agents for each round\n
@@ -344,7 +347,7 @@ class Game:
 
         data1 = self.board.food
 
-        if VISUALIZE_POISON is True:
+        if VISUALIZE_POISON == True:
             plot1 = imshow(data1, cmap= cmap_poison, interpolation='nearest', extent=extent)
         else:
             plot1 = imshow(data1, cmap= modified_ylgn, interpolation='nearest', extent=extent)

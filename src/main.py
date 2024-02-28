@@ -34,14 +34,14 @@ ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 50
 WIDTH = 50
 HEIGHT = 50
-NUMBER_AGENTS = 10
-ROUNDS = 50
+NUMBER_AGENTS = 5
+ROUNDS = 5
 FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.01
 SICKNESS_DURATION = ROUNDS // 10
 VIGILANT_RADIUS = 2
 
-VISUALIZE_POISON = True
+VISUALIZE_POISON = False
 
 
 
@@ -79,7 +79,7 @@ def main():
     """
     from class_game import Game     #importing here to avoid circular method-calling
     start = time.time()
-    game = Game(saving=True, worlds=1, ROUNDS=5)
+    game = Game(saving=True, worlds=1, ROUNDS=1, VISUALIZE_POISON = VISUALIZE_POISON)
     game.run()
     script_time = np.round(time.time() - start, 2)
     print(f"Script time: {script_time}s")

@@ -24,8 +24,9 @@ Authors
 import random
 import numpy as np
 #from main import *
-from main import *
-
+from main import VISUALIZE_POISON, ENERGYCOSTS_MOVEMENT, ENERGYCOSTS_REPRODUCTION, START_ENERGY
+from main import WIDTH, HEIGHT, NUMBER_AGENTS, ROUNDS, FOOD_PERCENTAGE_BEGINNING,ADDITIONAL_FOOD_PERCENTAGE, SICKNESS_DURATION, VIGILANT_RADIUS
+import main
 
 
 
@@ -186,7 +187,7 @@ class Agent:
         -------
         None
         """
-        for gen, area in GENPOOL["Genes"].items():
+        for gen, area in main.GENPOOL["Genes"].items():
             if isinstance(area[0], bool):
                 self.genetic[gen] = random.choice(area)
                 if self.genetic["Intelligent"] == True:
@@ -210,9 +211,9 @@ class Agent:
         -------
         None
         """
-        self.consumption_time = FOOD[food_key]["consumption_time"] // max(1, self.genetic['Metabolism'])
-        self.last_consumed_food_energy = FOOD[food_key]["Energy"]
-        risk = FOOD[food_key]["disease_risk"]
+        self.consumption_time = main.FOOD[food_key]["consumption_time"] // max(1, self.genetic['Metabolism'])
+        self.last_consumed_food_energy = main.FOOD[food_key]["Energy"]
+        risk = main.FOOD[food_key]["disease_risk"]
         if self.genetic["Intelligent"] is False:
             if random.random() < risk * (1 - self.genetic["Resistance"] / 3):
                 self.sick = True
@@ -270,7 +271,7 @@ class Agent:
         else:
             # agent is looking for food, if its not fleeing or consuming
             closest_food, food_key = self.search_food(board)
-            if closest_food is not None and FOOD[food_key]["disease_risk"] == 0 and self.genetic["Intelligent"] is True:
+            if closest_food is not None and main.FOOD[food_key]["disease_risk"] == 0 and self.genetic["Intelligent"] is True:
                 # move agent towards closest_food
                 self.move_towards(closest_food, food_key)
             elif closest_food is not None and self.genetic["Aggressive"] is True:
