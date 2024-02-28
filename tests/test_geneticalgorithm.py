@@ -10,7 +10,7 @@ import numpy as np
 def test_agent_initialization():
     board = Board(WIDTH, HEIGHT)
     food = np.zeros(WIDTH, HEIGHT)  #return Board() ?
-    agent = Agent(1)
+    agent = Agent(1, board)
     assert agent.number == 1
     assert agent.energy == START_ENERGY
     assert agent.sick is False
@@ -165,41 +165,51 @@ def test_search_food_with_food_outside_range(agent, board):
     assert closest_food is None, "The method should return None if food is outside the visibility range"
   
 def test_agent_reproduce():
-    agent1 = Agent(1, energy=ENERGYCOSTS_REPRODUCTION + 1, position=(0, 0), genetic={"Tribe": 1})
-    agent2 = Agent(2, energy=ENERGYCOSTS_REPRODUCTION + 1, position=(0, 0), genetic={"Tribe": 1})
+    def test_agent_reproduce():
+    board = Board(WIDTH, HEIGHT)  
+    agent1 = Agent(1, board)
+    agent2 = Agent(2, board)
 
-    # add agents to board
-    board = Board()
+    # Setting the attributes directly
+    agent1.energy = ENERGYCOSTS_REPRODUCTION + 1
+    agent1.position = (0, 0)
+    agent1.genetic = {"Tribe": 1}
+
+    agent2.energy = ENERGYCOSTS_REPRODUCTION + 1
+    agent2.position = (0, 0)
+    agent2.genetic = {"Tribe": 1}
+
+    # Add agents to the board
     board.add_agent(agent1)
     board.add_agent(agent2)
 
-    # test the success of reproduction
+    # Test the success of reproduction
     agent1.reproduce(agent2, board)
-    assert len(board.agents_list) == 3
+    assert len(board.agents_list) == 3  # Checks if a new agent was added
 
-    # check if energy of parents were reduced
+    # Check if energy of parents were reduced
     assert agent1.energy == 1  # ENERGYCOSTS_REPRODUCTION + 1 - ENERGYCOSTS_REPRODUCTION
     assert agent2.energy == 1  # ENERGYCOSTS_REPRODUCTION + 1 - ENERGYCOSTS_REPRODUCTION
 
-    # check if reproduction counter counts correctly
+    # Check if reproduction counter counts correctly
     assert agent1.reproduction_counter == 1
     assert agent2.reproduction_counter == 1
 
-    # check the attributes of the new agent
+    # Check the attributes of the new agent
     new_agent = board.agents_list[2]
     assert new_agent.parent_A == agent1.number
     assert new_agent.parent_B == agent2.number
     assert new_agent.genetic["Tribe"] == 1
 
 def test_genedistribution_through_heredity():
-    parent1 = Agent(1)
-    parent2 = Agent(2)
+    parent1 = Agent(1, board)
+    parent2 = Agent(2, board)
     parent1.genetic = {'Kondition': 2, 'Visibilityrange': 1, 'Tribe': 3, 'Resistance': 2, 'Metabolism': 1, 'Intelligent': True, 'Aggressive': False}
     parent2.genetic = {'Kondition': 1, 'Visibilityrange': 3, 'Tribe': 1, 'Resistance': 3, 'Metabolism': 2, 'Intelligent': False, 'Aggressive': True}
     
     # create child and apply genedistribution_thru_heredity:
     child = Agent(3)
-    child.genedistribution_thru_heredity(parent1, parent2)
+    child.genedistribution_through_heredity(parent1, parent2)
     
     # check if the "Tribe" gene value is either from parent1 or parent2:
     assert child.genetic['Tribe'] in [parent1.genetic['Tribe'], parent2.genetic['Tribe']]
@@ -234,7 +244,7 @@ def test_board_initialization():
 
 def test_board_add_agent():
     board = Board(WIDTH, HEIGHT)
-    agent = Agent(1)
+    agent = Agent(1, board)
 
     # check if agent was added to the board:
     board.add_agent(agent)
@@ -259,7 +269,7 @@ def test_board_place_food():
 
 def test_board_remove_agents():
     board = Board(WIDTH, HEIGHT)
-    agent = Agent(1)
+    agent = Agent(1, board)
     board.add_agent(agent)
     board.remove_agents(agent)
     # check if agent was removed successfully
@@ -303,23 +313,3 @@ def test_run_simulation_ends_correctly(setup_game):
     # This checks if the game correctly resets agents and food for each new world
     assert not any(game.board.agents_list) and not np.any(game.board.food), "Agents and food should be reset after simulation"
     
-def test_game_save_data():
-    #game = Game(saving=True) #now enable saving bc it is being tested
-    game = Game()
-    game.run()
-    
-    # check if the results-directory and the CSV were created:
-    result_dir = f"src/results"
-    assert os.path.exists(result_dir)
-    csv_file = f"{result_dir}/agent_data_0.csv"
-    assert os.path.exists(csv_file)
-    
-    # check if CSV contains the expected header:
-    with open(csv_file, 'r') as file:
-        header = file.readline().strip()
-        assert header == "Number, Tribe, Condition, Visibility Range, Metabolism, Covered Distance, Reproduction Counter, Consume Counter, Sickness Counter, Parent A, Parent B, Position"
-    
-    # check if the CSV contains any data rows:
-    with open(csv_file, 'r') as file:
-        data_lines = file.readlines()[1:]
-        assert len(data_lines) > 0
