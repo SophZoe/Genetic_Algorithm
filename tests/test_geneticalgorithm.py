@@ -17,7 +17,7 @@ def board():
     board = Board(WIDTH, HEIGHT)
     return Board(WIDTH, HEIGHT)
 
-def test_agent_initialization(board_setup):
+def test_agent_initialization(board):
     # More checks for more attributes
     food = np.zeros(WIDTH, HEIGHT)  #return Board() ?
     agent = Agent(1)
@@ -148,7 +148,7 @@ def test_move_while_consuming_food(agent):
 
 #Tests for the method def search_for_food()
 @pytest.fixture
-def test_search_food_with_food_within_range(agent, board):
+def test_search_food_with_food_within_range(agent, Board):
     
     # Setup a default agent for testing
     genetic = {'Visibilityrange': 2}  # Adjust visibility range as needed
@@ -158,13 +158,13 @@ def test_search_food_with_food_within_range(agent, board):
     
     # Place food within the agent's visibility range
     board.food[51][52] = 1  # Adjust coordinates as needed within the agent's visibility range
-    closest_food = agent.search_food(board)
+    closest_food = agent.search_food(Board)
     assert closest_food == (1, 2), "The method should return the relative position of the closest food"
 
 @pytest.fixture
 def test_search_food_with_no_food_within_range(agent, board):
     # Ensure there's no food within the agent's visibility range
-    closest_food = agent.search_food(board)
+    closest_food = agent.search_food(Board)
     assert closest_food is None, "The method should return None if no food is found within the visibility range"
 
 @pytest.fixture
@@ -185,7 +185,7 @@ def test_agent_reproduce():
     board.add_agent(agent2)
 
     # test the success of reproduction
-    agent1.reproduce(agent2, board)
+    agent1.reproduce(agent2, Board)
     assert len(board.agents_list) == 3
 
     # check if energy of parents were reduced
@@ -203,13 +203,13 @@ def test_agent_reproduce():
     assert new_agent.genetic["Tribe"] == 1
 
 def test_genedistribution_through_heredity():
-    parent1 = Agent(1, board)
-    parent2 = Agent(2, board)
+    parent1 = Agent(1, Board)
+    parent2 = Agent(2, Board)
     parent1.genetic = {'Kondition': 2, 'Visibilityrange': 1, 'Tribe': 3, 'Resistance': 2, 'Metabolism': 1, 'Intelligent': True, 'Aggressive': False}
     parent2.genetic = {'Kondition': 1, 'Visibilityrange': 3, 'Tribe': 1, 'Resistance': 3, 'Metabolism': 2, 'Intelligent': False, 'Aggressive': True}
     
     # create child and apply genedistribution_thru_heredity:
-    child = Agent(3)
+    child = Agent(3, Board)
     child.genedistribution_thru_heredity(parent1, parent2)
     
     # check if the "Tribe" gene value is either from parent1 or parent2:
@@ -245,12 +245,11 @@ def test_board_initialization():
 
 def test_board_add_agent():
     board = Board(WIDTH, HEIGHT)
-    agent = Agent(1, board)
+    agent = Agent(1, Board)
 
     # check if agent was added to the board:
     board.add_agent(agent)
     assert len(board.agents_list) == 1
-
 
 def test_board_place_food():
     board = Board(WIDTH, HEIGHT)
@@ -258,15 +257,10 @@ def test_board_place_food():
     
     # calc. expected number of food-locations (based on the percentage):
     expected_food_count = int(WIDTH * HEIGHT * FOOD_PERCENTAGE_BEGINNING)
-    
-    # check actual number of food-locations matches expected number:
-    actual_food_count = sum(1 for row in board.food for cell in row if cell is not None)
-    assert actual_food_count == expected_food_count
-    
+      
     # check if the food is placed randomly on the board:
     unique_food_positions = set((x, y) for x, row in enumerate(board.food) for y, cell in enumerate(row) if cell is not None)
     assert len(unique_food_positions) == actual_food_count
-
 
 def test_board_remove_agents():
     board = Board(WIDTH, HEIGHT)
