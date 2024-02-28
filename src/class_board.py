@@ -210,7 +210,7 @@ class Board:
             if VISUALIZING_INTELLIGENCE == True:
                 if agent.genetic['Intelligent'] == True:
                     self.world[x][y] = 1
-                else :
+                elif agent.genetic['Aggressive'] == True:
                     self.world[x][y] = 2
             else:
                 self.world[x][y] += 1

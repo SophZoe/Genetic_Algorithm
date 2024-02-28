@@ -188,8 +188,8 @@ class Agent:
         for gen, area in GENPOOL["Genes"].items():
             if isinstance(area[0], bool):
                 self.genetic[gen] = random.choice(area)
-                if self.genetic["Intelligent"] == True:
-                    self.genetic["Aggressive"] = False
+                if self.genetic["Intelligent"] == False:
+                    self.genetic["Aggressive"] = True
                 else:
                     self.genetic["Aggressive"] = True
             else:

@@ -32,10 +32,10 @@ import numpy as np
 ENERGYCOSTS_MOVEMENT = 1
 ENERGYCOSTS_REPRODUCTION = 5
 START_ENERGY = 50
-WIDTH = 50
-HEIGHT = 50
+WIDTH = 10
+HEIGHT = 10
 NUMBER_AGENTS = 10
-ROUNDS = 50
+ROUNDS = 10
 FOOD_PERCENTAGE_BEGINNING = 0
 ADDITIONAL_FOOD_PERCENTAGE = 0.001
 SICKNESS_DURATION = ROUNDS // 10
@@ -49,13 +49,13 @@ VISUALIZING_INTELLIGENCE = True
 # agents_counter = NUMBER_AGENTS
 
 FOOD = {
-    1.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 3},
-    2.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 2},
+    1.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
+    2.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
     3.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0},
-    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 6},
+    4.0: {'Energy': 20, 'consumption_time': 8, 'disease_risk': 0},
     5.0: {'Energy': 5, 'consumption_time': 2, 'disease_risk': 0},
-    6.0: {'Energy': 10, 'consumption_time': 4, 'disease_risk': 9},
-    7.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 12}
+    6.0: {'Energy': 10, 'consumption_time': 4, 'disease_risk': 0},
+    7.0: {'Energy': 15, 'consumption_time': 6, 'disease_risk': 0}
 }
 FOOD_KEYS = list(FOOD.keys())
 
