@@ -182,10 +182,10 @@ class Board:
         ndarray[Any, dtype] | None
         """
         x, y = position
-        if self.food[x, y] != 0:  # Nimmt an, dass 0 bedeutet, dass kein Essen vorhanden ist
+        if self.food[x, y] != 0:  # Assume, that 0 means there have been no food left
             food_key = self.food[x, y]
-            return food_key  # Gibt den Schlüssel des Essens zurück
-        return None  # Kein Essen an dieser Position
+            return food_key  
+        return None  #No more food on this position
 
     def place_agents(self):
         """
