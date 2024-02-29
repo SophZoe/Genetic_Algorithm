@@ -50,7 +50,7 @@ VISUALIZING_INTELLIGENCE = True
 if VISUALIZE_POISON == True:
     FOOD = {
         1.0: {'Energy': 10, 'consumption_time': 6, 'disease_risk': 0},
-        2.0: {'Energy': 10, 'consumption_time': 2, 'disease_risk': 0},
+        2.0: {'Energy': 10, 'consumption_time': 2, 'disease_risk': 10},
         }
 elif VISUALIZE_POISON == False:
     FOOD = {
