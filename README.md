@@ -79,7 +79,10 @@ The simulation uses a set of constants to define the behavior and environment of
 - ENERGY_FOOD: The amount of energy provided by the food consumed.
 - FOOD_PERCENTAGE_BEGINNING: Percentage of randomly placed food at the beginning of the simulation. 
 - ADDITIONAL_FOOD_PERCENTAGE: The amount of additional food (in percentage) that is added in each new round.
-- SICKNESS_DURATION = ROUNDS: Sets the length of the immobilisation of the agents after they have eaten the poisonous food.
+- SICKNESS_DURATION = ROUNDS: Sets how long an agent loses twice as much energy after he has eaten the poisonous food.
+- VIGILANT_RADIUS: Shows from how far on the board an intelligent agent can detect an agressive agent.
+- VISUALIZE_POISON
+- VISUALIZING_INTELLIGENCE 
 
 ## Types of food
 A dictionary of 7 types of food has been created. These foods are differentiated according to 3 parameters, namely:
@@ -87,8 +90,8 @@ A dictionary of 7 types of food has been created. These foods are differentiated
 -  **"consumption time": ** is calculated by dividing the food's base "consumption time" by the agent's "Metabolism" value and has been introdused to gather information to what extent biologically determined attributes can benefit or impair the agents chances of survival. 
 - **"disease_risk":** first three food types are non-poisonous and thus have the "disease_risk" = 0. The food types from 4 to 7 have the increasing rate of poisoning effect that results in immobilising the agent for 1 round.
 
-  
-  <img width="448" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
+ 
+ <img width="448" alt="food" src="https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/c867b1fe-2290-4d37-ac70-f21f5092c946">
 
 
 ## Genes that determines the agents behaviour
@@ -105,7 +108,7 @@ A dictionary of 7 types of food has been created. These foods are differentiated
   
 - **"Intelligent":** Makes agents be able to detect poisonous food  and thus avoid consuming it, as well as to avoid direct interaction with agents with the "Agressive" gene.
   
- - **"Aggressive":** Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to get immobilized for a round after consuming the poisonous food. 
+ - **"Aggressive":** Aggressive agents might implicitly have an advantage at food sources due to their willingness to engage in conflicts. However their are not able to tell apart the food type with high "sickness_risk" from the food with "sickness_risk" = 0 and thus are more prone to lose twice as much energy after consuming the poisonous food. 
 
 The initial distribution of genes (genedistribution method) links "Intelligence to "Aggression", such that if an agent is intelligent _(self.genetic["Intelligent"] == True)_, it is not aggressive _(self.genetic["Aggressive"] = False)_. This setup implies that intelligence in agents is associated with non-aggressive behavior, indicating a strategic approach to survival that avoids unnecessary risks.
 
@@ -133,6 +136,7 @@ The Agent class represents the living being in the ecosystem with the following 
 
 
 - **__init__():** Initializes a new agent with a unique number, starting energy, random position and empty genetic profile.
+  
 - **genedistribution():** Assigns genetic properties from the GENPOOL to the agent.
   
 - **consuming_food():** This method is a simulation of how an agent consumes food and the consequences of that action, including the time it takes to consume the food, the energy gained, and the potential risk of disease that may come with the food. It also shows that the agent's genetic attributes play a significant role in these interactions, affecting both the efficiency of food consumption ("Metabolism") and the agent's susceptibility to disease ("Resistance").
@@ -141,7 +145,7 @@ The Agent class represents the living being in the ecosystem with the following 
 
 - **move():** Moves the agent and consumes energy, updates the position of the agent and regulates the logic of the flight mode in the agents that stumble upon their agressive counterparts.
   
--  **move_towards():** Checks the position of agents, then checks the position of food, calculates the most efficient move copnsidering the given condition of the agent, updates the position of the agent, then checks if there is any food on the new position. If so, the food is consumed by the agent and his energy status is updated, the consumed food is removed from ther board, afterwards the position of the agents is updated again.
+-  **move_towards():** Checks the position of agents, then checks the position of food, calculates the most efficient move copnsidering the given condition of the agent, updates the position of the agent, then checks if there is any food on the new position. If so, the food is consumed by the agent and his energy status is updated, after have eaten a poisonous fodd an agent loses instead of gaining the energy.  The consumed food is removed from ther board, afterwards the position of the agents is updated again.
   
 -  **random_move():** Moves an agent randomly between three positions -1, 0 and 1. 
   
@@ -166,6 +170,7 @@ The board class manages the simulated world in which the agents live:
 -  **place_food():** Places food on the board based on a specified percentage of spaces
 -  **place_agents():** Places agents on the game board for the further visualization.
 -  **remove_agents():** Removes an agent from the game board.
+-  **get_food_at_position(): Manages the distribution of food.
 -  **place_agents(self):** Every agent in agent_list is placed on the board based on its position clears the board every round and then replaces the updated agents using the agents in agents_list.
 
 ## Game
@@ -180,14 +185,13 @@ The Game class controls the simulation process:
 -  **save_data():** Saves the simulation data in a CSV file.
   
 -  **collect_agent_data():** New method to collect agent-data and return data for each agent in agents_list.
-
+  
 ## Visualization
+
+![Single_agent](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/be1f07be-e259-4aa7-9d3c-06317fcc3d72)
 
 -  **visualize_board():** Visualizes the world and the distribution of agents and food.
 The method uses the Matplotlib library to visualize the state of a board in a simulation game, which consists of agents and food distributed on a grid (100x100). Defines a grid using NumPy's arange function. Includes the Agent counter display and checks if there is any food left on the board and how many agents are still living.
-
-![viz](https://github.com/SophZoe/Genetic_Algorithm/assets/128530418/798120e3-18ce-438f-9e1a-940da51d2b1e)
-
 
 ## Customization and possible feature extension
 
