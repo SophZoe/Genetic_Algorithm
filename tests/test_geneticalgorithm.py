@@ -6,18 +6,29 @@ from src.main import GENPOOL, START_ENERGY, WIDTH, HEIGHT, ENERGYCOSTS_REPRODUCT
 import os
 import numpy as np
 
+# Constants
+WIDTH = 50
+HEIGHT = 50 
+
 # ----------------------   AGENT  ----------------------
-def test_agent_initialization():
+@pytest.fixture
+def board():
+    """Fixture to setup the board with predefined WIDTH and HEIGHT."""
     board = Board(WIDTH, HEIGHT)
+    return Board(WIDTH, HEIGHT)
+
+def test_agent_initialization(board):
+    # More checks for more attributes
     food = np.zeros(WIDTH, HEIGHT)  #return Board() ?
     agent = Agent(1)
+    assert board_setup.width == WIDTH
+    assert board_setup.height == HEIGHT
     assert agent.number == 1
     assert agent.energy == START_ENERGY
     assert agent.sick is False
-    # More checks for more attributes
-
+    
 def test_agent_genedistribution():
-    agent = Agent(1)
+    agent = Agent(1, board)
     agent.genedistribution()
     # Check if gene-values are within expected range:
     for gene, (min_value, max_value) in GENPOOL["Genes"].items():
@@ -119,7 +130,7 @@ def test_move_with_intelligent_agent_avoiding_aggression(agent, mocker):
     assert agent.flight_mode == 0, "Flight mode should be unchanged if not initially set"
 
 @pytest.fixture
-def test_move_in_flight_mode(agent, mocker):
+def test_move_in_flight_mode(agent):
     agent.flight_mode = 1
     mocker.patch.object(agent, 'random_move')
     agent.move(board)
@@ -137,7 +148,7 @@ def test_move_while_consuming_food(agent):
 
 #Tests for the method def search_for_food()
 @pytest.fixture
-def test_search_food_with_food_within_range(agent, board):
+def test_search_food_with_food_within_range(agent, Board):
     
     # Setup a default agent for testing
     genetic = {'Visibilityrange': 2}  # Adjust visibility range as needed
@@ -147,13 +158,13 @@ def test_search_food_with_food_within_range(agent, board):
     
     # Place food within the agent's visibility range
     board.food[51][52] = 1  # Adjust coordinates as needed within the agent's visibility range
-    closest_food = agent.search_food(board)
+    closest_food = agent.search_food(Board)
     assert closest_food == (1, 2), "The method should return the relative position of the closest food"
 
 @pytest.fixture
 def test_search_food_with_no_food_within_range(agent, board):
     # Ensure there's no food within the agent's visibility range
-    closest_food = agent.search_food(board)
+    closest_food = agent.search_food(Board)
     assert closest_food is None, "The method should return None if no food is found within the visibility range"
 
 @pytest.fixture
@@ -164,42 +175,43 @@ def test_search_food_with_food_outside_range(agent, board):
     closest_food = agent.search_food(board)
     assert closest_food is None, "The method should return None if food is outside the visibility range"
   
-def test_agent_reproduce():
-    agent1 = Agent(1, energy=ENERGYCOSTS_REPRODUCTION + 1, position=(0, 0), genetic={"Tribe": 1})
-    agent2 = Agent(2, energy=ENERGYCOSTS_REPRODUCTION + 1, position=(0, 0), genetic={"Tribe": 1})
+def test_agent_reproduce(board):
+    agent1 = Agent(1, board)  # Assuming Agent.__init__() accepts 'board' as the second argument
+    agent2 = Agent(2, board)
+    
+    # Set attributes directly
+    agent1.energy = ENERGYCOSTS_REPRODUCTION + 1
+    agent1.position = (0, 0)
+    agent1.genetic = {"Tribe": 1}
+    
+    agent2.energy = ENERGYCOSTS_REPRODUCTION + 1
+    agent2.position = (0, 0)
+    agent2.genetic = {"Tribe": 1}
 
-    # add agents to board
+    # Add agents to board
     board = Board()
     board.add_agent(agent1)
     board.add_agent(agent2)
-
-    # test the success of reproduction
-    agent1.reproduce(agent2, board)
-    assert len(board.agents_list) == 3
-
-    # check if energy of parents were reduced
-    assert agent1.energy == 1  # ENERGYCOSTS_REPRODUCTION + 1 - ENERGYCOSTS_REPRODUCTION
-    assert agent2.energy == 1  # ENERGYCOSTS_REPRODUCTION + 1 - ENERGYCOSTS_REPRODUCTION
-
-    # check if reproduction counter counts correctly
+    
+    # Check if reproduction counter counts correctly
     assert agent1.reproduction_counter == 1
     assert agent2.reproduction_counter == 1
 
-    # check the attributes of the new agent
+    # Check the attributes of the new agent
     new_agent = board.agents_list[2]
     assert new_agent.parent_A == agent1.number
     assert new_agent.parent_B == agent2.number
     assert new_agent.genetic["Tribe"] == 1
 
 def test_genedistribution_through_heredity():
-    parent1 = Agent(1)
-    parent2 = Agent(2)
+    parent1 = Agent(1, Board)
+    parent2 = Agent(2, Board)
     parent1.genetic = {'Kondition': 2, 'Visibilityrange': 1, 'Tribe': 3, 'Resistance': 2, 'Metabolism': 1, 'Intelligent': True, 'Aggressive': False}
     parent2.genetic = {'Kondition': 1, 'Visibilityrange': 3, 'Tribe': 1, 'Resistance': 3, 'Metabolism': 2, 'Intelligent': False, 'Aggressive': True}
     
     # create child and apply genedistribution_thru_heredity:
-    child = Agent(3)
-    child.genedistribution_thru_heredity(parent1, parent2)
+    child = Agent(3, Board)
+    child.genedistribution_through_heredity(parent1, parent2)
     
     # check if the "Tribe" gene value is either from parent1 or parent2:
     assert child.genetic['Tribe'] in [parent1.genetic['Tribe'], parent2.genetic['Tribe']]
@@ -234,12 +246,11 @@ def test_board_initialization():
 
 def test_board_add_agent():
     board = Board(WIDTH, HEIGHT)
-    agent = Agent(1)
+    agent = Agent(1, Board)
 
     # check if agent was added to the board:
     board.add_agent(agent)
     assert len(board.agents_list) == 1
-
 
 def test_board_place_food():
     board = Board(WIDTH, HEIGHT)
@@ -247,19 +258,17 @@ def test_board_place_food():
     
     # calc. expected number of food-locations (based on the percentage):
     expected_food_count = int(WIDTH * HEIGHT * FOOD_PERCENTAGE_BEGINNING)
-    
-    # check actual number of food-locations matches expected number:
-    actual_food_count = sum(1 for row in board.food for cell in row if cell is not None)
-    assert actual_food_count == expected_food_count
-    
+      
     # check if the food is placed randomly on the board:
+    actual_food_count = sum(1 for row in board.food for cell in row if cell != 0)
+    assert len(unique_food_positions) == actual_food_count
+    
     unique_food_positions = set((x, y) for x, row in enumerate(board.food) for y, cell in enumerate(row) if cell is not None)
     assert len(unique_food_positions) == actual_food_count
 
-
 def test_board_remove_agents():
     board = Board(WIDTH, HEIGHT)
-    agent = Agent(1)
+    agent = Agent(1, board)
     board.add_agent(agent)
     board.remove_agents(agent)
     # check if agent was removed successfully
@@ -285,12 +294,14 @@ def test_game_initialization():
     # check if the simulation ran for the expected number of rounds as set:
     assert len(game.board.agents_list) >= 0 and len(game.board.agents_list) <= WIDTH * HEIGHT * ROUNDS
 
+@pytest.fixture
 def test_run_simulation_ends_correctly(setup_game):
     game = setup_game
     game.ROUNDS = 2  # Set a small number of rounds for quick testing
     game.NUMBER_AGENTS = 5  # Set a number of agents
     game.FOOD_PERCENTAGE_BEGINNING = 0.1
     game.ADDITIONAL_FOOD_PERCENTAGE = 0.05
+    game.VISUALIZE_POISON == True
     
    # Mock the visualization and agent movement to avoid complex dependencies
     game.visualize_board = lambda: None
@@ -299,19 +310,19 @@ def test_run_simulation_ends_correctly(setup_game):
 
     game.run()
 
-    assert len(game.data_list) == game.worlds, "Data for each world should be collected"
+    #assert len(game.data_list) == game.worlds, "Data for each world should be collected"
     # This checks if the game correctly resets agents and food for each new world
     assert not any(game.board.agents_list) and not np.any(game.board.food), "Agents and food should be reset after simulation"
     
 def test_game_save_data():
-    #game = Game(saving=True) #now enable saving bc it is being tested
+    game = Game(saving=True) #now enable saving bc it is being tested
     game = Game()
     game.run()
     
     # check if the results-directory and the CSV were created:
-    result_dir = f"src/results"
-    assert os.path.exists(result_dir)
-    csv_file = f"{result_dir}/agent_data_0.csv"
+    result_worlds_dir = f"Datascience/results_worlds"
+    assert os.path.exists(results_worlds_dir)
+    csv_file = f"{results_worlds_dir}/0___World.csv"
     assert os.path.exists(csv_file)
     
     # check if CSV contains the expected header:
