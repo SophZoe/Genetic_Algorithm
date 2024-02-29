@@ -27,8 +27,6 @@ import numpy as np
 from main import *
 
 
-
-
 class Board:
     """
     class to represent the board, on which the agents and food are placed/removed

@@ -150,7 +150,6 @@ class Agent:
         -------
         None
         """
-        global AGENTS_COUNTER
         self.board = board
         self.sickness_counter = 0
         self.number = number
@@ -172,6 +171,7 @@ class Agent:
         self.last_consumed_food_energy = 0
         self.gained_energy = 0
 
+
     def genedistribution(self):
         """
         randomly sets the genedistribution of each agent based on predetermined genes
@@ -184,16 +184,26 @@ class Agent:
         Returns
         -------
         None
+
+
         """
+
+        half_population = AGENTS_COUNTER // 2
+
+        count = 0
+        if self.number < half_population:
+            self.genetic["Aggressive"] = False
+            self.genetic["Intelligent"] = True
+        else:
+            self.genetic["Aggressive"] = True
+            self.genetic["Intelligent"] = False
+
+        
+        # Verteilung der anderen Gene
         for gen, area in GENPOOL["Genes"].items():
-            if isinstance(area[0], bool):
-                self.genetic[gen] = random.choice(area)
-                if self.genetic["Intelligent"] == True:
-                    self.genetic["Aggressive"] = False
-                else:
-                    self.genetic["Aggressive"] = True
-            else:
+            if gen not in ["Aggressive", "Intelligent"]:  
                 self.genetic[gen] = random.randint(*area)
+
 
     def consuming_food(self, food_key):
         """
@@ -233,11 +243,10 @@ class Agent:
         if self.sick:
             self.sickness_duration -= 1
             self.random_move()
-            print("#####Krankes Lebewesen regeneriert!")
             if self.sickness_duration <= 0:
                 self.sick = False
                 self.random_move()
-                print("Krankes Lebewesen ist nun wieder Gesund #####")
+
 
     def move(self, board):
         """
@@ -303,24 +312,20 @@ class Agent:
         new_x = self.position[0] + step_x
         new_y = self.position[1] + step_y
 
-        # Stellt sicher, dass die neue Position innerhalb der Grenzen des Spielfelds liegt
         new_x = max(0, min(WIDTH - 1, new_x))
         new_y = max(0, min(HEIGHT - 1, new_y))
 
-        # Überprüft, ob das Zielnahrungsmittel an der neuen Position vorhanden ist
-        if self.board.food[new_x, new_y] == food_key:
-            self.consuming_food(food_key)
-            self.board.food[new_x, new_y] = 0  # Entfernt das konsumierte Nahrungsmittel vom Board
-        else:
-            # Korrigiert die Position, falls das Nahrungsmittel nicht mehr vorhanden ist
-            closest_food, _ = self.search_food(self.board)
-            if closest_food:
-                self.position = closest_food
-            else:
-                self.random_move()  # Führt eine zufällige Bewegung durch, wenn keine Nahrung gefunden wurde
+        StepsTimesEnergycost = self.genetic["Condition"]
+
+        self.energy -= StepsTimesEnergycost if not self.sick else StepsTimesEnergycost * 2
 
         self.covered_distance += abs(step_x + step_y)
-        self.position = (new_x, new_y)  # Aktualisiert die Position des Agenten
+        self.position = (new_x, new_y) 
+
+        if self.position == (food_x, food_y) and self.board.food[food_x][food_y] == food_key:
+            self.consuming_food(food_key)
+            self.board.food[food_x][food_y] = 0
+
 
     def random_move(self):
         """
@@ -369,10 +374,6 @@ class Agent:
                 if 0 <= x < WIDTH and 0 <= y < HEIGHT and board.food[x][y]:
                     closest_food = x, y
                     food_key = board.food[x][y]
-                    board.food[x][y] = 0
-                    self.energy += FOOD[food_key]["Energy"]
-                    print(f"key is {food_key}")
-                    print(f"closest food coordinates are {closest_food}")
 
                     return closest_food, food_key
                 
