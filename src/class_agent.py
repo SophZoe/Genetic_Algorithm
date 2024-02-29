@@ -191,7 +191,7 @@ class Agent:
         half_population = AGENTS_COUNTER // 2
 
         count = 0
-        if self.number < half_population:
+        if self.number <= half_population:
             self.genetic["Aggressive"] = False
             self.genetic["Intelligent"] = True
         else:
