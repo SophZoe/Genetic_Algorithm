@@ -364,7 +364,7 @@ class Game:
         if VISUALIZING_INTELLIGENCE == True:
             # Erstellen einer Normalisierung, um Werte auf die Grenzen der Colormap abzubilden
             norm_intel = matplotlib.colors.BoundaryNorm(bounds, cmap_intelligence.N)
-            plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent, norm = norm)
+            plot2 = imshow(data2, cmap_intelligence,alpha = .7, interpolation='nearest', extent=extent, norm = norm_intel)
         else:
             plot2 = imshow(data2, cmap="YlOrRd",alpha = .7, interpolation='bilinear', extent=extent)
         
