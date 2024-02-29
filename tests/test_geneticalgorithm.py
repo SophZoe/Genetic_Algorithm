@@ -189,7 +189,7 @@ def test_agent_reproduce(board):
     agent2.genetic = {"Tribe": 1}
 
     # Add agents to board
-      board = Board()
+    board = Board()
     board.add_agent(agent1)
     board.add_agent(agent2)
     
